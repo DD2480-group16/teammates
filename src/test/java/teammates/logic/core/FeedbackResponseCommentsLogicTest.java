@@ -100,6 +100,18 @@ public class FeedbackResponseCommentsLogicTest extends BaseLogicTest {
     }
 
     @Test
+    public void test_TeamsFeedbackParticipant_exceptionShouldBeThrown() {
+        //This test checks if an exception is thrown when commentGiverType is set to TEAMS
+        FeedbackResponseCommentAttributes frComment = restoreFrCommentFromDataBundle("comment1FromT1C1ToR1Q1S1C1");
+        frComment.setCommentGiverType(FeedbackParticipantType.TEAMS);
+        frComment.setCommentFromFeedbackParticipant(true);
+        frComment.setCommentGiver("Fred");
+        EntityDoesNotExistException ednee = assertThrows(EntityDoesNotExistException.class,
+                () -> frcLogic.createFeedbackResponseComment(frComment));
+        assertEquals("User Fred is not a registered team for course idOfTypicalCourse1.", ednee.getMessage());
+    }
+
+    @Test
     public void testCreateFeedbackResponseComment_invalidCommentGiverType_exceptionShouldBeThrown() {
         FeedbackResponseCommentAttributes frComment = restoreFrCommentFromDataBundle("comment1FromT1C1ToR1Q1S1C1");
         frComment.setCommentGiverType(FeedbackParticipantType.SELF);
