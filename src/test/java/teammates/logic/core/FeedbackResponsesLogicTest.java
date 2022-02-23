@@ -7,9 +7,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import teammates.logic.core.FredCoverage;
 import teammates.common.datatransfer.AttributesDeletionQuery;
 import teammates.common.datatransfer.CourseRoster;
 import teammates.common.datatransfer.DataBundle;
@@ -26,6 +29,7 @@ import teammates.common.datatransfer.questions.FeedbackTextResponseDetails;
 import teammates.common.exception.EntityAlreadyExistsException;
 import teammates.common.exception.EntityDoesNotExistException;
 import teammates.test.AssertHelper;
+import teammates.logic.core.FredCoverage;
 
 /**
  * SUT: {@link FeedbackResponsesLogic}.
@@ -1106,6 +1110,14 @@ public class FeedbackResponsesLogicTest extends BaseLogicTest {
                 bundle.getQuestionResponseMap().entrySet().iterator().next().getValue();
         assertEquals(4, responseForQuestion.size());
     }
+
+    @AfterClass
+    public void xxx(){
+        FredCoverage fred = new FredCoverage(15);
+        assertEquals("Hello", "Hello");
+        fred.print_results();
+    }
+
 
     private FeedbackQuestionAttributes getQuestionFromDatabase(DataBundle dataBundle, String jsonId) {
         FeedbackQuestionAttributes questionToGet = dataBundle.feedbackQuestions.get(jsonId);

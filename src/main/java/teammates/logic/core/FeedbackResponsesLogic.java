@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import teammates.logic.core.FredCoverage;
 import teammates.common.datatransfer.AttributesDeletionQuery;
 import teammates.common.datatransfer.CourseRoster;
 import teammates.common.datatransfer.FeedbackParticipantType;
@@ -27,7 +28,6 @@ import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.Const;
 import teammates.common.util.RequestTracer;
 import teammates.storage.api.FeedbackResponsesDb;
-
 /**
  * Handles operations related to feedback responses.
  *
@@ -236,53 +236,70 @@ public final class FeedbackResponsesLogic {
         List<FeedbackParticipantType> showNameTo = isGiverName
                                                  ? question.getShowGiverNameTo()
                                                  : question.getShowRecipientNameTo();
+        FredCoverage cover = new FredCoverage(16);
+
         for (FeedbackParticipantType type : showNameTo) {
             switch (type) {
             case INSTRUCTORS:
+                cover.set_flag(0, true);
                 if (roster.getInstructorForEmail(userEmail) != null && isInstructor) {
+                    cover.set_flag(1, true);
                     return true;
                 }
                 break;
             case OWN_TEAM_MEMBERS:
+                cover.set_flag(2, true);
             case OWN_TEAM_MEMBERS_INCLUDING_SELF:
+                cover.set_flag(3, true);
                 // Refers to Giver's Team Members
                 if (roster.isStudentsInSameTeam(response.getGiver(), userEmail)) {
+                    cover.set_flag(4, true);
                     return true;
                 }
                 break;
             case RECEIVER:
                 // Response to team
+                cover.set_flag(5, true);
                 if (question.getRecipientType().isTeam()) {
+                    cover.set_flag(6, true);
                     if (roster.isStudentInTeam(userEmail, response.getRecipient())) {
+                        cover.set_flag(7, true);
                         // this is a team name
                         return true;
                     }
                     break;
                     // Response to individual
                 } else if (response.getRecipient().equals(userEmail)) {
+                    cover.set_flag(8, true);
                     return true;
                 } else {
                     break;
                 }
             case RECEIVER_TEAM_MEMBERS:
+                cover.set_flag(9, true);
                 // Response to team; recipient = teamName
                 if (question.getRecipientType().isTeam()) {
+                    cover.set_flag(10, true);
                     if (roster.isStudentInTeam(userEmail, response.getRecipient())) {
+                        cover.set_flag(11, true);
                         // this is a team name
                         return true;
                     }
                     break;
                 } else if (roster.isStudentsInSameTeam(response.getRecipient(), userEmail)) {
+                    cover.set_flag(12, true);
                     // Response to individual
                     return true;
                 }
                 break;
             case STUDENTS:
                 if (roster.isStudentInCourse(userEmail)) {
+                    cover.set_flag(13, true);
                     return true;
                 }
                 break;
             default:
+                cover.set_flag(14, true);
                 assert false : "Invalid FeedbackParticipantType for showNameTo in "
                         + "FeedbackResponseLogic.isFeedbackParticipantNameVisibleToUser()";
                 break;
@@ -290,7 +307,6 @@ public final class FeedbackResponsesLogic {
         }
         return false;
     }
-
     /**
      * Returns true if the responses of the question are visible to students.
      */
