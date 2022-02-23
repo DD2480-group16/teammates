@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.junit.AfterClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -1105,6 +1106,23 @@ public class FeedbackResponsesLogicTest extends BaseLogicTest {
         List<FeedbackResponseAttributes> responseForQuestion =
                 bundle.getQuestionResponseMap().entrySet().iterator().next().getValue();
         assertEquals(4, responseForQuestion.size());
+    }
+
+    @Test
+    @AfterClass
+    public void testZ() {
+        boolean[] branches = frLogic.getFlag();
+        int missing = 0;
+
+        for(int i = 0; i < branches.length; i++){
+                if(!branches[i]){
+                        System.out.print(i + " ");
+                        missing += 1;
+                }
+        }
+        System.out.println("\nMissed " + missing + " out of " + branches.length + " total branches.");
+        assertEquals(1, 1);
+        System.out.println("hello");
     }
 
     private FeedbackQuestionAttributes getQuestionFromDatabase(DataBundle dataBundle, String jsonId) {
