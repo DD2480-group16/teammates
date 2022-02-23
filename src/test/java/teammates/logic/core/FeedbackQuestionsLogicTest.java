@@ -281,6 +281,18 @@ public class FeedbackQuestionsLogicTest extends BaseLogicTest {
         recipients = fqLogic.getRecipientsOfQuestion(question, null, studentGiver, courseRoster);
         assertEquals(recipients.get(studentGiver.getEmail()), FeedbackQuestionsLogic.USER_NAME_FOR_SELF);
         assertEquals(recipients.size(), 1);
+
+        boolean[] branchesTaken = fqLogic.getBranchChecker();
+        int missedBranches = 0;
+
+        System.out.println("Branches missed in function getRecipientsOfQuestion: ");
+        for(int i = 0; i < branchesTaken.length; i++){
+                if(!branchesTaken[i]){
+                        System.out.print(i + " ");
+                        missedBranches += 1;
+                }
+        }
+        System.out.println("\nMissed " + missedBranches + " out of " + branchesTaken.length + " total branches.")
     }
 
     @Test
