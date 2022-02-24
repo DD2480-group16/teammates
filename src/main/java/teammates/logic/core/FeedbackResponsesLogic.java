@@ -640,7 +640,7 @@ public final class FeedbackResponsesLogic {
                     && relatedQuestion.isResponseVisibleTo(FeedbackParticipantType.RECEIVER)
                     && response.getRecipient().equals(student.getTeam())) {
                 isVisibleResponse = true;
-                flag[2]=true;
+                flag[2]=true;      //we now enter that branch
             } else if (relatedQuestion.getGiverType() == FeedbackParticipantType.TEAMS
                     && response.getGiver().equals(student.getTeam())) {
                 isVisibleResponse = true;
@@ -652,7 +652,7 @@ public final class FeedbackResponsesLogic {
             } else if (relatedQuestion.isResponseVisibleTo(FeedbackParticipantType.RECEIVER_TEAM_MEMBERS)
                     && studentsEmailInTeam.contains(response.getRecipient())) {
                 isVisibleResponse = true;
-                flag[5]=true;
+                flag[5]=true; //we now enter that branch
             }
                 else {
                     flag[6]=true;
