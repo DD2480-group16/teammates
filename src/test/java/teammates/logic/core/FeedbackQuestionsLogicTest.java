@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -43,6 +44,20 @@ public class FeedbackQuestionsLogicTest extends BaseLogicTest {
     @Override
     protected void prepareTestData() {
         // see beforeMethod()
+    }
+
+    @AfterClass
+    public void printBranchCoverage() {
+        System.out.print("Function getRecipientsForQuestion\n");
+        int missed = 0;
+        for (int i = 0; i < 28; i++) {
+            int branch = i + 1;
+            System.out.print(branch + ": " + fqLogic.getBranchCoverage()[i] + "\n");
+            if (fqLogic.getBranchCoverage()[i] < 1) {
+                missed = missed + 1;
+            }
+        }
+        System.out.println(missed + " branches missed of a total of 27 branches.\n");
     }
 
     @BeforeMethod
