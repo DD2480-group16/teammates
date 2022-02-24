@@ -90,6 +90,23 @@ public class FeedbackQuestionsLogicTest extends BaseLogicTest {
         assertEquals(recipients.get(email), null);
     }
 
+    //Added Test 2 - Malin
+    @Test
+    public void testGetRecipientsForQuestionOwnTeamAsTeam() throws Exception {
+        FeedbackQuestionAttributes question;
+        String email;
+        Map<String, String> recipients;
+
+        ______TS("own team, the recipient is the team");
+        question = getQuestionFromDatabase("qn2InRANKSession"); // Added data to typicalDataBundle
+        email = dataBundle.students.get("student1InCourse1").getEmail();
+        String teamName = dataBundle.students.get("student1InCourse1").getTeam();
+        recipients = fqLogic.getRecipientsForQuestion(question, email);
+        assertEquals(recipients.size(), 1);
+        assertTrue(recipients.containsKey(teamName));
+        assertEquals(recipients.get(teamName), teamName);
+    }
+
     @Test
     public void allTests() throws Exception {
         testGetRecipientsForQuestion();
