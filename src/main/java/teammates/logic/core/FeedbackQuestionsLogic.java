@@ -41,6 +41,8 @@ public final class FeedbackQuestionsLogic {
 
     private static final FeedbackQuestionsLogic instance = new FeedbackQuestionsLogic();
 
+    private static int[] branchCoverage = new int[30]; //maybe move to other place
+
     private final FeedbackQuestionsDb fqDb = FeedbackQuestionsDb.inst();
 
     private CoursesLogic coursesLogic;
@@ -63,6 +65,10 @@ public final class FeedbackQuestionsLogic {
         fsLogic = FeedbackSessionsLogic.inst();
         instructorsLogic = InstructorsLogic.inst();
         studentsLogic = StudentsLogic.inst();
+    }
+
+    public int[] getBranchCoverage() {
+        return branchCoverage;
     }
 
     /**
@@ -236,102 +242,133 @@ public final class FeedbackQuestionsLogic {
     /**
      * Gets the email-name mapping of recipients for the given question for the given giver.
      */
-    Map<String, String> getRecipientsForQuestion(FeedbackQuestionAttributes question, String giver)
-            throws EntityDoesNotExistException {
+    Map<String, String> getRecipientsForQuestion(FeedbackQuestionAttributes question, String giver) {
+        //throws EntityDoesNotExistException {
+        try {
+            branchCoverage[0] = branchCoverage[0] + 1; // branch 1
+            InstructorAttributes instructorGiver = instructorsLogic.getInstructorForEmail(question.getCourseId(), giver);
+            StudentAttributes studentGiver = studentsLogic.getStudentForEmail(question.getCourseId(), giver);
 
-        InstructorAttributes instructorGiver = instructorsLogic.getInstructorForEmail(question.getCourseId(), giver);
-        StudentAttributes studentGiver = studentsLogic.getStudentForEmail(question.getCourseId(), giver);
+            Map<String, String> recipients = new HashMap<>();
 
-        Map<String, String> recipients = new HashMap<>();
+            FeedbackParticipantType recipientType = question.getRecipientType();
 
-        FeedbackParticipantType recipientType = question.getRecipientType();
+            String giverTeam = getGiverTeam(giver, instructorGiver, studentGiver);
 
-        String giverTeam = getGiverTeam(giver, instructorGiver, studentGiver);
+            String giverSection = getGiverSection(giver, instructorGiver, studentGiver);
 
-        String giverSection = getGiverSection(giver, instructorGiver, studentGiver);
-
-        switch (recipientType) {
-        case SELF:
-            if (question.getGiverType() == FeedbackParticipantType.TEAMS) {
-                recipients.put(studentGiver.getTeam(), studentGiver.getTeam());
-            } else {
-                recipients.put(giver, USER_NAME_FOR_SELF);
-            }
-            break;
-        case STUDENTS:
-            List<StudentAttributes> studentsInCourse = studentsLogic.getStudentsForCourse(question.getCourseId());
-            for (StudentAttributes student : studentsInCourse) {
-                // Ensure student does not evaluate himself
-                if (!giver.equals(student.getEmail())) {
+            switch (recipientType) {
+            case SELF:
+                branchCoverage[1] = branchCoverage[1] + 1; // branch 2
+                if (question.getGiverType() == FeedbackParticipantType.TEAMS) {
+                    branchCoverage[2] = branchCoverage[2] + 1; // branch 3
+                    recipients.put(studentGiver.getTeam(), studentGiver.getTeam());
+                } else {
+                    branchCoverage[3] = branchCoverage[3] + 1; // branch 4
+                    recipients.put(giver, USER_NAME_FOR_SELF);
+                }
+                break;
+            case STUDENTS:
+                branchCoverage[4] = branchCoverage[4] + 1; // branch 5
+                List<StudentAttributes> studentsInCourse = studentsLogic.getStudentsForCourse(question.getCourseId());
+                for (StudentAttributes student : studentsInCourse) {
+                    branchCoverage[5] = branchCoverage[5] + 1; // branch 6
+                    // Ensure student does not evaluate himself
+                    if (!giver.equals(student.getEmail())) {
+                        branchCoverage[6] = branchCoverage[6] + 1; // branch 7
+                        recipients.put(student.getEmail(), student.getName());
+                    }
+                }
+                break;
+            case STUDENTS_IN_SAME_SECTION:
+                branchCoverage[7] = branchCoverage[7] + 1; // branch 8
+                List<StudentAttributes> studentsInSection =
+                        studentsLogic.getStudentsForSection(giverSection, question.getCourseId());
+                for (StudentAttributes student : studentsInSection) {
+                    branchCoverage[8] = branchCoverage[8] + 1; // branch 9
+                    // Ensure student does not evaluate himself
+                    if (!giver.equals(student.getEmail())) {
+                        branchCoverage[9] = branchCoverage[9] + 1; // branch 10
+                        recipients.put(student.getEmail(), student.getName());
+                    }
+                }
+                break;
+            case INSTRUCTORS:
+                branchCoverage[10] = branchCoverage[10] + 1; // branch 11
+                List<InstructorAttributes> instructorsInCourse =
+                        instructorsLogic.getInstructorsForCourse(question.getCourseId());
+                for (InstructorAttributes instr : instructorsInCourse) {
+                    branchCoverage[11] = branchCoverage[11] + 1; // branch 12
+                    // Ensure instructor does not evaluate himself
+                    if (!giver.equals(instr.getEmail())) {
+                        branchCoverage[12] = branchCoverage[12] + 1; // branch 13
+                        recipients.put(instr.getEmail(), instr.getName());
+                    }
+                }
+                break;
+            case TEAMS:
+                branchCoverage[13] = branchCoverage[13] + 1; // branch 14
+                List<String> teams = coursesLogic.getTeamsForCourse(question.getCourseId());
+                for (String team : teams) {
+                    branchCoverage[14] = branchCoverage[14] + 1; // branch 15
+                    // Ensure student('s team) does not evaluate own team.
+                    if (!giverTeam.equals(team)) {
+                        branchCoverage[15] = branchCoverage[15] + 1; // branch 16
+                        // recipientEmail doubles as team name in this case.
+                        recipients.put(team, team);
+                    }
+                }
+                break;
+            case TEAMS_IN_SAME_SECTION:
+                branchCoverage[16] = branchCoverage[16] + 1; // branch 17
+                List<String> teamsInSection = coursesLogic.getTeamsForSection(giverSection, question.getCourseId());
+                for (String team : teamsInSection) {
+                    branchCoverage[17] = branchCoverage[17] + 1; // branch 18
+                    // Ensure student('s team) does not evaluate own team.
+                    if (!giverTeam.equals(team)) {
+                        branchCoverage[18] = branchCoverage[18] + 1; // branch 19
+                        // recipientEmail doubles as team name in this case.
+                        recipients.put(team, team);
+                    }
+                }
+                break;
+            case OWN_TEAM:
+                branchCoverage[19] = branchCoverage[19] + 1; // branch 20
+                recipients.put(giverTeam, giverTeam);
+                break;
+            case OWN_TEAM_MEMBERS:
+                branchCoverage[20] = branchCoverage[20] + 1; // branch 21
+                List<StudentAttributes> students = studentsLogic.getStudentsForTeam(giverTeam, question.getCourseId());
+                for (StudentAttributes student : students) {
+                    branchCoverage[21] = branchCoverage[21] + 1; // branch 22
+                    if (!student.getEmail().equals(giver)) {
+                        branchCoverage[22] = branchCoverage[22] + 1; // branch 23
+                        recipients.put(student.getEmail(), student.getName());
+                    }
+                }
+                break;
+            case OWN_TEAM_MEMBERS_INCLUDING_SELF:
+                branchCoverage[23] = branchCoverage[23] + 1; // branch 24
+                List<StudentAttributes> teamMembers = studentsLogic.getStudentsForTeam(giverTeam, question.getCourseId());
+                for (StudentAttributes student : teamMembers) {
+                    branchCoverage[24] = branchCoverage[24] + 1; // branch 25
+                    // accepts self feedback too
                     recipients.put(student.getEmail(), student.getName());
                 }
+                break;
+            case NONE:
+                branchCoverage[25] = branchCoverage[25] + 1; // branch 26
+                recipients.put(Const.GENERAL_QUESTION, Const.GENERAL_QUESTION);
+                break;
+            default:
+                branchCoverage[26] = branchCoverage[26] + 1; // branch 27
+                break;
             }
-            break;
-        case STUDENTS_IN_SAME_SECTION:
-            List<StudentAttributes> studentsInSection =
-                    studentsLogic.getStudentsForSection(giverSection, question.getCourseId());
-            for (StudentAttributes student : studentsInSection) {
-                // Ensure student does not evaluate himself
-                if (!giver.equals(student.getEmail())) {
-                    recipients.put(student.getEmail(), student.getName());
-                }
-            }
-            break;
-        case INSTRUCTORS:
-            List<InstructorAttributes> instructorsInCourse =
-                    instructorsLogic.getInstructorsForCourse(question.getCourseId());
-            for (InstructorAttributes instr : instructorsInCourse) {
-                // Ensure instructor does not evaluate himself
-                if (!giver.equals(instr.getEmail())) {
-                    recipients.put(instr.getEmail(), instr.getName());
-                }
-            }
-            break;
-        case TEAMS:
-            List<String> teams = coursesLogic.getTeamsForCourse(question.getCourseId());
-            for (String team : teams) {
-                // Ensure student('s team) does not evaluate own team.
-                if (!giverTeam.equals(team)) {
-                    // recipientEmail doubles as team name in this case.
-                    recipients.put(team, team);
-                }
-            }
-            break;
-        case TEAMS_IN_SAME_SECTION:
-            List<String> teamsInSection = coursesLogic.getTeamsForSection(giverSection, question.getCourseId());
-            for (String team : teamsInSection) {
-                // Ensure student('s team) does not evaluate own team.
-                if (!giverTeam.equals(team)) {
-                    // recipientEmail doubles as team name in this case.
-                    recipients.put(team, team);
-                }
-            }
-            break;
-        case OWN_TEAM:
-            recipients.put(giverTeam, giverTeam);
-            break;
-        case OWN_TEAM_MEMBERS:
-            List<StudentAttributes> students = studentsLogic.getStudentsForTeam(giverTeam, question.getCourseId());
-            for (StudentAttributes student : students) {
-                if (!student.getEmail().equals(giver)) {
-                    recipients.put(student.getEmail(), student.getName());
-                }
-            }
-            break;
-        case OWN_TEAM_MEMBERS_INCLUDING_SELF:
-            List<StudentAttributes> teamMembers = studentsLogic.getStudentsForTeam(giverTeam, question.getCourseId());
-            for (StudentAttributes student : teamMembers) {
-                // accepts self feedback too
-                recipients.put(student.getEmail(), student.getName());
-            }
-            break;
-        case NONE:
-            recipients.put(Const.GENERAL_QUESTION, Const.GENERAL_QUESTION);
-            break;
-        default:
-            break;
+            return recipients;
+        } catch (EntityDoesNotExistException e) {
+            branchCoverage[27] = branchCoverage[27] + 1; // branch 28
         }
-        return recipients;
+        return new HashMap<>();
     }
 
     /**
