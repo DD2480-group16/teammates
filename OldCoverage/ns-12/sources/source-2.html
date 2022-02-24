@@ -1,0 +1,417 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Action</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.ui.webapi</a>
+</div>
+
+<h1>Coverage Summary for Class: Action (teammates.ui.webapi)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Action</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (22/22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84.1%
+  </span>
+  <span class="absValue">
+    (90/107)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.ui.webapi;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.lang.reflect.Type;
+<i class="no-highlight">4</i>&nbsp;import java.util.Optional;
+<i class="no-highlight">5</i>&nbsp;
+<i class="no-highlight">6</i>&nbsp;import javax.servlet.http.HttpServletRequest;
+<i class="no-highlight">7</i>&nbsp;
+<i class="no-highlight">8</i>&nbsp;import teammates.common.datatransfer.InstructorPermissionSet;
+<i class="no-highlight">9</i>&nbsp;import teammates.common.datatransfer.UserInfo;
+<i class="no-highlight">10</i>&nbsp;import teammates.common.datatransfer.UserInfoCookie;
+<i class="no-highlight">11</i>&nbsp;import teammates.common.datatransfer.attributes.FeedbackSessionAttributes;
+<i class="no-highlight">12</i>&nbsp;import teammates.common.datatransfer.attributes.InstructorAttributes;
+<i class="no-highlight">13</i>&nbsp;import teammates.common.datatransfer.attributes.StudentAttributes;
+<i class="no-highlight">14</i>&nbsp;import teammates.common.datatransfer.logs.RequestLogUser;
+<i class="no-highlight">15</i>&nbsp;import teammates.common.util.Config;
+<i class="no-highlight">16</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">17</i>&nbsp;import teammates.common.util.HttpRequestHelper;
+<i class="no-highlight">18</i>&nbsp;import teammates.common.util.JsonUtils;
+<i class="no-highlight">19</i>&nbsp;import teammates.common.util.StringHelper;
+<i class="no-highlight">20</i>&nbsp;import teammates.logic.api.EmailGenerator;
+<i class="no-highlight">21</i>&nbsp;import teammates.logic.api.EmailSender;
+<i class="no-highlight">22</i>&nbsp;import teammates.logic.api.FileStorage;
+<i class="no-highlight">23</i>&nbsp;import teammates.logic.api.Logic;
+<i class="no-highlight">24</i>&nbsp;import teammates.logic.api.LogsProcessor;
+<i class="no-highlight">25</i>&nbsp;import teammates.logic.api.RecaptchaVerifier;
+<i class="no-highlight">26</i>&nbsp;import teammates.logic.api.TaskQueuer;
+<i class="no-highlight">27</i>&nbsp;import teammates.logic.api.UserProvision;
+<i class="no-highlight">28</i>&nbsp;import teammates.ui.request.BasicRequest;
+<i class="no-highlight">29</i>&nbsp;import teammates.ui.request.InvalidHttpRequestBodyException;
+<i class="no-highlight">30</i>&nbsp;
+<i class="no-highlight">31</i>&nbsp;/**
+<i class="no-highlight">32</i>&nbsp; * An &quot;action&quot; to be performed by the system.
+<i class="no-highlight">33</i>&nbsp; * If the requesting user is allowed to perform the requested action,
+<i class="no-highlight">34</i>&nbsp; * this object can talk to the back end to perform that action.
+<i class="no-highlight">35</i>&nbsp; */
+<b class="fc"><i class="no-highlight">36</i>&nbsp;public abstract class Action {</b>
+<i class="no-highlight">37</i>&nbsp;
+<b class="fc"><i class="no-highlight">38</i>&nbsp;    Logic logic = Logic.inst();</b>
+<b class="fc"><i class="no-highlight">39</i>&nbsp;    UserProvision userProvision = UserProvision.inst();</b>
+<b class="fc"><i class="no-highlight">40</i>&nbsp;    GateKeeper gateKeeper = GateKeeper.inst();</b>
+<b class="fc"><i class="no-highlight">41</i>&nbsp;    EmailGenerator emailGenerator = EmailGenerator.inst();</b>
+<b class="fc"><i class="no-highlight">42</i>&nbsp;    TaskQueuer taskQueuer = TaskQueuer.inst();</b>
+<b class="fc"><i class="no-highlight">43</i>&nbsp;    EmailSender emailSender = EmailSender.inst();</b>
+<b class="fc"><i class="no-highlight">44</i>&nbsp;    FileStorage fileStorage = FileStorage.inst();</b>
+<b class="fc"><i class="no-highlight">45</i>&nbsp;    RecaptchaVerifier recaptchaVerifier = RecaptchaVerifier.inst();</b>
+<b class="fc"><i class="no-highlight">46</i>&nbsp;    LogsProcessor logsProcessor = LogsProcessor.inst();</b>
+<i class="no-highlight">47</i>&nbsp;
+<i class="no-highlight">48</i>&nbsp;    HttpServletRequest req;
+<i class="no-highlight">49</i>&nbsp;    UserInfo userInfo;
+<i class="no-highlight">50</i>&nbsp;    AuthType authType;
+<i class="no-highlight">51</i>&nbsp;    private StudentAttributes unregisteredStudent;
+<i class="no-highlight">52</i>&nbsp;    private InstructorAttributes unregisteredInstructor;
+<i class="no-highlight">53</i>&nbsp;
+<i class="no-highlight">54</i>&nbsp;    // buffer to store the request body
+<i class="no-highlight">55</i>&nbsp;    private String requestBody;
+<i class="no-highlight">56</i>&nbsp;
+<i class="no-highlight">57</i>&nbsp;    /**
+<i class="no-highlight">58</i>&nbsp;     * Initializes the action object based on the HTTP request.
+<i class="no-highlight">59</i>&nbsp;     */
+<i class="no-highlight">60</i>&nbsp;    public void init(HttpServletRequest req) {
+<b class="fc"><i class="no-highlight">61</i>&nbsp;        this.req = req;</b>
+<b class="fc"><i class="no-highlight">62</i>&nbsp;        initAuthInfo();</b>
+<i class="no-highlight">63</i>&nbsp;    }
+<i class="no-highlight">64</i>&nbsp;
+<i class="no-highlight">65</i>&nbsp;    public void setUserProvision(UserProvision userProvision) {
+<b class="fc"><i class="no-highlight">66</i>&nbsp;        this.userProvision = userProvision;</b>
+<i class="no-highlight">67</i>&nbsp;    }
+<i class="no-highlight">68</i>&nbsp;
+<i class="no-highlight">69</i>&nbsp;    public void setTaskQueuer(TaskQueuer taskQueuer) {
+<b class="fc"><i class="no-highlight">70</i>&nbsp;        this.taskQueuer = taskQueuer;</b>
+<i class="no-highlight">71</i>&nbsp;    }
+<i class="no-highlight">72</i>&nbsp;
+<i class="no-highlight">73</i>&nbsp;    public void setEmailSender(EmailSender emailSender) {
+<b class="fc"><i class="no-highlight">74</i>&nbsp;        this.emailSender = emailSender;</b>
+<i class="no-highlight">75</i>&nbsp;    }
+<i class="no-highlight">76</i>&nbsp;
+<i class="no-highlight">77</i>&nbsp;    public void setFileStorage(FileStorage fileStorage) {
+<b class="fc"><i class="no-highlight">78</i>&nbsp;        this.fileStorage = fileStorage;</b>
+<i class="no-highlight">79</i>&nbsp;    }
+<i class="no-highlight">80</i>&nbsp;
+<i class="no-highlight">81</i>&nbsp;    public void setRecaptchaVerifier(RecaptchaVerifier recaptchaVerifier) {
+<b class="fc"><i class="no-highlight">82</i>&nbsp;        this.recaptchaVerifier = recaptchaVerifier;</b>
+<i class="no-highlight">83</i>&nbsp;    }
+<i class="no-highlight">84</i>&nbsp;
+<i class="no-highlight">85</i>&nbsp;    public void setLogsProcessor(LogsProcessor logsProcessor) {
+<b class="fc"><i class="no-highlight">86</i>&nbsp;        this.logsProcessor = logsProcessor;</b>
+<i class="no-highlight">87</i>&nbsp;    }
+<i class="no-highlight">88</i>&nbsp;
+<i class="no-highlight">89</i>&nbsp;    /**
+<i class="no-highlight">90</i>&nbsp;     * Checks if the requesting user has sufficient authority to access the resource.
+<i class="no-highlight">91</i>&nbsp;     */
+<i class="no-highlight">92</i>&nbsp;    public void checkAccessControl() throws UnauthorizedAccessException {
+<b class="fc"><i class="no-highlight">93</i>&nbsp;        String userParam = getRequestParamValue(Const.ParamsNames.USER_ID);</b>
+<b class="fc"><i class="no-highlight">94</i>&nbsp;        if (userInfo != null &amp;&amp; userParam != null &amp;&amp; !userInfo.isAdmin &amp;&amp; !userInfo.id.equals(userParam)) {</b>
+<b class="fc"><i class="no-highlight">95</i>&nbsp;            throw new UnauthorizedAccessException(&quot;User &quot; + userInfo.id</b>
+<i class="no-highlight">96</i>&nbsp;                    + &quot; is trying to masquerade as &quot; + userParam + &quot; without admin permission.&quot;);
+<i class="no-highlight">97</i>&nbsp;        }
+<i class="no-highlight">98</i>&nbsp;
+<b class="fc"><i class="no-highlight">99</i>&nbsp;        if (authType.getLevel() &lt; getMinAuthLevel().getLevel()) {</b>
+<i class="no-highlight">100</i>&nbsp;            // Access control level lower than required
+<b class="fc"><i class="no-highlight">101</i>&nbsp;            throw new UnauthorizedAccessException(&quot;Not authorized to access this resource.&quot;);</b>
+<i class="no-highlight">102</i>&nbsp;        }
+<i class="no-highlight">103</i>&nbsp;
+<b class="fc"><i class="no-highlight">104</i>&nbsp;        if (authType == AuthType.ALL_ACCESS) {</b>
+<i class="no-highlight">105</i>&nbsp;            // All-access pass granted
+<i class="no-highlight">106</i>&nbsp;            return;
+<i class="no-highlight">107</i>&nbsp;        }
+<i class="no-highlight">108</i>&nbsp;
+<i class="no-highlight">109</i>&nbsp;        // All other cases: to be dealt in case-by-case basis
+<b class="fc"><i class="no-highlight">110</i>&nbsp;        checkSpecificAccessControl();</b>
+<i class="no-highlight">111</i>&nbsp;    }
+<i class="no-highlight">112</i>&nbsp;
+<i class="no-highlight">113</i>&nbsp;    /**
+<i class="no-highlight">114</i>&nbsp;     * Gets the user information of the current user.
+<i class="no-highlight">115</i>&nbsp;     */
+<i class="no-highlight">116</i>&nbsp;    public RequestLogUser getUserInfoForLogging() {
+<b class="fc"><i class="no-highlight">117</i>&nbsp;        RequestLogUser user = new RequestLogUser();</b>
+<i class="no-highlight">118</i>&nbsp;
+<b class="fc"><i class="no-highlight">119</i>&nbsp;        String googleId = userInfo == null ? null : userInfo.getId();</b>
+<i class="no-highlight">120</i>&nbsp;
+<b class="fc"><i class="no-highlight">121</i>&nbsp;        user.setGoogleId(googleId);</b>
+<b class="fc"><i class="no-highlight">122</i>&nbsp;        if (unregisteredStudent == null &amp;&amp; unregisteredInstructor == null) {</b>
+<b class="fc"><i class="no-highlight">123</i>&nbsp;            user.setRegkey(getRequestParamValue(Const.ParamsNames.REGKEY));</b>
+<b class="nc"><i class="no-highlight">124</i>&nbsp;        } else if (unregisteredStudent != null) {</b>
+<b class="nc"><i class="no-highlight">125</i>&nbsp;            user.setRegkey(unregisteredStudent.getKey());</b>
+<b class="nc"><i class="no-highlight">126</i>&nbsp;            user.setEmail(unregisteredStudent.getEmail());</b>
+<i class="no-highlight">127</i>&nbsp;        } else {
+<b class="nc"><i class="no-highlight">128</i>&nbsp;            user.setRegkey(unregisteredInstructor.getKey());</b>
+<b class="nc"><i class="no-highlight">129</i>&nbsp;            user.setEmail(unregisteredInstructor.getEmail());</b>
+<i class="no-highlight">130</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">131</i>&nbsp;        return user;</b>
+<i class="no-highlight">132</i>&nbsp;    }
+<i class="no-highlight">133</i>&nbsp;
+<i class="no-highlight">134</i>&nbsp;    private void initAuthInfo() {
+<b class="fc"><i class="no-highlight">135</i>&nbsp;        if (Config.BACKDOOR_KEY.equals(req.getHeader(Const.HeaderNames.BACKDOOR_KEY))) {</b>
+<b class="nc"><i class="no-highlight">136</i>&nbsp;            authType = AuthType.ALL_ACCESS;</b>
+<b class="nc"><i class="no-highlight">137</i>&nbsp;            userInfo = userProvision.getAdminOnlyUser(getRequestParamValue(Const.ParamsNames.USER_ID));</b>
+<b class="nc"><i class="no-highlight">138</i>&nbsp;            userInfo.isStudent = true;</b>
+<b class="nc"><i class="no-highlight">139</i>&nbsp;            userInfo.isInstructor = true;</b>
+<i class="no-highlight">140</i>&nbsp;            return;
+<i class="no-highlight">141</i>&nbsp;        }
+<i class="no-highlight">142</i>&nbsp;
+<i class="no-highlight">143</i>&nbsp;        // The header X-AppEngine-QueueName cannot be spoofed as GAE will strip any user-sent X-AppEngine-QueueName headers.
+<i class="no-highlight">144</i>&nbsp;        // Reference: https://cloud.google.com/tasks/docs/creating-appengine-handlers#reading_app_engine_task_request_headers
+<b class="fc"><i class="no-highlight">145</i>&nbsp;        String queueNameHeader = req.getHeader(&quot;X-AppEngine-QueueName&quot;);</b>
+<b class="fc"><i class="no-highlight">146</i>&nbsp;        boolean isRequestFromAppEngineQueue = queueNameHeader != null;</b>
+<b class="fc"><i class="no-highlight">147</i>&nbsp;        if (isRequestFromAppEngineQueue) {</b>
+<b class="fc"><i class="no-highlight">148</i>&nbsp;            userInfo = userProvision.getAdminOnlyUser(&quot;AppEngine-&quot; + queueNameHeader);</b>
+<i class="no-highlight">149</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">150</i>&nbsp;            String cookie = HttpRequestHelper.getCookieValueFromRequest(req, Const.SecurityConfig.AUTH_COOKIE_NAME);</b>
+<b class="fc"><i class="no-highlight">151</i>&nbsp;            UserInfoCookie uic = UserInfoCookie.fromCookie(cookie);</b>
+<b class="fc"><i class="no-highlight">152</i>&nbsp;            userInfo = userProvision.getCurrentUser(uic);</b>
+<i class="no-highlight">153</i>&nbsp;        }
+<i class="no-highlight">154</i>&nbsp;
+<b class="fc"><i class="no-highlight">155</i>&nbsp;        authType = userInfo == null ? AuthType.PUBLIC : AuthType.LOGGED_IN;</b>
+<i class="no-highlight">156</i>&nbsp;
+<b class="fc"><i class="no-highlight">157</i>&nbsp;        String userParam = getRequestParamValue(Const.ParamsNames.USER_ID);</b>
+<b class="fc"><i class="no-highlight">158</i>&nbsp;        if (userInfo != null &amp;&amp; userParam != null &amp;&amp; userInfo.isAdmin) {</b>
+<b class="fc"><i class="no-highlight">159</i>&nbsp;            userInfo = userProvision.getMasqueradeUser(userParam);</b>
+<b class="fc"><i class="no-highlight">160</i>&nbsp;            authType = AuthType.MASQUERADE;</b>
+<i class="no-highlight">161</i>&nbsp;        }
+<i class="no-highlight">162</i>&nbsp;    }
+<i class="no-highlight">163</i>&nbsp;
+<i class="no-highlight">164</i>&nbsp;    /**
+<i class="no-highlight">165</i>&nbsp;     * Returns the first value for the specified parameter in the HTTP request, or null if such parameter is not found.
+<i class="no-highlight">166</i>&nbsp;     */
+<i class="no-highlight">167</i>&nbsp;    String getRequestParamValue(String paramName) {
+<b class="fc"><i class="no-highlight">168</i>&nbsp;        return req.getParameter(paramName);</b>
+<i class="no-highlight">169</i>&nbsp;    }
+<i class="no-highlight">170</i>&nbsp;
+<i class="no-highlight">171</i>&nbsp;    /**
+<i class="no-highlight">172</i>&nbsp;     * Returns the first value for the specified parameter expected to be present in the HTTP request.
+<i class="no-highlight">173</i>&nbsp;     */
+<i class="no-highlight">174</i>&nbsp;    String getNonNullRequestParamValue(String paramName) {
+<b class="fc"><i class="no-highlight">175</i>&nbsp;        String value = req.getParameter(paramName);</b>
+<b class="fc"><i class="no-highlight">176</i>&nbsp;        if (value == null) {</b>
+<b class="fc"><i class="no-highlight">177</i>&nbsp;            throw new InvalidHttpParameterException(String.format(&quot;The [%s] HTTP parameter is null.&quot;, paramName));</b>
+<i class="no-highlight">178</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">179</i>&nbsp;        return value;</b>
+<i class="no-highlight">180</i>&nbsp;    }
+<i class="no-highlight">181</i>&nbsp;
+<i class="no-highlight">182</i>&nbsp;    /**
+<i class="no-highlight">183</i>&nbsp;     * Returns the first value for the specified parameter expected to be present in the HTTP request as boolean.
+<i class="no-highlight">184</i>&nbsp;     */
+<i class="no-highlight">185</i>&nbsp;    boolean getBooleanRequestParamValue(String paramName) {
+<b class="fc"><i class="no-highlight">186</i>&nbsp;        String value = getNonNullRequestParamValue(paramName);</b>
+<i class="no-highlight">187</i>&nbsp;        try {
+<b class="fc"><i class="no-highlight">188</i>&nbsp;            return Boolean.parseBoolean(value);</b>
+<b class="nc"><i class="no-highlight">189</i>&nbsp;        } catch (IllegalArgumentException e) {</b>
+<b class="nc"><i class="no-highlight">190</i>&nbsp;            throw new InvalidHttpParameterException(</b>
+<i class="no-highlight">191</i>&nbsp;                    &quot;Expected boolean value for &quot; + paramName + &quot; parameter, but found: [&quot; + value + &quot;]&quot;, e);
+<i class="no-highlight">192</i>&nbsp;        }
+<i class="no-highlight">193</i>&nbsp;    }
+<i class="no-highlight">194</i>&nbsp;
+<i class="no-highlight">195</i>&nbsp;    /**
+<i class="no-highlight">196</i>&nbsp;     * Returns the first value for the specified parameter expected to be present in the HTTP request as long.
+<i class="no-highlight">197</i>&nbsp;     */
+<i class="no-highlight">198</i>&nbsp;    long getLongRequestParamValue(String paramName) {
+<b class="fc"><i class="no-highlight">199</i>&nbsp;        String value = getNonNullRequestParamValue(paramName);</b>
+<i class="no-highlight">200</i>&nbsp;        try {
+<b class="fc"><i class="no-highlight">201</i>&nbsp;            return Long.parseLong(value);</b>
+<b class="nc"><i class="no-highlight">202</i>&nbsp;        } catch (IllegalArgumentException e) {</b>
+<b class="nc"><i class="no-highlight">203</i>&nbsp;            throw new InvalidHttpParameterException(</b>
+<i class="no-highlight">204</i>&nbsp;                    &quot;Expected long value for &quot; + paramName + &quot; parameter, but found: [&quot; + value + &quot;]&quot;, e);
+<i class="no-highlight">205</i>&nbsp;        }
+<i class="no-highlight">206</i>&nbsp;    }
+<i class="no-highlight">207</i>&nbsp;
+<i class="no-highlight">208</i>&nbsp;    /**
+<i class="no-highlight">209</i>&nbsp;     * Returns the request body payload.
+<i class="no-highlight">210</i>&nbsp;     */
+<i class="no-highlight">211</i>&nbsp;    public String getRequestBody() {
+<b class="fc"><i class="no-highlight">212</i>&nbsp;        if (!hasDefinedRequestBody()) {</b>
+<b class="fc"><i class="no-highlight">213</i>&nbsp;            requestBody = HttpRequestHelper.getRequestBody(req);</b>
+<i class="no-highlight">214</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">215</i>&nbsp;        return requestBody;</b>
+<i class="no-highlight">216</i>&nbsp;    }
+<i class="no-highlight">217</i>&nbsp;
+<i class="no-highlight">218</i>&nbsp;    /**
+<i class="no-highlight">219</i>&nbsp;     * Returns true if the action has a request body already defined in it.
+<i class="no-highlight">220</i>&nbsp;     */
+<i class="no-highlight">221</i>&nbsp;    public boolean hasDefinedRequestBody() {
+<b class="fc"><i class="no-highlight">222</i>&nbsp;        return requestBody != null;</b>
+<i class="no-highlight">223</i>&nbsp;    }
+<i class="no-highlight">224</i>&nbsp;
+<i class="no-highlight">225</i>&nbsp;    FeedbackSessionAttributes getNonNullFeedbackSession(String feedbackSessionName, String courseId) {
+<b class="fc"><i class="no-highlight">226</i>&nbsp;        FeedbackSessionAttributes feedbackSession = logic.getFeedbackSession(feedbackSessionName, courseId);</b>
+<b class="fc"><i class="no-highlight">227</i>&nbsp;        if (feedbackSession == null) {</b>
+<b class="fc"><i class="no-highlight">228</i>&nbsp;            throw new EntityNotFoundException(&quot;Feedback session not found&quot;);</b>
+<i class="no-highlight">229</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">230</i>&nbsp;        return feedbackSession;</b>
+<i class="no-highlight">231</i>&nbsp;    }
+<i class="no-highlight">232</i>&nbsp;
+<i class="no-highlight">233</i>&nbsp;    /**
+<i class="no-highlight">234</i>&nbsp;     * Deserializes and validates the request body payload.
+<i class="no-highlight">235</i>&nbsp;     */
+<i class="no-highlight">236</i>&nbsp;    &lt;T extends BasicRequest&gt; T getAndValidateRequestBody(Type typeOfBody) throws InvalidHttpRequestBodyException {
+<b class="fc"><i class="no-highlight">237</i>&nbsp;        T requestBody = JsonUtils.fromJson(getRequestBody(), typeOfBody);</b>
+<b class="fc"><i class="no-highlight">238</i>&nbsp;        if (requestBody == null) {</b>
+<b class="fc"><i class="no-highlight">239</i>&nbsp;            throw new InvalidHttpRequestBodyException(&quot;The request body is null&quot;);</b>
+<i class="no-highlight">240</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">241</i>&nbsp;        requestBody.validate();</b>
+<b class="fc"><i class="no-highlight">242</i>&nbsp;        return requestBody;</b>
+<i class="no-highlight">243</i>&nbsp;    }
+<i class="no-highlight">244</i>&nbsp;
+<i class="no-highlight">245</i>&nbsp;    /**
+<i class="no-highlight">246</i>&nbsp;     * Gets the unregistered student by the HTTP param.
+<i class="no-highlight">247</i>&nbsp;     */
+<i class="no-highlight">248</i>&nbsp;    Optional&lt;StudentAttributes&gt; getUnregisteredStudent() {
+<b class="fc"><i class="no-highlight">249</i>&nbsp;        String key = getRequestParamValue(Const.ParamsNames.REGKEY);</b>
+<b class="fc"><i class="no-highlight">250</i>&nbsp;        if (!StringHelper.isEmpty(key)) {</b>
+<b class="fc"><i class="no-highlight">251</i>&nbsp;            StudentAttributes studentAttributes = logic.getStudentForRegistrationKey(key);</b>
+<b class="fc"><i class="no-highlight">252</i>&nbsp;            if (studentAttributes == null) {</b>
+<b class="fc"><i class="no-highlight">253</i>&nbsp;                return Optional.empty();</b>
+<i class="no-highlight">254</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">255</i>&nbsp;            unregisteredStudent = studentAttributes;</b>
+<b class="fc"><i class="no-highlight">256</i>&nbsp;            return Optional.of(studentAttributes);</b>
+<i class="no-highlight">257</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">258</i>&nbsp;        return Optional.empty();</b>
+<i class="no-highlight">259</i>&nbsp;    }
+<i class="no-highlight">260</i>&nbsp;
+<i class="no-highlight">261</i>&nbsp;    /**
+<i class="no-highlight">262</i>&nbsp;     * Gets the unregistered instructor by the HTTP param.
+<i class="no-highlight">263</i>&nbsp;     */
+<i class="no-highlight">264</i>&nbsp;    Optional&lt;InstructorAttributes&gt; getUnregisteredInstructor() {
+<b class="fc"><i class="no-highlight">265</i>&nbsp;        String key = getRequestParamValue(Const.ParamsNames.REGKEY);</b>
+<b class="fc"><i class="no-highlight">266</i>&nbsp;        if (!StringHelper.isEmpty(key)) {</b>
+<b class="fc"><i class="no-highlight">267</i>&nbsp;            InstructorAttributes instructorAttributes = logic.getInstructorForRegistrationKey(key);</b>
+<b class="fc"><i class="no-highlight">268</i>&nbsp;            if (instructorAttributes == null) {</b>
+<b class="nc"><i class="no-highlight">269</i>&nbsp;                return Optional.empty();</b>
+<i class="no-highlight">270</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">271</i>&nbsp;            unregisteredInstructor = instructorAttributes;</b>
+<b class="fc"><i class="no-highlight">272</i>&nbsp;            return Optional.of(instructorAttributes);</b>
+<i class="no-highlight">273</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">274</i>&nbsp;        return Optional.empty();</b>
+<i class="no-highlight">275</i>&nbsp;    }
+<i class="no-highlight">276</i>&nbsp;
+<i class="no-highlight">277</i>&nbsp;    InstructorPermissionSet constructInstructorPrivileges(InstructorAttributes instructor, String feedbackSessionName) {
+<b class="fc"><i class="no-highlight">278</i>&nbsp;        InstructorPermissionSet privilege = instructor.getPrivileges().getCourseLevelPrivileges();</b>
+<b class="fc"><i class="no-highlight">279</i>&nbsp;        if (feedbackSessionName != null) {</b>
+<b class="fc"><i class="no-highlight">280</i>&nbsp;            privilege.setCanSubmitSessionInSections(</b>
+<b class="fc"><i class="no-highlight">281</i>&nbsp;                    instructor.isAllowedForPrivilege(Const.InstructorPermissions.CAN_SUBMIT_SESSION_IN_SECTIONS)</b>
+<b class="nc"><i class="no-highlight">282</i>&nbsp;                            || instructor.isAllowedForPrivilegeAnySection(</b>
+<i class="no-highlight">283</i>&nbsp;                            feedbackSessionName, Const.InstructorPermissions.CAN_SUBMIT_SESSION_IN_SECTIONS));
+<b class="fc"><i class="no-highlight">284</i>&nbsp;            privilege.setCanViewSessionInSections(</b>
+<b class="fc"><i class="no-highlight">285</i>&nbsp;                    instructor.isAllowedForPrivilege(Const.InstructorPermissions.CAN_VIEW_SESSION_IN_SECTIONS)</b>
+<b class="nc"><i class="no-highlight">286</i>&nbsp;                            || instructor.isAllowedForPrivilegeAnySection(</b>
+<i class="no-highlight">287</i>&nbsp;                            feedbackSessionName, Const.InstructorPermissions.CAN_VIEW_SESSION_IN_SECTIONS));
+<b class="fc"><i class="no-highlight">288</i>&nbsp;            privilege.setCanModifySessionCommentsInSections(</b>
+<b class="fc"><i class="no-highlight">289</i>&nbsp;                    instructor.isAllowedForPrivilege(</b>
+<i class="no-highlight">290</i>&nbsp;                            Const.InstructorPermissions.CAN_MODIFY_SESSION_COMMENT_IN_SECTIONS)
+<b class="nc"><i class="no-highlight">291</i>&nbsp;                            || instructor.isAllowedForPrivilegeAnySection(feedbackSessionName,</b>
+<i class="no-highlight">292</i>&nbsp;                            Const.InstructorPermissions.CAN_MODIFY_SESSION_COMMENT_IN_SECTIONS));
+<i class="no-highlight">293</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">294</i>&nbsp;        return privilege;</b>
+<i class="no-highlight">295</i>&nbsp;    }
+<i class="no-highlight">296</i>&nbsp;
+<i class="no-highlight">297</i>&nbsp;    /**
+<i class="no-highlight">298</i>&nbsp;     * Gets the minimum access control level required to access the resource.
+<i class="no-highlight">299</i>&nbsp;     */
+<i class="no-highlight">300</i>&nbsp;    abstract AuthType getMinAuthLevel();
+<i class="no-highlight">301</i>&nbsp;
+<i class="no-highlight">302</i>&nbsp;    /**
+<i class="no-highlight">303</i>&nbsp;     * Checks the specific access control needs for the resource.
+<i class="no-highlight">304</i>&nbsp;     */
+<i class="no-highlight">305</i>&nbsp;    abstract void checkSpecificAccessControl() throws UnauthorizedAccessException;
+<i class="no-highlight">306</i>&nbsp;
+<i class="no-highlight">307</i>&nbsp;    /**
+<i class="no-highlight">308</i>&nbsp;     * Executes the action.
+<i class="no-highlight">309</i>&nbsp;     */
+<i class="no-highlight">310</i>&nbsp;    public abstract ActionResult execute() throws InvalidHttpRequestBodyException, InvalidOperationException;
+<i class="no-highlight">311</i>&nbsp;
+<i class="no-highlight">312</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:52</div>
+</div>
+</body>
+</html>

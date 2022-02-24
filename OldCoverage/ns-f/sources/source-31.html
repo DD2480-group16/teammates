@@ -1,0 +1,877 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > SessionResultsData</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.ui.output</a>
+</div>
+
+<h1>Coverage Summary for Class: SessionResultsData (teammates.ui.output)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SessionResultsData</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (13/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.3%
+  </span>
+  <span class="absValue">
+    (178/204)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">SessionResultsData$CommentOutput</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (2/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (2/4)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">SessionResultsData$CommentOutput$Builder</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/11)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">SessionResultsData$QuestionOutput</td>
+<td class="coverageStat">
+  <span class="percent">
+    57.1%
+  </span>
+  <span class="absValue">
+    (4/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    76.9%
+  </span>
+  <span class="absValue">
+    (10/13)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">SessionResultsData$ResponseOutput</td>
+<td class="coverageStat">
+  <span class="percent">
+    56.2%
+  </span>
+  <span class="absValue">
+    (9/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    56.2%
+  </span>
+  <span class="absValue">
+    (9/16)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">SessionResultsData$ResponseOutput$Builder</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (16/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (31/31)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    80.6%
+  </span>
+  <span class="absValue">
+    (50/62)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    86.4%
+  </span>
+  <span class="absValue">
+    (241/279)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.ui.output;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.util.ArrayList;
+<i class="no-highlight">4</i>&nbsp;import java.util.Collections;
+<i class="no-highlight">5</i>&nbsp;import java.util.HashMap;
+<i class="no-highlight">6</i>&nbsp;import java.util.LinkedList;
+<i class="no-highlight">7</i>&nbsp;import java.util.List;
+<i class="no-highlight">8</i>&nbsp;import java.util.Map;
+<i class="no-highlight">9</i>&nbsp;import java.util.Queue;
+<i class="no-highlight">10</i>&nbsp;
+<i class="no-highlight">11</i>&nbsp;import javax.annotation.Nullable;
+<i class="no-highlight">12</i>&nbsp;
+<i class="no-highlight">13</i>&nbsp;import teammates.common.datatransfer.CourseRoster;
+<i class="no-highlight">14</i>&nbsp;import teammates.common.datatransfer.FeedbackParticipantType;
+<i class="no-highlight">15</i>&nbsp;import teammates.common.datatransfer.SessionResultsBundle;
+<i class="no-highlight">16</i>&nbsp;import teammates.common.datatransfer.attributes.FeedbackQuestionAttributes;
+<i class="no-highlight">17</i>&nbsp;import teammates.common.datatransfer.attributes.FeedbackResponseAttributes;
+<i class="no-highlight">18</i>&nbsp;import teammates.common.datatransfer.attributes.FeedbackResponseCommentAttributes;
+<i class="no-highlight">19</i>&nbsp;import teammates.common.datatransfer.attributes.InstructorAttributes;
+<i class="no-highlight">20</i>&nbsp;import teammates.common.datatransfer.attributes.StudentAttributes;
+<i class="no-highlight">21</i>&nbsp;import teammates.common.datatransfer.questions.FeedbackQuestionDetails;
+<i class="no-highlight">22</i>&nbsp;import teammates.common.datatransfer.questions.FeedbackResponseDetails;
+<i class="no-highlight">23</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">24</i>&nbsp;import teammates.common.util.StringHelper;
+<i class="no-highlight">25</i>&nbsp;
+<i class="no-highlight">26</i>&nbsp;/**
+<i class="no-highlight">27</i>&nbsp; * API output format for session results, including statistics.
+<i class="no-highlight">28</i>&nbsp; */
+<i class="no-highlight">29</i>&nbsp;public class SessionResultsData extends ApiOutput {
+<i class="no-highlight">30</i>&nbsp;
+<i class="no-highlight">31</i>&nbsp;    private static final String REGEX_ANONYMOUS_PARTICIPANT_HASH = &quot;[0-9]{1,10}&quot;;
+<i class="no-highlight">32</i>&nbsp;
+<b class="fc"><i class="no-highlight">33</i>&nbsp;    final List&lt;QuestionOutput&gt; questions = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">34</i>&nbsp;
+<b class="fc"><i class="no-highlight">35</i>&nbsp;    SessionResultsData() {</b>
+<i class="no-highlight">36</i>&nbsp;        // use factory method instead
+<i class="no-highlight">37</i>&nbsp;    }
+<i class="no-highlight">38</i>&nbsp;
+<i class="no-highlight">39</i>&nbsp;    /**
+<i class="no-highlight">40</i>&nbsp;     * Factory method to construct API output for instructor.
+<i class="no-highlight">41</i>&nbsp;     */
+<i class="no-highlight">42</i>&nbsp;    public static SessionResultsData initForInstructor(SessionResultsBundle bundle) {
+<b class="fc"><i class="no-highlight">43</i>&nbsp;        SessionResultsData sessionResultsData = new SessionResultsData();</b>
+<i class="no-highlight">44</i>&nbsp;
+<b class="fc"><i class="no-highlight">45</i>&nbsp;        Map&lt;String, List&lt;FeedbackResponseAttributes&gt;&gt; questionsWithResponses =</b>
+<b class="fc"><i class="no-highlight">46</i>&nbsp;                bundle.getQuestionResponseMap();</b>
+<i class="no-highlight">47</i>&nbsp;
+<b class="fc"><i class="no-highlight">48</i>&nbsp;        questionsWithResponses.forEach((questionId, responses) -&gt; {</b>
+<b class="fc"><i class="no-highlight">49</i>&nbsp;            FeedbackQuestionAttributes question = bundle.getQuestionsMap().get(questionId);</b>
+<b class="fc"><i class="no-highlight">50</i>&nbsp;            FeedbackQuestionDetails questionDetails = question.getQuestionDetailsCopy();</b>
+<b class="fc"><i class="no-highlight">51</i>&nbsp;            QuestionOutput qnOutput = new QuestionOutput(question,</b>
+<b class="fc"><i class="no-highlight">52</i>&nbsp;                    questionDetails.getQuestionResultStatisticsJson(question, null, bundle));</b>
+<i class="no-highlight">53</i>&nbsp;            // put normal responses
+<b class="fc"><i class="no-highlight">54</i>&nbsp;            List&lt;ResponseOutput&gt; allResponses = buildResponsesForInstructor(responses, bundle, false);</b>
+<b class="fc"><i class="no-highlight">55</i>&nbsp;            qnOutput.allResponses.addAll(allResponses);</b>
+<i class="no-highlight">56</i>&nbsp;
+<i class="no-highlight">57</i>&nbsp;            // put missing responses
+<b class="fc"><i class="no-highlight">58</i>&nbsp;            List&lt;FeedbackResponseAttributes&gt; missingResponses = bundle.getQuestionMissingResponseMap().get(questionId);</b>
+<b class="fc"><i class="no-highlight">59</i>&nbsp;            qnOutput.allResponses.addAll(buildResponsesForInstructor(missingResponses, bundle, true));</b>
+<i class="no-highlight">60</i>&nbsp;
+<b class="fc"><i class="no-highlight">61</i>&nbsp;            sessionResultsData.questions.add(qnOutput);</b>
+<i class="no-highlight">62</i>&nbsp;        });
+<i class="no-highlight">63</i>&nbsp;
+<b class="fc"><i class="no-highlight">64</i>&nbsp;        return sessionResultsData;</b>
+<i class="no-highlight">65</i>&nbsp;    }
+<i class="no-highlight">66</i>&nbsp;
+<i class="no-highlight">67</i>&nbsp;    /**
+<i class="no-highlight">68</i>&nbsp;     * Factory method to construct API output for student.
+<i class="no-highlight">69</i>&nbsp;     */
+<i class="no-highlight">70</i>&nbsp;    public static SessionResultsData initForStudent(SessionResultsBundle bundle, StudentAttributes student) {
+<b class="fc"><i class="no-highlight">71</i>&nbsp;        SessionResultsData sessionResultsData = new SessionResultsData();</b>
+<i class="no-highlight">72</i>&nbsp;
+<b class="fc"><i class="no-highlight">73</i>&nbsp;        Map&lt;String, List&lt;FeedbackResponseAttributes&gt;&gt; questionsWithResponses =</b>
+<b class="fc"><i class="no-highlight">74</i>&nbsp;                bundle.getQuestionResponseMap();</b>
+<i class="no-highlight">75</i>&nbsp;
+<b class="fc"><i class="no-highlight">76</i>&nbsp;        questionsWithResponses.forEach((questionId, responses) -&gt; {</b>
+<b class="fc"><i class="no-highlight">77</i>&nbsp;            FeedbackQuestionAttributes question = bundle.getQuestionsMap().get(questionId);</b>
+<b class="fc"><i class="no-highlight">78</i>&nbsp;            FeedbackQuestionDetails questionDetails = question.getQuestionDetailsCopy();</b>
+<b class="fc"><i class="no-highlight">79</i>&nbsp;            QuestionOutput qnOutput = new QuestionOutput(question,</b>
+<b class="fc"><i class="no-highlight">80</i>&nbsp;                    questionDetails.getQuestionResultStatisticsJson(question, student.getEmail(), bundle));</b>
+<b class="fc"><i class="no-highlight">81</i>&nbsp;            Map&lt;String, List&lt;ResponseOutput&gt;&gt; otherResponsesMap = new HashMap&lt;&gt;();</b>
+<i class="no-highlight">82</i>&nbsp;
+<b class="fc"><i class="no-highlight">83</i>&nbsp;            if (questionDetails.isIndividualResponsesShownToStudents()) {</b>
+<b class="fc"><i class="no-highlight">84</i>&nbsp;                for (FeedbackResponseAttributes response : responses) {</b>
+<b class="fc"><i class="no-highlight">85</i>&nbsp;                    boolean isUserInstructor = Const.USER_TEAM_FOR_INSTRUCTOR.equals(student.getTeam());</b>
+<i class="no-highlight">86</i>&nbsp;
+<b class="fc"><i class="no-highlight">87</i>&nbsp;                    boolean isUserGiver = student.getEmail().equals(response.getGiver())</b>
+<b class="nc"><i class="no-highlight">88</i>&nbsp;                            &amp;&amp; (isUserInstructor &amp;&amp; question.getGiverType() == FeedbackParticipantType.INSTRUCTORS</b>
+<b class="fc"><i class="no-highlight">89</i>&nbsp;                            || !isUserInstructor &amp;&amp; question.getGiverType() != FeedbackParticipantType.INSTRUCTORS);</b>
+<b class="fc"><i class="no-highlight">90</i>&nbsp;                    boolean isUserRecipient = student.getEmail().equals(response.getRecipient())</b>
+<b class="nc"><i class="no-highlight">91</i>&nbsp;                            &amp;&amp; (isUserInstructor &amp;&amp; question.getRecipientType() == FeedbackParticipantType.INSTRUCTORS</b>
+<b class="fc"><i class="no-highlight">92</i>&nbsp;                            || !isUserInstructor &amp;&amp; question.getRecipientType() != FeedbackParticipantType.INSTRUCTORS);</b>
+<b class="fc"><i class="no-highlight">93</i>&nbsp;                    ResponseOutput responseOutput = buildSingleResponseForStudent(response, bundle, student);</b>
+<i class="no-highlight">94</i>&nbsp;
+<b class="fc"><i class="no-highlight">95</i>&nbsp;                    if (isUserRecipient) {</b>
+<b class="fc"><i class="no-highlight">96</i>&nbsp;                        qnOutput.responsesToSelf.add(responseOutput);</b>
+<i class="no-highlight">97</i>&nbsp;                    }
+<i class="no-highlight">98</i>&nbsp;
+<b class="fc"><i class="no-highlight">99</i>&nbsp;                    if (isUserGiver) {</b>
+<b class="fc"><i class="no-highlight">100</i>&nbsp;                        qnOutput.responsesFromSelf.add(responseOutput);</b>
+<i class="no-highlight">101</i>&nbsp;                    }
+<i class="no-highlight">102</i>&nbsp;
+<b class="fc"><i class="no-highlight">103</i>&nbsp;                    if (!isUserRecipient &amp;&amp; !isUserGiver) {</b>
+<i class="no-highlight">104</i>&nbsp;                        // we don&#39;t need care about the keys of the map here
+<i class="no-highlight">105</i>&nbsp;                        // as only the values of the map will be used
+<b class="fc"><i class="no-highlight">106</i>&nbsp;                        otherResponsesMap.computeIfAbsent(response.getRecipient(), k -&gt; new ArrayList&lt;&gt;())</b>
+<b class="fc"><i class="no-highlight">107</i>&nbsp;                                .add(responseOutput);</b>
+<i class="no-highlight">108</i>&nbsp;                    }
+<i class="no-highlight">109</i>&nbsp;
+<b class="fc"><i class="no-highlight">110</i>&nbsp;                    qnOutput.allResponses.add(responseOutput);</b>
+<b class="fc"><i class="no-highlight">111</i>&nbsp;                }</b>
+<i class="no-highlight">112</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">113</i>&nbsp;            qnOutput.otherResponses.addAll(otherResponsesMap.values());</b>
+<i class="no-highlight">114</i>&nbsp;
+<b class="fc"><i class="no-highlight">115</i>&nbsp;            sessionResultsData.questions.add(qnOutput);</b>
+<i class="no-highlight">116</i>&nbsp;        });
+<i class="no-highlight">117</i>&nbsp;
+<b class="fc"><i class="no-highlight">118</i>&nbsp;        return sessionResultsData;</b>
+<i class="no-highlight">119</i>&nbsp;    }
+<i class="no-highlight">120</i>&nbsp;
+<i class="no-highlight">121</i>&nbsp;    private static ResponseOutput buildSingleResponseForStudent(
+<i class="no-highlight">122</i>&nbsp;            FeedbackResponseAttributes response, SessionResultsBundle bundle, StudentAttributes student) {
+<b class="fc"><i class="no-highlight">123</i>&nbsp;        FeedbackQuestionAttributes question = bundle.getQuestionsMap().get(response.getFeedbackQuestionId());</b>
+<b class="fc"><i class="no-highlight">124</i>&nbsp;        boolean isUserInstructor = Const.USER_TEAM_FOR_INSTRUCTOR.equals(student.getTeam());</b>
+<i class="no-highlight">125</i>&nbsp;
+<i class="no-highlight">126</i>&nbsp;        // process giver
+<b class="fc"><i class="no-highlight">127</i>&nbsp;        boolean isUserGiver = student.getEmail().equals(response.getGiver())</b>
+<b class="nc"><i class="no-highlight">128</i>&nbsp;                &amp;&amp; (isUserInstructor &amp;&amp; question.getGiverType() == FeedbackParticipantType.INSTRUCTORS</b>
+<b class="fc"><i class="no-highlight">129</i>&nbsp;                || !isUserInstructor &amp;&amp; question.getGiverType() != FeedbackParticipantType.INSTRUCTORS);</b>
+<b class="fc"><i class="no-highlight">130</i>&nbsp;        boolean isUserTeamGiver = question.getGiverType() == FeedbackParticipantType.TEAMS</b>
+<b class="nc"><i class="no-highlight">131</i>&nbsp;                &amp;&amp; student.getTeam().equals(response.getGiver());</b>
+<b class="fc"><i class="no-highlight">132</i>&nbsp;        String giverName = &quot;&quot;;</b>
+<b class="fc"><i class="no-highlight">133</i>&nbsp;        String giverTeam = &quot;&quot;;</b>
+<b class="fc"><i class="no-highlight">134</i>&nbsp;        if (isUserTeamGiver) {</b>
+<b class="nc"><i class="no-highlight">135</i>&nbsp;            giverName = String.format(&quot;Your Team (%s)&quot;, response.getGiver());</b>
+<b class="nc"><i class="no-highlight">136</i>&nbsp;            giverTeam = response.getGiver();</b>
+<b class="fc"><i class="no-highlight">137</i>&nbsp;        } else if (isUserGiver) {</b>
+<b class="fc"><i class="no-highlight">138</i>&nbsp;            giverName = &quot;You&quot;;</b>
+<b class="fc"><i class="no-highlight">139</i>&nbsp;            giverTeam = student.getTeam();</b>
+<i class="no-highlight">140</i>&nbsp;        } else {
+<i class="no-highlight">141</i>&nbsp;            // we don&#39;t want student to figure out who is who by using the hash
+<b class="fc"><i class="no-highlight">142</i>&nbsp;            giverName = removeAnonymousHash(getGiverNameOfResponse(response, bundle));</b>
+<i class="no-highlight">143</i>&nbsp;        }
+<i class="no-highlight">144</i>&nbsp;
+<i class="no-highlight">145</i>&nbsp;        // process recipient
+<b class="fc"><i class="no-highlight">146</i>&nbsp;        boolean isUserRecipient = student.getEmail().equals(response.getRecipient())</b>
+<b class="nc"><i class="no-highlight">147</i>&nbsp;                &amp;&amp; (isUserInstructor &amp;&amp; question.getRecipientType() == FeedbackParticipantType.INSTRUCTORS</b>
+<b class="fc"><i class="no-highlight">148</i>&nbsp;                || !isUserInstructor &amp;&amp; question.getRecipientType() != FeedbackParticipantType.INSTRUCTORS);</b>
+<b class="fc"><i class="no-highlight">149</i>&nbsp;        boolean isUserTeamRecipient = (question.getRecipientType() == FeedbackParticipantType.TEAMS</b>
+<b class="fc"><i class="no-highlight">150</i>&nbsp;                || question.getRecipientType() == FeedbackParticipantType.TEAMS_IN_SAME_SECTION)</b>
+<b class="nc"><i class="no-highlight">151</i>&nbsp;                &amp;&amp; student.getTeam().equals(response.getRecipient());</b>
+<b class="fc"><i class="no-highlight">152</i>&nbsp;        String recipientName = &quot;&quot;;</b>
+<b class="fc"><i class="no-highlight">153</i>&nbsp;        String recipientTeam = &quot;&quot;;</b>
+<b class="fc"><i class="no-highlight">154</i>&nbsp;        if (isUserRecipient) {</b>
+<b class="fc"><i class="no-highlight">155</i>&nbsp;            recipientName = &quot;You&quot;;</b>
+<b class="fc"><i class="no-highlight">156</i>&nbsp;            recipientTeam = student.getTeam();</b>
+<b class="fc"><i class="no-highlight">157</i>&nbsp;        } else if (isUserTeamRecipient) {</b>
+<b class="nc"><i class="no-highlight">158</i>&nbsp;            recipientName = String.format(&quot;Your Team (%s)&quot;, response.getRecipient());</b>
+<b class="nc"><i class="no-highlight">159</i>&nbsp;            recipientTeam = response.getRecipient();</b>
+<i class="no-highlight">160</i>&nbsp;        } else {
+<i class="no-highlight">161</i>&nbsp;            // we don&#39;t want student to figure out who is who by using the hash
+<b class="fc"><i class="no-highlight">162</i>&nbsp;            recipientName = removeAnonymousHash(getRecipientNameOfResponse(response, bundle));</b>
+<b class="fc"><i class="no-highlight">163</i>&nbsp;            if (!recipientName.contains(Const.DISPLAYED_NAME_FOR_ANONYMOUS_PARTICIPANT)) {</b>
+<b class="fc"><i class="no-highlight">164</i>&nbsp;                recipientTeam = bundle.getRoster().getInfoForIdentifier(response.getRecipient()).getTeamName();</b>
+<i class="no-highlight">165</i>&nbsp;            }
+<i class="no-highlight">166</i>&nbsp;        }
+<i class="no-highlight">167</i>&nbsp;
+<i class="no-highlight">168</i>&nbsp;        // process comments
+<b class="fc"><i class="no-highlight">169</i>&nbsp;        List&lt;FeedbackResponseCommentAttributes&gt; feedbackResponseComments =</b>
+<b class="fc"><i class="no-highlight">170</i>&nbsp;                bundle.getResponseCommentsMap().getOrDefault(response.getId(), Collections.emptyList());</b>
+<b class="fc"><i class="no-highlight">171</i>&nbsp;        Queue&lt;CommentOutput&gt; comments = buildComments(feedbackResponseComments, bundle);</b>
+<i class="no-highlight">172</i>&nbsp;
+<b class="fc"><i class="no-highlight">173</i>&nbsp;        return ResponseOutput.builder()</b>
+<b class="fc"><i class="no-highlight">174</i>&nbsp;                .withResponseId(response.getId())</b>
+<b class="fc"><i class="no-highlight">175</i>&nbsp;                .withGiver(giverName)</b>
+<b class="fc"><i class="no-highlight">176</i>&nbsp;                .withGiverTeam(giverTeam)</b>
+<b class="fc"><i class="no-highlight">177</i>&nbsp;                .withGiverEmail(null)</b>
+<b class="fc"><i class="no-highlight">178</i>&nbsp;                .withRelatedGiverEmail(null)</b>
+<b class="fc"><i class="no-highlight">179</i>&nbsp;                .withGiverSection(response.getGiverSection())</b>
+<b class="fc"><i class="no-highlight">180</i>&nbsp;                .withRecipient(recipientName)</b>
+<b class="fc"><i class="no-highlight">181</i>&nbsp;                .withRecipientTeam(recipientTeam)</b>
+<b class="fc"><i class="no-highlight">182</i>&nbsp;                .withRecipientEmail(null)</b>
+<b class="fc"><i class="no-highlight">183</i>&nbsp;                .withRecipientSection(response.getRecipientSection())</b>
+<b class="fc"><i class="no-highlight">184</i>&nbsp;                .withResponseDetails(response.getResponseDetailsCopy())</b>
+<b class="fc"><i class="no-highlight">185</i>&nbsp;                .withParticipantComment(comments.poll())</b>
+<b class="fc"><i class="no-highlight">186</i>&nbsp;                .withInstructorComments(new ArrayList&lt;&gt;(comments))</b>
+<b class="fc"><i class="no-highlight">187</i>&nbsp;                .build();</b>
+<i class="no-highlight">188</i>&nbsp;    }
+<i class="no-highlight">189</i>&nbsp;
+<i class="no-highlight">190</i>&nbsp;    private static String removeAnonymousHash(String identifier) {
+<b class="fc"><i class="no-highlight">191</i>&nbsp;        return identifier.replaceAll(Const.DISPLAYED_NAME_FOR_ANONYMOUS_PARTICIPANT + &quot; (student|instructor|team) &quot;</b>
+<i class="no-highlight">192</i>&nbsp;                + REGEX_ANONYMOUS_PARTICIPANT_HASH, Const.DISPLAYED_NAME_FOR_ANONYMOUS_PARTICIPANT + &quot; $1&quot;);
+<i class="no-highlight">193</i>&nbsp;    }
+<i class="no-highlight">194</i>&nbsp;
+<i class="no-highlight">195</i>&nbsp;    private static List&lt;ResponseOutput&gt; buildResponsesForInstructor(
+<i class="no-highlight">196</i>&nbsp;            List&lt;FeedbackResponseAttributes&gt; responses, SessionResultsBundle bundle, boolean areMissingResponses) {
+<b class="fc"><i class="no-highlight">197</i>&nbsp;        List&lt;ResponseOutput&gt; output = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">198</i>&nbsp;
+<b class="fc"><i class="no-highlight">199</i>&nbsp;        for (FeedbackResponseAttributes response : responses) {</b>
+<b class="fc"><i class="no-highlight">200</i>&nbsp;            output.add(buildSingleResponseForInstructor(response, bundle, areMissingResponses));</b>
+<b class="fc"><i class="no-highlight">201</i>&nbsp;        }</b>
+<i class="no-highlight">202</i>&nbsp;
+<b class="fc"><i class="no-highlight">203</i>&nbsp;        return output;</b>
+<i class="no-highlight">204</i>&nbsp;    }
+<i class="no-highlight">205</i>&nbsp;
+<i class="no-highlight">206</i>&nbsp;    private static ResponseOutput buildSingleResponseForInstructor(
+<i class="no-highlight">207</i>&nbsp;            FeedbackResponseAttributes response, SessionResultsBundle bundle, boolean isMissingResponse) {
+<i class="no-highlight">208</i>&nbsp;        // process giver
+<b class="fc"><i class="no-highlight">209</i>&nbsp;        String giverEmail = null;</b>
+<b class="fc"><i class="no-highlight">210</i>&nbsp;        String relatedGiverEmail = null;</b>
+<b class="fc"><i class="no-highlight">211</i>&nbsp;        if (bundle.isResponseGiverVisible(response)) {</b>
+<b class="fc"><i class="no-highlight">212</i>&nbsp;            giverEmail = response.getGiver();</b>
+<b class="fc"><i class="no-highlight">213</i>&nbsp;            relatedGiverEmail = response.getGiver();</b>
+<i class="no-highlight">214</i>&nbsp;
+<b class="fc"><i class="no-highlight">215</i>&nbsp;            if (bundle.getRoster().isTeamInCourse(giverEmail)) {</b>
+<i class="no-highlight">216</i>&nbsp;                // remove recipient email as it is a team name
+<b class="nc"><i class="no-highlight">217</i>&nbsp;                relatedGiverEmail =</b>
+<b class="nc"><i class="no-highlight">218</i>&nbsp;                        bundle.getRoster().getTeamToMembersTable().get(giverEmail).iterator().next().getEmail();</b>
+<b class="nc"><i class="no-highlight">219</i>&nbsp;                giverEmail = null;</b>
+<i class="no-highlight">220</i>&nbsp;            }
+<i class="no-highlight">221</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">222</i>&nbsp;        String giverName = getGiverNameOfResponse(response, bundle);</b>
+<b class="fc"><i class="no-highlight">223</i>&nbsp;        String giverTeam = bundle.getRoster().getInfoForIdentifier(response.getGiver()).getTeamName();</b>
+<b class="fc"><i class="no-highlight">224</i>&nbsp;        String giverSection = response.getGiverSection();</b>
+<b class="fc"><i class="no-highlight">225</i>&nbsp;        FeedbackQuestionAttributes question = bundle.getQuestionsMap().get(response.getFeedbackQuestionId());</b>
+<b class="fc"><i class="no-highlight">226</i>&nbsp;        if (question.getGiverType() == FeedbackParticipantType.INSTRUCTORS) {</b>
+<b class="fc"><i class="no-highlight">227</i>&nbsp;            InstructorAttributes instructor = bundle.getRoster().getInstructorForEmail(response.getGiver());</b>
+<b class="fc"><i class="no-highlight">228</i>&nbsp;            giverName = instructor.getName();</b>
+<b class="fc"><i class="no-highlight">229</i>&nbsp;            giverTeam = Const.USER_TEAM_FOR_INSTRUCTOR;</b>
+<b class="fc"><i class="no-highlight">230</i>&nbsp;            giverSection = Const.DEFAULT_SECTION;</b>
+<i class="no-highlight">231</i>&nbsp;        }
+<i class="no-highlight">232</i>&nbsp;
+<i class="no-highlight">233</i>&nbsp;        // process recipient
+<b class="fc"><i class="no-highlight">234</i>&nbsp;        String recipientEmail = null;</b>
+<b class="fc"><i class="no-highlight">235</i>&nbsp;        String recipientName = getRecipientNameOfResponse(response, bundle);</b>
+<b class="fc"><i class="no-highlight">236</i>&nbsp;        String recipientTeam =</b>
+<b class="fc"><i class="no-highlight">237</i>&nbsp;                bundle.getRoster().getInfoForIdentifier(response.getRecipient()).getTeamName();</b>
+<b class="fc"><i class="no-highlight">238</i>&nbsp;        String recipientSection = response.getRecipientSection();</b>
+<b class="fc"><i class="no-highlight">239</i>&nbsp;        if (question.getRecipientType() == FeedbackParticipantType.INSTRUCTORS) {</b>
+<b class="nc"><i class="no-highlight">240</i>&nbsp;            InstructorAttributes instructor = bundle.getRoster().getInstructorForEmail(response.getRecipient());</b>
+<b class="nc"><i class="no-highlight">241</i>&nbsp;            recipientName = instructor.getName();</b>
+<b class="nc"><i class="no-highlight">242</i>&nbsp;            recipientTeam = Const.USER_TEAM_FOR_INSTRUCTOR;</b>
+<b class="nc"><i class="no-highlight">243</i>&nbsp;            recipientSection = Const.DEFAULT_SECTION;</b>
+<i class="no-highlight">244</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">245</i>&nbsp;        if (bundle.isResponseRecipientVisible(response)) {</b>
+<b class="fc"><i class="no-highlight">246</i>&nbsp;            recipientEmail = response.getRecipient();</b>
+<i class="no-highlight">247</i>&nbsp;
+<b class="fc"><i class="no-highlight">248</i>&nbsp;            if (bundle.getRoster().isTeamInCourse(recipientEmail)) {</b>
+<i class="no-highlight">249</i>&nbsp;                // remove recipient email as it is a team name
+<b class="nc"><i class="no-highlight">250</i>&nbsp;                recipientEmail = null;</b>
+<b class="fc"><i class="no-highlight">251</i>&nbsp;            } else if (Const.GENERAL_QUESTION.equals(recipientEmail)) {</b>
+<i class="no-highlight">252</i>&nbsp;                // general recipient does not have email
+<b class="fc"><i class="no-highlight">253</i>&nbsp;                recipientEmail = null;</b>
+<i class="no-highlight">254</i>&nbsp;            }
+<i class="no-highlight">255</i>&nbsp;        }
+<i class="no-highlight">256</i>&nbsp;
+<i class="no-highlight">257</i>&nbsp;        // process comments
+<b class="fc"><i class="no-highlight">258</i>&nbsp;        List&lt;FeedbackResponseCommentAttributes&gt; feedbackResponseComments =</b>
+<b class="fc"><i class="no-highlight">259</i>&nbsp;                bundle.getResponseCommentsMap().getOrDefault(response.getId(), Collections.emptyList());</b>
+<b class="fc"><i class="no-highlight">260</i>&nbsp;        Queue&lt;CommentOutput&gt; comments = buildComments(feedbackResponseComments, bundle);</b>
+<i class="no-highlight">261</i>&nbsp;
+<b class="fc"><i class="no-highlight">262</i>&nbsp;        return ResponseOutput.builder()</b>
+<b class="fc"><i class="no-highlight">263</i>&nbsp;                .withIsMissingResponse(isMissingResponse)</b>
+<b class="fc"><i class="no-highlight">264</i>&nbsp;                .withResponseId(response.getId())</b>
+<b class="fc"><i class="no-highlight">265</i>&nbsp;                .withGiver(giverName)</b>
+<b class="fc"><i class="no-highlight">266</i>&nbsp;                .withGiverTeam(giverTeam)</b>
+<b class="fc"><i class="no-highlight">267</i>&nbsp;                .withGiverEmail(giverEmail)</b>
+<b class="fc"><i class="no-highlight">268</i>&nbsp;                .withRelatedGiverEmail(relatedGiverEmail)</b>
+<b class="fc"><i class="no-highlight">269</i>&nbsp;                .withGiverSection(giverSection)</b>
+<b class="fc"><i class="no-highlight">270</i>&nbsp;                .withRecipient(recipientName)</b>
+<b class="fc"><i class="no-highlight">271</i>&nbsp;                .withRecipientTeam(recipientTeam)</b>
+<b class="fc"><i class="no-highlight">272</i>&nbsp;                .withRecipientEmail(recipientEmail)</b>
+<b class="fc"><i class="no-highlight">273</i>&nbsp;                .withRecipientSection(recipientSection)</b>
+<b class="fc"><i class="no-highlight">274</i>&nbsp;                .withResponseDetails(response.getResponseDetailsCopy())</b>
+<b class="fc"><i class="no-highlight">275</i>&nbsp;                .withParticipantComment(comments.poll())</b>
+<b class="fc"><i class="no-highlight">276</i>&nbsp;                .withInstructorComments(new ArrayList&lt;&gt;(comments))</b>
+<b class="fc"><i class="no-highlight">277</i>&nbsp;                .build();</b>
+<i class="no-highlight">278</i>&nbsp;    }
+<i class="no-highlight">279</i>&nbsp;
+<i class="no-highlight">280</i>&nbsp;    /**
+<i class="no-highlight">281</i>&nbsp;     * Gets giver name of a response from the bundle.
+<i class="no-highlight">282</i>&nbsp;     *
+<i class="no-highlight">283</i>&nbsp;     * &lt;p&gt;Anonymized the name if necessary.
+<i class="no-highlight">284</i>&nbsp;     */
+<i class="no-highlight">285</i>&nbsp;    private static String getGiverNameOfResponse(FeedbackResponseAttributes response, SessionResultsBundle bundle) {
+<b class="fc"><i class="no-highlight">286</i>&nbsp;        FeedbackQuestionAttributes question = bundle.getQuestionsMap().get(response.getFeedbackQuestionId());</b>
+<b class="fc"><i class="no-highlight">287</i>&nbsp;        FeedbackParticipantType participantType = question.getGiverType();</b>
+<i class="no-highlight">288</i>&nbsp;
+<b class="fc"><i class="no-highlight">289</i>&nbsp;        CourseRoster.ParticipantInfo userInfo = bundle.getRoster().getInfoForIdentifier(response.getGiver());</b>
+<b class="fc"><i class="no-highlight">290</i>&nbsp;        String name = userInfo.getName();</b>
+<i class="no-highlight">291</i>&nbsp;
+<b class="fc"><i class="no-highlight">292</i>&nbsp;        if (!bundle.isResponseGiverVisible(response)) {</b>
+<b class="nc"><i class="no-highlight">293</i>&nbsp;            name = SessionResultsBundle.getAnonName(participantType, name);</b>
+<i class="no-highlight">294</i>&nbsp;        }
+<i class="no-highlight">295</i>&nbsp;
+<b class="fc"><i class="no-highlight">296</i>&nbsp;        return name;</b>
+<i class="no-highlight">297</i>&nbsp;    }
+<i class="no-highlight">298</i>&nbsp;
+<i class="no-highlight">299</i>&nbsp;    /**
+<i class="no-highlight">300</i>&nbsp;     * Gets recipient name of a response from the bundle.
+<i class="no-highlight">301</i>&nbsp;     *
+<i class="no-highlight">302</i>&nbsp;     * &lt;p&gt;Anonymized the name if necessary.
+<i class="no-highlight">303</i>&nbsp;     */
+<i class="no-highlight">304</i>&nbsp;    private static String getRecipientNameOfResponse(FeedbackResponseAttributes response, SessionResultsBundle bundle) {
+<b class="fc"><i class="no-highlight">305</i>&nbsp;        FeedbackQuestionAttributes question = bundle.getQuestionsMap().get(response.getFeedbackQuestionId());</b>
+<b class="fc"><i class="no-highlight">306</i>&nbsp;        FeedbackParticipantType participantType = question.getRecipientType();</b>
+<b class="fc"><i class="no-highlight">307</i>&nbsp;        if (participantType == FeedbackParticipantType.SELF) {</b>
+<i class="no-highlight">308</i>&nbsp;            // recipient type for self-feedback is the same as the giver type
+<b class="fc"><i class="no-highlight">309</i>&nbsp;            participantType = question.getGiverType();</b>
+<i class="no-highlight">310</i>&nbsp;        }
+<i class="no-highlight">311</i>&nbsp;
+<b class="fc"><i class="no-highlight">312</i>&nbsp;        CourseRoster.ParticipantInfo userInfo = bundle.getRoster().getInfoForIdentifier(response.getRecipient());</b>
+<b class="fc"><i class="no-highlight">313</i>&nbsp;        String name = userInfo.getName();</b>
+<b class="fc"><i class="no-highlight">314</i>&nbsp;        if (response.getRecipient().equals(Const.GENERAL_QUESTION)) {</b>
+<i class="no-highlight">315</i>&nbsp;            // for general question
+<b class="fc"><i class="no-highlight">316</i>&nbsp;            name = Const.USER_NOBODY_TEXT;</b>
+<i class="no-highlight">317</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">318</i>&nbsp;        if (!bundle.isResponseRecipientVisible(response)) {</b>
+<b class="nc"><i class="no-highlight">319</i>&nbsp;            name = SessionResultsBundle.getAnonName(participantType, name);</b>
+<i class="no-highlight">320</i>&nbsp;        }
+<i class="no-highlight">321</i>&nbsp;
+<b class="fc"><i class="no-highlight">322</i>&nbsp;        return name;</b>
+<i class="no-highlight">323</i>&nbsp;    }
+<i class="no-highlight">324</i>&nbsp;
+<i class="no-highlight">325</i>&nbsp;    private static Queue&lt;CommentOutput&gt; buildComments(List&lt;FeedbackResponseCommentAttributes&gt; feedbackResponseComments,
+<i class="no-highlight">326</i>&nbsp;                                                      SessionResultsBundle bundle) {
+<b class="fc"><i class="no-highlight">327</i>&nbsp;        LinkedList&lt;CommentOutput&gt; outputs = new LinkedList&lt;&gt;();</b>
+<i class="no-highlight">328</i>&nbsp;
+<b class="fc"><i class="no-highlight">329</i>&nbsp;        CommentOutput participantComment = null;</b>
+<b class="fc"><i class="no-highlight">330</i>&nbsp;        for (FeedbackResponseCommentAttributes comment : feedbackResponseComments) {</b>
+<b class="fc"><i class="no-highlight">331</i>&nbsp;            if (comment.isCommentFromFeedbackParticipant()) {</b>
+<i class="no-highlight">332</i>&nbsp;                // participant comment will not need these fields
+<b class="nc"><i class="no-highlight">333</i>&nbsp;                participantComment = CommentOutput.builder(comment)</b>
+<b class="nc"><i class="no-highlight">334</i>&nbsp;                        .withCommentGiver(null)</b>
+<b class="nc"><i class="no-highlight">335</i>&nbsp;                        .withCommentGiverName(null)</b>
+<b class="nc"><i class="no-highlight">336</i>&nbsp;                        .withLastEditorEmail(null)</b>
+<b class="nc"><i class="no-highlight">337</i>&nbsp;                        .withLastEditorName(null)</b>
+<b class="nc"><i class="no-highlight">338</i>&nbsp;                        .build();</b>
+<i class="no-highlight">339</i>&nbsp;            } else {
+<b class="fc"><i class="no-highlight">340</i>&nbsp;                String giverEmail = Const.DISPLAYED_NAME_FOR_ANONYMOUS_PARTICIPANT;</b>
+<b class="fc"><i class="no-highlight">341</i>&nbsp;                String giverName = Const.DISPLAYED_NAME_FOR_ANONYMOUS_PARTICIPANT;</b>
+<b class="fc"><i class="no-highlight">342</i>&nbsp;                String lastEditorEmail = Const.DISPLAYED_NAME_FOR_ANONYMOUS_PARTICIPANT;</b>
+<b class="fc"><i class="no-highlight">343</i>&nbsp;                String lastEditorName = Const.DISPLAYED_NAME_FOR_ANONYMOUS_PARTICIPANT;</b>
+<b class="fc"><i class="no-highlight">344</i>&nbsp;                if (bundle.isCommentGiverVisible(comment)) {</b>
+<b class="fc"><i class="no-highlight">345</i>&nbsp;                    giverEmail = comment.getCommentGiver();</b>
+<b class="fc"><i class="no-highlight">346</i>&nbsp;                    giverName = bundle.getRoster().getInfoForIdentifier(comment.getCommentGiver()).getName();</b>
+<b class="fc"><i class="no-highlight">347</i>&nbsp;                    lastEditorEmail = comment.getLastEditorEmail();</b>
+<b class="fc"><i class="no-highlight">348</i>&nbsp;                    lastEditorName = bundle.getRoster().getInfoForIdentifier(comment.getLastEditorEmail()).getName();</b>
+<i class="no-highlight">349</i>&nbsp;                }
+<b class="fc"><i class="no-highlight">350</i>&nbsp;                outputs.add(CommentOutput.builder(comment)</b>
+<b class="fc"><i class="no-highlight">351</i>&nbsp;                        .withCommentGiver(giverEmail)</b>
+<b class="fc"><i class="no-highlight">352</i>&nbsp;                        .withCommentGiverName(giverName)</b>
+<b class="fc"><i class="no-highlight">353</i>&nbsp;                        .withLastEditorEmail(lastEditorEmail)</b>
+<b class="fc"><i class="no-highlight">354</i>&nbsp;                        .withLastEditorName(lastEditorName)</b>
+<b class="fc"><i class="no-highlight">355</i>&nbsp;                        .build());</b>
+<i class="no-highlight">356</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">357</i>&nbsp;        }</b>
+<b class="fc"><i class="no-highlight">358</i>&nbsp;        outputs.addFirst(participantComment);</b>
+<i class="no-highlight">359</i>&nbsp;
+<b class="fc"><i class="no-highlight">360</i>&nbsp;        return outputs;</b>
+<i class="no-highlight">361</i>&nbsp;    }
+<i class="no-highlight">362</i>&nbsp;
+<i class="no-highlight">363</i>&nbsp;    public List&lt;QuestionOutput&gt; getQuestions() {
+<b class="fc"><i class="no-highlight">364</i>&nbsp;        return questions;</b>
+<i class="no-highlight">365</i>&nbsp;    }
+<i class="no-highlight">366</i>&nbsp;
+<i class="no-highlight">367</i>&nbsp;    /**
+<i class="no-highlight">368</i>&nbsp;     * API output format for questions in session results.
+<i class="no-highlight">369</i>&nbsp;     */
+<i class="no-highlight">370</i>&nbsp;    public static class QuestionOutput {
+<i class="no-highlight">371</i>&nbsp;
+<i class="no-highlight">372</i>&nbsp;        private final FeedbackQuestionData feedbackQuestion;
+<i class="no-highlight">373</i>&nbsp;        private final String questionStatistics;
+<i class="no-highlight">374</i>&nbsp;
+<b class="fc"><i class="no-highlight">375</i>&nbsp;        private final List&lt;ResponseOutput&gt; allResponses = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">376</i>&nbsp;
+<i class="no-highlight">377</i>&nbsp;        // For student view only
+<b class="fc"><i class="no-highlight">378</i>&nbsp;        private final List&lt;ResponseOutput&gt; responsesToSelf = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">379</i>&nbsp;        private final List&lt;ResponseOutput&gt; responsesFromSelf = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">380</i>&nbsp;        private final List&lt;List&lt;ResponseOutput&gt;&gt; otherResponses = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">381</i>&nbsp;
+<b class="fc"><i class="no-highlight">382</i>&nbsp;        private QuestionOutput(FeedbackQuestionAttributes feedbackQuestionAttributes, String questionStatistics) {</b>
+<b class="fc"><i class="no-highlight">383</i>&nbsp;            this.feedbackQuestion = new FeedbackQuestionData(feedbackQuestionAttributes);</b>
+<b class="fc"><i class="no-highlight">384</i>&nbsp;            this.questionStatistics = questionStatistics;</b>
+<i class="no-highlight">385</i>&nbsp;        }
+<i class="no-highlight">386</i>&nbsp;
+<i class="no-highlight">387</i>&nbsp;        public FeedbackQuestionData getFeedbackQuestion() {
+<b class="fc"><i class="no-highlight">388</i>&nbsp;            return feedbackQuestion;</b>
+<i class="no-highlight">389</i>&nbsp;        }
+<i class="no-highlight">390</i>&nbsp;
+<i class="no-highlight">391</i>&nbsp;        public String getQuestionStatistics() {
+<b class="fc"><i class="no-highlight">392</i>&nbsp;            return questionStatistics;</b>
+<i class="no-highlight">393</i>&nbsp;        }
+<i class="no-highlight">394</i>&nbsp;
+<i class="no-highlight">395</i>&nbsp;        public List&lt;ResponseOutput&gt; getAllResponses() {
+<b class="fc"><i class="no-highlight">396</i>&nbsp;            return allResponses;</b>
+<i class="no-highlight">397</i>&nbsp;        }
+<i class="no-highlight">398</i>&nbsp;
+<i class="no-highlight">399</i>&nbsp;        public List&lt;ResponseOutput&gt; getResponsesFromSelf() {
+<b class="nc"><i class="no-highlight">400</i>&nbsp;            return responsesFromSelf;</b>
+<i class="no-highlight">401</i>&nbsp;        }
+<i class="no-highlight">402</i>&nbsp;
+<i class="no-highlight">403</i>&nbsp;        public List&lt;ResponseOutput&gt; getResponsesToSelf() {
+<b class="nc"><i class="no-highlight">404</i>&nbsp;            return responsesToSelf;</b>
+<i class="no-highlight">405</i>&nbsp;        }
+<i class="no-highlight">406</i>&nbsp;
+<i class="no-highlight">407</i>&nbsp;        public List&lt;List&lt;ResponseOutput&gt;&gt; getOtherResponses() {
+<b class="nc"><i class="no-highlight">408</i>&nbsp;            return otherResponses;</b>
+<i class="no-highlight">409</i>&nbsp;        }
+<i class="no-highlight">410</i>&nbsp;
+<i class="no-highlight">411</i>&nbsp;    }
+<i class="no-highlight">412</i>&nbsp;
+<i class="no-highlight">413</i>&nbsp;    /**
+<i class="no-highlight">414</i>&nbsp;     * API output format for question responses.
+<i class="no-highlight">415</i>&nbsp;     */
+<i class="no-highlight">416</i>&nbsp;    public static class ResponseOutput {
+<i class="no-highlight">417</i>&nbsp;
+<i class="no-highlight">418</i>&nbsp;        private boolean isMissingResponse;
+<i class="no-highlight">419</i>&nbsp;
+<i class="no-highlight">420</i>&nbsp;        private String responseId;
+<i class="no-highlight">421</i>&nbsp;
+<i class="no-highlight">422</i>&nbsp;        private String giver;
+<i class="no-highlight">423</i>&nbsp;        /**
+<i class="no-highlight">424</i>&nbsp;         * Depending on the question giver type, {@code giverIdentifier} may contain the giver&#39;s email, any team member&#39;s
+<i class="no-highlight">425</i>&nbsp;         * email or null.
+<i class="no-highlight">426</i>&nbsp;         */
+<i class="no-highlight">427</i>&nbsp;        @Nullable
+<i class="no-highlight">428</i>&nbsp;        private String relatedGiverEmail;
+<i class="no-highlight">429</i>&nbsp;        private String giverTeam;
+<i class="no-highlight">430</i>&nbsp;        @Nullable
+<i class="no-highlight">431</i>&nbsp;        private String giverEmail;
+<i class="no-highlight">432</i>&nbsp;        private String giverSection;
+<i class="no-highlight">433</i>&nbsp;        private String recipient;
+<i class="no-highlight">434</i>&nbsp;        private String recipientTeam;
+<i class="no-highlight">435</i>&nbsp;        @Nullable
+<i class="no-highlight">436</i>&nbsp;        private String recipientEmail;
+<i class="no-highlight">437</i>&nbsp;        private String recipientSection;
+<i class="no-highlight">438</i>&nbsp;        private FeedbackResponseDetails responseDetails;
+<i class="no-highlight">439</i>&nbsp;
+<i class="no-highlight">440</i>&nbsp;        // comments
+<i class="no-highlight">441</i>&nbsp;        @Nullable
+<i class="no-highlight">442</i>&nbsp;        private CommentOutput participantComment;
+<i class="no-highlight">443</i>&nbsp;        private List&lt;CommentOutput&gt; instructorComments;
+<i class="no-highlight">444</i>&nbsp;
+<b class="fc"><i class="no-highlight">445</i>&nbsp;        private ResponseOutput() {</b>
+<i class="no-highlight">446</i>&nbsp;            // use builder instead
+<i class="no-highlight">447</i>&nbsp;        }
+<i class="no-highlight">448</i>&nbsp;
+<i class="no-highlight">449</i>&nbsp;        /**
+<i class="no-highlight">450</i>&nbsp;         * Returns a builder for {@link ResponseOutput}.
+<i class="no-highlight">451</i>&nbsp;         */
+<i class="no-highlight">452</i>&nbsp;        static Builder builder() {
+<b class="fc"><i class="no-highlight">453</i>&nbsp;            return new Builder();</b>
+<i class="no-highlight">454</i>&nbsp;        }
+<i class="no-highlight">455</i>&nbsp;
+<i class="no-highlight">456</i>&nbsp;        public boolean isMissingResponse() {
+<b class="nc"><i class="no-highlight">457</i>&nbsp;            return isMissingResponse;</b>
+<i class="no-highlight">458</i>&nbsp;        }
+<i class="no-highlight">459</i>&nbsp;
+<i class="no-highlight">460</i>&nbsp;        public String getResponseId() {
+<b class="nc"><i class="no-highlight">461</i>&nbsp;            return responseId;</b>
+<i class="no-highlight">462</i>&nbsp;        }
+<i class="no-highlight">463</i>&nbsp;
+<i class="no-highlight">464</i>&nbsp;        public String getGiver() {
+<b class="fc"><i class="no-highlight">465</i>&nbsp;            return giver;</b>
+<i class="no-highlight">466</i>&nbsp;        }
+<i class="no-highlight">467</i>&nbsp;
+<i class="no-highlight">468</i>&nbsp;        @Nullable
+<i class="no-highlight">469</i>&nbsp;        public String getGiverEmail() {
+<b class="nc"><i class="no-highlight">470</i>&nbsp;            return giverEmail;</b>
+<i class="no-highlight">471</i>&nbsp;        }
+<i class="no-highlight">472</i>&nbsp;
+<i class="no-highlight">473</i>&nbsp;        @Nullable
+<i class="no-highlight">474</i>&nbsp;        public String getRelatedGiverEmail() {
+<b class="nc"><i class="no-highlight">475</i>&nbsp;            return relatedGiverEmail;</b>
+<i class="no-highlight">476</i>&nbsp;        }
+<i class="no-highlight">477</i>&nbsp;
+<i class="no-highlight">478</i>&nbsp;        public String getGiverTeam() {
+<b class="fc"><i class="no-highlight">479</i>&nbsp;            return giverTeam;</b>
+<i class="no-highlight">480</i>&nbsp;        }
+<i class="no-highlight">481</i>&nbsp;
+<i class="no-highlight">482</i>&nbsp;        public String getGiverSection() {
+<b class="fc"><i class="no-highlight">483</i>&nbsp;            return giverSection;</b>
+<i class="no-highlight">484</i>&nbsp;        }
+<i class="no-highlight">485</i>&nbsp;
+<i class="no-highlight">486</i>&nbsp;        public String getRecipient() {
+<b class="fc"><i class="no-highlight">487</i>&nbsp;            return recipient;</b>
+<i class="no-highlight">488</i>&nbsp;        }
+<i class="no-highlight">489</i>&nbsp;
+<i class="no-highlight">490</i>&nbsp;        public String getRecipientTeam() {
+<b class="fc"><i class="no-highlight">491</i>&nbsp;            return recipientTeam;</b>
+<i class="no-highlight">492</i>&nbsp;        }
+<i class="no-highlight">493</i>&nbsp;
+<i class="no-highlight">494</i>&nbsp;        @Nullable
+<i class="no-highlight">495</i>&nbsp;        public String getRecipientEmail() {
+<b class="nc"><i class="no-highlight">496</i>&nbsp;            return recipientEmail;</b>
+<i class="no-highlight">497</i>&nbsp;        }
+<i class="no-highlight">498</i>&nbsp;
+<i class="no-highlight">499</i>&nbsp;        public String getRecipientSection() {
+<b class="fc"><i class="no-highlight">500</i>&nbsp;            return recipientSection;</b>
+<i class="no-highlight">501</i>&nbsp;        }
+<i class="no-highlight">502</i>&nbsp;
+<i class="no-highlight">503</i>&nbsp;        public FeedbackResponseDetails getResponseDetails() {
+<b class="fc"><i class="no-highlight">504</i>&nbsp;            return responseDetails;</b>
+<i class="no-highlight">505</i>&nbsp;        }
+<i class="no-highlight">506</i>&nbsp;
+<i class="no-highlight">507</i>&nbsp;        @Nullable
+<i class="no-highlight">508</i>&nbsp;        public CommentOutput getParticipantComment() {
+<b class="nc"><i class="no-highlight">509</i>&nbsp;            return participantComment;</b>
+<i class="no-highlight">510</i>&nbsp;        }
+<i class="no-highlight">511</i>&nbsp;
+<i class="no-highlight">512</i>&nbsp;        public List&lt;CommentOutput&gt; getInstructorComments() {
+<b class="nc"><i class="no-highlight">513</i>&nbsp;            return instructorComments;</b>
+<i class="no-highlight">514</i>&nbsp;        }
+<i class="no-highlight">515</i>&nbsp;
+<i class="no-highlight">516</i>&nbsp;        /**
+<i class="no-highlight">517</i>&nbsp;         * Builder class for {@link ResponseOutput}.
+<i class="no-highlight">518</i>&nbsp;         */
+<i class="no-highlight">519</i>&nbsp;        public static final class Builder {
+<i class="no-highlight">520</i>&nbsp;            private final ResponseOutput responseOutput;
+<i class="no-highlight">521</i>&nbsp;
+<b class="fc"><i class="no-highlight">522</i>&nbsp;            private Builder() {</b>
+<b class="fc"><i class="no-highlight">523</i>&nbsp;                responseOutput = new ResponseOutput();</b>
+<i class="no-highlight">524</i>&nbsp;            }
+<i class="no-highlight">525</i>&nbsp;
+<i class="no-highlight">526</i>&nbsp;            private Builder withIsMissingResponse(boolean isMissingResponse) {
+<b class="fc"><i class="no-highlight">527</i>&nbsp;                responseOutput.isMissingResponse = isMissingResponse;</b>
+<b class="fc"><i class="no-highlight">528</i>&nbsp;                return this;</b>
+<i class="no-highlight">529</i>&nbsp;            }
+<i class="no-highlight">530</i>&nbsp;
+<i class="no-highlight">531</i>&nbsp;            Builder withResponseId(String responseId) {
+<b class="fc"><i class="no-highlight">532</i>&nbsp;                responseOutput.responseId = StringHelper.encrypt(responseId);</b>
+<b class="fc"><i class="no-highlight">533</i>&nbsp;                return this;</b>
+<i class="no-highlight">534</i>&nbsp;            }
+<i class="no-highlight">535</i>&nbsp;
+<i class="no-highlight">536</i>&nbsp;            Builder withGiver(String giverName) {
+<b class="fc"><i class="no-highlight">537</i>&nbsp;                responseOutput.giver = giverName;</b>
+<b class="fc"><i class="no-highlight">538</i>&nbsp;                return this;</b>
+<i class="no-highlight">539</i>&nbsp;            }
+<i class="no-highlight">540</i>&nbsp;
+<i class="no-highlight">541</i>&nbsp;            private Builder withRelatedGiverEmail(@Nullable String relatedGiverEmail) {
+<b class="fc"><i class="no-highlight">542</i>&nbsp;                responseOutput.relatedGiverEmail = relatedGiverEmail;</b>
+<b class="fc"><i class="no-highlight">543</i>&nbsp;                return this;</b>
+<i class="no-highlight">544</i>&nbsp;            }
+<i class="no-highlight">545</i>&nbsp;
+<i class="no-highlight">546</i>&nbsp;            private Builder withGiverTeam(String giverTeam) {
+<b class="fc"><i class="no-highlight">547</i>&nbsp;                responseOutput.giverTeam = giverTeam;</b>
+<b class="fc"><i class="no-highlight">548</i>&nbsp;                return this;</b>
+<i class="no-highlight">549</i>&nbsp;            }
+<i class="no-highlight">550</i>&nbsp;
+<i class="no-highlight">551</i>&nbsp;            Builder withGiverEmail(@Nullable String giverEmail) {
+<b class="fc"><i class="no-highlight">552</i>&nbsp;                responseOutput.giverEmail = giverEmail;</b>
+<b class="fc"><i class="no-highlight">553</i>&nbsp;                return this;</b>
+<i class="no-highlight">554</i>&nbsp;            }
+<i class="no-highlight">555</i>&nbsp;
+<i class="no-highlight">556</i>&nbsp;            Builder withGiverSection(String giverSection) {
+<b class="fc"><i class="no-highlight">557</i>&nbsp;                responseOutput.giverSection = giverSection;</b>
+<b class="fc"><i class="no-highlight">558</i>&nbsp;                return this;</b>
+<i class="no-highlight">559</i>&nbsp;            }
+<i class="no-highlight">560</i>&nbsp;
+<i class="no-highlight">561</i>&nbsp;            Builder withRecipient(String recipientName) {
+<b class="fc"><i class="no-highlight">562</i>&nbsp;                responseOutput.recipient = recipientName;</b>
+<b class="fc"><i class="no-highlight">563</i>&nbsp;                return this;</b>
+<i class="no-highlight">564</i>&nbsp;            }
+<i class="no-highlight">565</i>&nbsp;
+<i class="no-highlight">566</i>&nbsp;            private Builder withRecipientTeam(String recipientTeam) {
+<b class="fc"><i class="no-highlight">567</i>&nbsp;                responseOutput.recipientTeam = recipientTeam;</b>
+<b class="fc"><i class="no-highlight">568</i>&nbsp;                return this;</b>
+<i class="no-highlight">569</i>&nbsp;            }
+<i class="no-highlight">570</i>&nbsp;
+<i class="no-highlight">571</i>&nbsp;            Builder withRecipientEmail(@Nullable String recipientEmail) {
+<b class="fc"><i class="no-highlight">572</i>&nbsp;                responseOutput.recipientEmail = recipientEmail;</b>
+<b class="fc"><i class="no-highlight">573</i>&nbsp;                return this;</b>
+<i class="no-highlight">574</i>&nbsp;            }
+<i class="no-highlight">575</i>&nbsp;
+<i class="no-highlight">576</i>&nbsp;            Builder withRecipientSection(String recipientSection) {
+<b class="fc"><i class="no-highlight">577</i>&nbsp;                responseOutput.recipientSection = recipientSection;</b>
+<b class="fc"><i class="no-highlight">578</i>&nbsp;                return this;</b>
+<i class="no-highlight">579</i>&nbsp;            }
+<i class="no-highlight">580</i>&nbsp;
+<i class="no-highlight">581</i>&nbsp;            Builder withResponseDetails(FeedbackResponseDetails responseDetails) {
+<b class="fc"><i class="no-highlight">582</i>&nbsp;                responseOutput.responseDetails = responseDetails;</b>
+<b class="fc"><i class="no-highlight">583</i>&nbsp;                return this;</b>
+<i class="no-highlight">584</i>&nbsp;            }
+<i class="no-highlight">585</i>&nbsp;
+<i class="no-highlight">586</i>&nbsp;            Builder withParticipantComment(@Nullable CommentOutput participantComment) {
+<b class="fc"><i class="no-highlight">587</i>&nbsp;                responseOutput.participantComment = participantComment;</b>
+<b class="fc"><i class="no-highlight">588</i>&nbsp;                return this;</b>
+<i class="no-highlight">589</i>&nbsp;            }
+<i class="no-highlight">590</i>&nbsp;
+<i class="no-highlight">591</i>&nbsp;            Builder withInstructorComments(List&lt;CommentOutput&gt; instructorComments) {
+<b class="fc"><i class="no-highlight">592</i>&nbsp;                responseOutput.instructorComments = instructorComments;</b>
+<b class="fc"><i class="no-highlight">593</i>&nbsp;                return this;</b>
+<i class="no-highlight">594</i>&nbsp;            }
+<i class="no-highlight">595</i>&nbsp;
+<i class="no-highlight">596</i>&nbsp;            ResponseOutput build() {
+<b class="fc"><i class="no-highlight">597</i>&nbsp;                return responseOutput;</b>
+<i class="no-highlight">598</i>&nbsp;            }
+<i class="no-highlight">599</i>&nbsp;        }
+<i class="no-highlight">600</i>&nbsp;    }
+<i class="no-highlight">601</i>&nbsp;
+<i class="no-highlight">602</i>&nbsp;    /**
+<i class="no-highlight">603</i>&nbsp;     * API output format for response comments.
+<i class="no-highlight">604</i>&nbsp;     */
+<i class="no-highlight">605</i>&nbsp;    public static class CommentOutput extends FeedbackResponseCommentData {
+<i class="no-highlight">606</i>&nbsp;
+<i class="no-highlight">607</i>&nbsp;        @Nullable
+<i class="no-highlight">608</i>&nbsp;        private String commentGiverName;
+<i class="no-highlight">609</i>&nbsp;        @Nullable
+<i class="no-highlight">610</i>&nbsp;        private String lastEditorName;
+<i class="no-highlight">611</i>&nbsp;
+<i class="no-highlight">612</i>&nbsp;        private CommentOutput(FeedbackResponseCommentAttributes frc) {
+<i class="no-highlight">613</i>&nbsp;            // use builder instead
+<b class="fc"><i class="no-highlight">614</i>&nbsp;            super(frc);</b>
+<i class="no-highlight">615</i>&nbsp;        }
+<i class="no-highlight">616</i>&nbsp;
+<i class="no-highlight">617</i>&nbsp;        /**
+<i class="no-highlight">618</i>&nbsp;         * Returns a builder for {@link CommentOutput}.
+<i class="no-highlight">619</i>&nbsp;         */
+<i class="no-highlight">620</i>&nbsp;        static Builder builder(FeedbackResponseCommentAttributes frc) {
+<b class="fc"><i class="no-highlight">621</i>&nbsp;            return new Builder(frc);</b>
+<i class="no-highlight">622</i>&nbsp;        }
+<i class="no-highlight">623</i>&nbsp;
+<i class="no-highlight">624</i>&nbsp;        @Nullable
+<i class="no-highlight">625</i>&nbsp;        public String getCommentGiverName() {
+<b class="nc"><i class="no-highlight">626</i>&nbsp;            return commentGiverName;</b>
+<i class="no-highlight">627</i>&nbsp;        }
+<i class="no-highlight">628</i>&nbsp;
+<i class="no-highlight">629</i>&nbsp;        @Nullable
+<i class="no-highlight">630</i>&nbsp;        public String getLastEditorName() {
+<b class="nc"><i class="no-highlight">631</i>&nbsp;            return lastEditorName;</b>
+<i class="no-highlight">632</i>&nbsp;        }
+<i class="no-highlight">633</i>&nbsp;
+<i class="no-highlight">634</i>&nbsp;        /**
+<i class="no-highlight">635</i>&nbsp;         * Builder class for {@link CommentOutput}.
+<i class="no-highlight">636</i>&nbsp;         */
+<i class="no-highlight">637</i>&nbsp;        public static final class Builder {
+<i class="no-highlight">638</i>&nbsp;            private final CommentOutput commentOutput;
+<i class="no-highlight">639</i>&nbsp;
+<b class="fc"><i class="no-highlight">640</i>&nbsp;            private Builder(FeedbackResponseCommentAttributes frc) {</b>
+<b class="fc"><i class="no-highlight">641</i>&nbsp;                commentOutput = new CommentOutput(frc);</b>
+<i class="no-highlight">642</i>&nbsp;            }
+<i class="no-highlight">643</i>&nbsp;
+<i class="no-highlight">644</i>&nbsp;            Builder withCommentGiver(@Nullable String commentGiver) {
+<b class="fc"><i class="no-highlight">645</i>&nbsp;                commentOutput.commentGiver = commentGiver;</b>
+<b class="fc"><i class="no-highlight">646</i>&nbsp;                return this;</b>
+<i class="no-highlight">647</i>&nbsp;            }
+<i class="no-highlight">648</i>&nbsp;
+<i class="no-highlight">649</i>&nbsp;            Builder withCommentGiverName(@Nullable String commentGiverName) {
+<b class="fc"><i class="no-highlight">650</i>&nbsp;                commentOutput.commentGiverName = commentGiverName;</b>
+<b class="fc"><i class="no-highlight">651</i>&nbsp;                return this;</b>
+<i class="no-highlight">652</i>&nbsp;            }
+<i class="no-highlight">653</i>&nbsp;
+<i class="no-highlight">654</i>&nbsp;            Builder withLastEditorEmail(@Nullable String lastEditorEmail) {
+<b class="fc"><i class="no-highlight">655</i>&nbsp;                commentOutput.lastEditorEmail = lastEditorEmail;</b>
+<b class="fc"><i class="no-highlight">656</i>&nbsp;                return this;</b>
+<i class="no-highlight">657</i>&nbsp;            }
+<i class="no-highlight">658</i>&nbsp;
+<i class="no-highlight">659</i>&nbsp;            Builder withLastEditorName(@Nullable String lastEditorName) {
+<b class="fc"><i class="no-highlight">660</i>&nbsp;                commentOutput.lastEditorName = lastEditorName;</b>
+<b class="fc"><i class="no-highlight">661</i>&nbsp;                return this;</b>
+<i class="no-highlight">662</i>&nbsp;            }
+<i class="no-highlight">663</i>&nbsp;
+<i class="no-highlight">664</i>&nbsp;            CommentOutput build() {
+<b class="fc"><i class="no-highlight">665</i>&nbsp;                return commentOutput;</b>
+<i class="no-highlight">666</i>&nbsp;            }
+<i class="no-highlight">667</i>&nbsp;        }
+<i class="no-highlight">668</i>&nbsp;    }
+<i class="no-highlight">669</i>&nbsp;
+<i class="no-highlight">670</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:53</div>
+</div>
+</body>
+</html>

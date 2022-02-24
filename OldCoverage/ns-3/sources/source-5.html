@@ -1,0 +1,896 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > FeedbackQuestionAttributes</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.common.datatransfer.attributes</a>
+</div>
+
+<h1>Coverage Summary for Class: FeedbackQuestionAttributes (teammates.common.datatransfer.attributes)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FeedbackQuestionAttributes</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (48/48)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85.2%
+  </span>
+  <span class="absValue">
+    (161/189)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">FeedbackQuestionAttributes$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">FeedbackQuestionAttributes$BasicBuilder</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (30/30)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">FeedbackQuestionAttributes$Builder</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (13/13)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">FeedbackQuestionAttributes$UpdateOptions</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (16/16)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">FeedbackQuestionAttributes$UpdateOptions$Builder</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (71/71)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.9%
+  </span>
+  <span class="absValue">
+    (224/252)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.common.datatransfer.attributes;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.time.Instant;
+<i class="no-highlight">4</i>&nbsp;import java.util.ArrayList;
+<i class="no-highlight">5</i>&nbsp;import java.util.List;
+<i class="no-highlight">6</i>&nbsp;
+<i class="no-highlight">7</i>&nbsp;import teammates.common.datatransfer.FeedbackParticipantType;
+<i class="no-highlight">8</i>&nbsp;import teammates.common.datatransfer.questions.FeedbackQuestionDetails;
+<i class="no-highlight">9</i>&nbsp;import teammates.common.datatransfer.questions.FeedbackQuestionType;
+<i class="no-highlight">10</i>&nbsp;import teammates.common.util.FieldValidator;
+<i class="no-highlight">11</i>&nbsp;import teammates.common.util.JsonUtils;
+<i class="no-highlight">12</i>&nbsp;import teammates.common.util.SanitizationHelper;
+<i class="no-highlight">13</i>&nbsp;import teammates.storage.entity.FeedbackQuestion;
+<i class="no-highlight">14</i>&nbsp;
+<i class="no-highlight">15</i>&nbsp;/**
+<i class="no-highlight">16</i>&nbsp; * The data transfer object for {@link FeedbackQuestion} entities.
+<i class="no-highlight">17</i>&nbsp; */
+<i class="no-highlight">18</i>&nbsp;public class FeedbackQuestionAttributes extends EntityAttributes&lt;FeedbackQuestion&gt;
+<i class="no-highlight">19</i>&nbsp;        implements Comparable&lt;FeedbackQuestionAttributes&gt; {
+<i class="no-highlight">20</i>&nbsp;
+<i class="no-highlight">21</i>&nbsp;    private String feedbackSessionName;
+<i class="no-highlight">22</i>&nbsp;    private String courseId;
+<i class="no-highlight">23</i>&nbsp;    private FeedbackQuestionDetails questionDetails;
+<i class="no-highlight">24</i>&nbsp;    private String questionDescription;
+<i class="no-highlight">25</i>&nbsp;    private int questionNumber;
+<i class="no-highlight">26</i>&nbsp;    private FeedbackParticipantType giverType;
+<i class="no-highlight">27</i>&nbsp;    private FeedbackParticipantType recipientType;
+<i class="no-highlight">28</i>&nbsp;    private int numberOfEntitiesToGiveFeedbackTo;
+<i class="no-highlight">29</i>&nbsp;    private List&lt;FeedbackParticipantType&gt; showResponsesTo;
+<i class="no-highlight">30</i>&nbsp;    private List&lt;FeedbackParticipantType&gt; showGiverNameTo;
+<i class="no-highlight">31</i>&nbsp;    private List&lt;FeedbackParticipantType&gt; showRecipientNameTo;
+<i class="no-highlight">32</i>&nbsp;    private transient Instant createdAt;
+<i class="no-highlight">33</i>&nbsp;    private transient Instant updatedAt;
+<i class="no-highlight">34</i>&nbsp;    private transient String feedbackQuestionId;
+<i class="no-highlight">35</i>&nbsp;
+<b class="fc"><i class="no-highlight">36</i>&nbsp;    private FeedbackQuestionAttributes() {</b>
+<b class="fc"><i class="no-highlight">37</i>&nbsp;        this.showResponsesTo = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">38</i>&nbsp;        this.showGiverNameTo = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">39</i>&nbsp;        this.showRecipientNameTo = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">40</i>&nbsp;    }
+<i class="no-highlight">41</i>&nbsp;
+<i class="no-highlight">42</i>&nbsp;    /**
+<i class="no-highlight">43</i>&nbsp;     * Returns a builder for {@link FeedbackQuestionAttributes}.
+<i class="no-highlight">44</i>&nbsp;     */
+<i class="no-highlight">45</i>&nbsp;    public static Builder builder() {
+<b class="fc"><i class="no-highlight">46</i>&nbsp;        return new Builder();</b>
+<i class="no-highlight">47</i>&nbsp;    }
+<i class="no-highlight">48</i>&nbsp;
+<i class="no-highlight">49</i>&nbsp;    /**
+<i class="no-highlight">50</i>&nbsp;     * Gets the {@link FeedbackQuestionAttributes} instance of the given {@link FeedbackQuestion}.
+<i class="no-highlight">51</i>&nbsp;     */
+<i class="no-highlight">52</i>&nbsp;    public static FeedbackQuestionAttributes valueOf(FeedbackQuestion fq) {
+<b class="fc"><i class="no-highlight">53</i>&nbsp;        FeedbackQuestionAttributes faq = new FeedbackQuestionAttributes();</b>
+<i class="no-highlight">54</i>&nbsp;
+<b class="fc"><i class="no-highlight">55</i>&nbsp;        faq.feedbackSessionName = fq.getFeedbackSessionName();</b>
+<b class="fc"><i class="no-highlight">56</i>&nbsp;        faq.courseId = fq.getCourseId();</b>
+<b class="fc"><i class="no-highlight">57</i>&nbsp;        faq.questionDetails = deserializeFeedbackQuestionDetails(fq.getQuestionText(), fq.getQuestionType());</b>
+<b class="fc"><i class="no-highlight">58</i>&nbsp;        faq.questionDescription = fq.getQuestionDescription();</b>
+<b class="fc"><i class="no-highlight">59</i>&nbsp;        faq.questionNumber = fq.getQuestionNumber();</b>
+<b class="fc"><i class="no-highlight">60</i>&nbsp;        faq.giverType = fq.getGiverType();</b>
+<b class="fc"><i class="no-highlight">61</i>&nbsp;        faq.recipientType = fq.getRecipientType();</b>
+<b class="fc"><i class="no-highlight">62</i>&nbsp;        faq.numberOfEntitiesToGiveFeedbackTo = fq.getNumberOfEntitiesToGiveFeedbackTo();</b>
+<b class="fc"><i class="no-highlight">63</i>&nbsp;        if (fq.getShowResponsesTo() != null) {</b>
+<b class="fc"><i class="no-highlight">64</i>&nbsp;            faq.showResponsesTo = new ArrayList&lt;&gt;(fq.getShowResponsesTo());</b>
+<i class="no-highlight">65</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">66</i>&nbsp;        if (fq.getShowGiverNameTo() != null) {</b>
+<b class="fc"><i class="no-highlight">67</i>&nbsp;            faq.showGiverNameTo = new ArrayList&lt;&gt;(fq.getShowGiverNameTo());</b>
+<i class="no-highlight">68</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">69</i>&nbsp;        if (fq.getShowRecipientNameTo() != null) {</b>
+<b class="fc"><i class="no-highlight">70</i>&nbsp;            faq.showRecipientNameTo = new ArrayList&lt;&gt;(fq.getShowRecipientNameTo());</b>
+<i class="no-highlight">71</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">72</i>&nbsp;        faq.createdAt = fq.getCreatedAt();</b>
+<b class="fc"><i class="no-highlight">73</i>&nbsp;        faq.updatedAt = fq.getUpdatedAt();</b>
+<b class="fc"><i class="no-highlight">74</i>&nbsp;        faq.feedbackQuestionId = fq.getId();</b>
+<i class="no-highlight">75</i>&nbsp;
+<b class="fc"><i class="no-highlight">76</i>&nbsp;        return faq;</b>
+<i class="no-highlight">77</i>&nbsp;    }
+<i class="no-highlight">78</i>&nbsp;
+<i class="no-highlight">79</i>&nbsp;    public Instant getCreatedAt() {
+<b class="fc"><i class="no-highlight">80</i>&nbsp;        return createdAt;</b>
+<i class="no-highlight">81</i>&nbsp;    }
+<i class="no-highlight">82</i>&nbsp;
+<i class="no-highlight">83</i>&nbsp;    public Instant getUpdatedAt() {
+<b class="fc"><i class="no-highlight">84</i>&nbsp;        return updatedAt;</b>
+<i class="no-highlight">85</i>&nbsp;    }
+<i class="no-highlight">86</i>&nbsp;
+<i class="no-highlight">87</i>&nbsp;    public String getId() {
+<b class="fc"><i class="no-highlight">88</i>&nbsp;        return feedbackQuestionId;</b>
+<i class="no-highlight">89</i>&nbsp;    }
+<i class="no-highlight">90</i>&nbsp;
+<i class="no-highlight">91</i>&nbsp;    /** NOTE: Only use this to match and search for the ID of a known existing question entity. */
+<i class="no-highlight">92</i>&nbsp;    @Deprecated
+<i class="no-highlight">93</i>&nbsp;    public void setId(String id) {
+<b class="fc"><i class="no-highlight">94</i>&nbsp;        this.feedbackQuestionId = id;</b>
+<i class="no-highlight">95</i>&nbsp;    }
+<i class="no-highlight">96</i>&nbsp;
+<i class="no-highlight">97</i>&nbsp;    @Override
+<i class="no-highlight">98</i>&nbsp;    public FeedbackQuestion toEntity() {
+<b class="fc"><i class="no-highlight">99</i>&nbsp;        return new FeedbackQuestion(feedbackSessionName, courseId,</b>
+<b class="fc"><i class="no-highlight">100</i>&nbsp;                                    getSerializedQuestionDetails(), questionDescription,</b>
+<b class="fc"><i class="no-highlight">101</i>&nbsp;                                    questionNumber, getQuestionType(), giverType,</b>
+<i class="no-highlight">102</i>&nbsp;                                    recipientType, numberOfEntitiesToGiveFeedbackTo,
+<i class="no-highlight">103</i>&nbsp;                                    showResponsesTo, showGiverNameTo, showRecipientNameTo);
+<i class="no-highlight">104</i>&nbsp;    }
+<i class="no-highlight">105</i>&nbsp;
+<i class="no-highlight">106</i>&nbsp;    /**
+<i class="no-highlight">107</i>&nbsp;     * Gets a deep copy of this object.
+<i class="no-highlight">108</i>&nbsp;     */
+<i class="no-highlight">109</i>&nbsp;    public FeedbackQuestionAttributes getCopy() {
+<b class="fc"><i class="no-highlight">110</i>&nbsp;        FeedbackQuestionAttributes faq = new FeedbackQuestionAttributes();</b>
+<i class="no-highlight">111</i>&nbsp;
+<b class="fc"><i class="no-highlight">112</i>&nbsp;        faq.feedbackSessionName = this.feedbackSessionName;</b>
+<b class="fc"><i class="no-highlight">113</i>&nbsp;        faq.courseId = this.courseId;</b>
+<b class="fc"><i class="no-highlight">114</i>&nbsp;        faq.questionDetails = this.getQuestionDetailsCopy();</b>
+<b class="fc"><i class="no-highlight">115</i>&nbsp;        faq.questionDescription = this.questionDescription;</b>
+<b class="fc"><i class="no-highlight">116</i>&nbsp;        faq.questionNumber = this.questionNumber;</b>
+<b class="fc"><i class="no-highlight">117</i>&nbsp;        faq.giverType = this.giverType;</b>
+<b class="fc"><i class="no-highlight">118</i>&nbsp;        faq.recipientType = this.recipientType;</b>
+<b class="fc"><i class="no-highlight">119</i>&nbsp;        faq.numberOfEntitiesToGiveFeedbackTo = this.numberOfEntitiesToGiveFeedbackTo;</b>
+<b class="fc"><i class="no-highlight">120</i>&nbsp;        faq.showResponsesTo = new ArrayList&lt;&gt;(this.showResponsesTo);</b>
+<b class="fc"><i class="no-highlight">121</i>&nbsp;        faq.showGiverNameTo = new ArrayList&lt;&gt;(this.showGiverNameTo);</b>
+<b class="fc"><i class="no-highlight">122</i>&nbsp;        faq.showRecipientNameTo = new ArrayList&lt;&gt;(this.showRecipientNameTo);</b>
+<b class="fc"><i class="no-highlight">123</i>&nbsp;        faq.createdAt = this.createdAt;</b>
+<b class="fc"><i class="no-highlight">124</i>&nbsp;        faq.updatedAt = this.updatedAt;</b>
+<b class="fc"><i class="no-highlight">125</i>&nbsp;        faq.feedbackQuestionId = this.feedbackQuestionId;</b>
+<i class="no-highlight">126</i>&nbsp;
+<b class="fc"><i class="no-highlight">127</i>&nbsp;        return faq;</b>
+<i class="no-highlight">128</i>&nbsp;    }
+<i class="no-highlight">129</i>&nbsp;
+<i class="no-highlight">130</i>&nbsp;    @Override
+<i class="no-highlight">131</i>&nbsp;    public String toString() {
+<b class="fc"><i class="no-highlight">132</i>&nbsp;        return &quot;FeedbackQuestionAttributes [feedbackSessionName=&quot;</b>
+<i class="no-highlight">133</i>&nbsp;               + feedbackSessionName + &quot;, courseId=&quot; + courseId
+<i class="no-highlight">134</i>&nbsp;               + &quot;, questionText=&quot;
+<b class="fc"><i class="no-highlight">135</i>&nbsp;               + getSerializedQuestionDetails() + &quot;, questionDescription=&quot; + questionDescription</b>
+<i class="no-highlight">136</i>&nbsp;               + &quot;, questionNumber=&quot; + questionNumber
+<b class="fc"><i class="no-highlight">137</i>&nbsp;               + &quot;, questionType=&quot; + getQuestionType() + &quot;, giverType=&quot; + giverType</b>
+<i class="no-highlight">138</i>&nbsp;               + &quot;, recipientType=&quot; + recipientType
+<i class="no-highlight">139</i>&nbsp;               + &quot;, numberOfEntitiesToGiveFeedbackTo=&quot;
+<i class="no-highlight">140</i>&nbsp;               + numberOfEntitiesToGiveFeedbackTo + &quot;, showResponsesTo=&quot;
+<i class="no-highlight">141</i>&nbsp;               + showResponsesTo + &quot;, showGiverNameTo=&quot; + showGiverNameTo
+<i class="no-highlight">142</i>&nbsp;               + &quot;, showRecipientNameTo=&quot; + showRecipientNameTo + &quot;]&quot;;
+<i class="no-highlight">143</i>&nbsp;    }
+<i class="no-highlight">144</i>&nbsp;
+<i class="no-highlight">145</i>&nbsp;    @Override
+<i class="no-highlight">146</i>&nbsp;    public List&lt;String&gt; getInvalidityInfo() {
+<b class="fc"><i class="no-highlight">147</i>&nbsp;        List&lt;String&gt; errors = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">148</i>&nbsp;
+<b class="fc"><i class="no-highlight">149</i>&nbsp;        addNonEmptyError(FieldValidator.getInvalidityInfoForFeedbackSessionName(feedbackSessionName), errors);</b>
+<i class="no-highlight">150</i>&nbsp;
+<b class="fc"><i class="no-highlight">151</i>&nbsp;        addNonEmptyError(FieldValidator.getInvalidityInfoForCourseId(courseId), errors);</b>
+<i class="no-highlight">152</i>&nbsp;
+<b class="fc"><i class="no-highlight">153</i>&nbsp;        errors.addAll(FieldValidator.getValidityInfoForFeedbackParticipantType(giverType, recipientType));</b>
+<i class="no-highlight">154</i>&nbsp;
+<b class="fc"><i class="no-highlight">155</i>&nbsp;        errors.addAll(FieldValidator.getValidityInfoForFeedbackResponseVisibility(showResponsesTo,</b>
+<i class="no-highlight">156</i>&nbsp;                                                                             showGiverNameTo,
+<i class="no-highlight">157</i>&nbsp;                                                                             showRecipientNameTo));
+<i class="no-highlight">158</i>&nbsp;
+<b class="fc"><i class="no-highlight">159</i>&nbsp;        return errors;</b>
+<i class="no-highlight">160</i>&nbsp;    }
+<i class="no-highlight">161</i>&nbsp;
+<i class="no-highlight">162</i>&nbsp;    @Override
+<i class="no-highlight">163</i>&nbsp;    public boolean isValid() {
+<b class="fc"><i class="no-highlight">164</i>&nbsp;        return getInvalidityInfo().isEmpty();</b>
+<i class="no-highlight">165</i>&nbsp;    }
+<i class="no-highlight">166</i>&nbsp;
+<i class="no-highlight">167</i>&nbsp;    /**
+<i class="no-highlight">168</i>&nbsp;     * Returns true if the response is visible to the given participant type.
+<i class="no-highlight">169</i>&nbsp;     */
+<i class="no-highlight">170</i>&nbsp;    public boolean isResponseVisibleTo(FeedbackParticipantType userType) {
+<b class="fc"><i class="no-highlight">171</i>&nbsp;        return showResponsesTo.contains(userType);</b>
+<i class="no-highlight">172</i>&nbsp;    }
+<i class="no-highlight">173</i>&nbsp;
+<i class="no-highlight">174</i>&nbsp;    /**
+<i class="no-highlight">175</i>&nbsp;     * Checks if updating this question to the {@code newAttributes} will
+<i class="no-highlight">176</i>&nbsp;     * require the responses to be deleted for consistency.
+<i class="no-highlight">177</i>&nbsp;     * Does not check if any responses exist.
+<i class="no-highlight">178</i>&nbsp;     */
+<i class="no-highlight">179</i>&nbsp;    public boolean areResponseDeletionsRequiredForChanges(FeedbackQuestionAttributes newAttributes) {
+<b class="fc"><i class="no-highlight">180</i>&nbsp;        if (!newAttributes.giverType.equals(this.giverType)</b>
+<b class="fc"><i class="no-highlight">181</i>&nbsp;                || !newAttributes.recipientType.equals(this.recipientType)) {</b>
+<b class="fc"><i class="no-highlight">182</i>&nbsp;            return true;</b>
+<i class="no-highlight">183</i>&nbsp;        }
+<i class="no-highlight">184</i>&nbsp;
+<b class="fc"><i class="no-highlight">185</i>&nbsp;        return this.getQuestionDetailsCopy().shouldChangesRequireResponseDeletion(newAttributes.getQuestionDetailsCopy());</b>
+<i class="no-highlight">186</i>&nbsp;    }
+<i class="no-highlight">187</i>&nbsp;
+<i class="no-highlight">188</i>&nbsp;    @Override
+<i class="no-highlight">189</i>&nbsp;    public int compareTo(FeedbackQuestionAttributes o) {
+<b class="fc"><i class="no-highlight">190</i>&nbsp;        if (o == null) {</b>
+<b class="nc"><i class="no-highlight">191</i>&nbsp;            return 1;</b>
+<i class="no-highlight">192</i>&nbsp;        }
+<i class="no-highlight">193</i>&nbsp;
+<b class="fc"><i class="no-highlight">194</i>&nbsp;        if (this.questionNumber != o.questionNumber) {</b>
+<b class="fc"><i class="no-highlight">195</i>&nbsp;            return Integer.compare(this.questionNumber, o.questionNumber);</b>
+<i class="no-highlight">196</i>&nbsp;        }
+<i class="no-highlight">197</i>&nbsp;        // Although question numbers ought to be unique in a feedback session,
+<i class="no-highlight">198</i>&nbsp;        // eventual consistency can result in duplicate questions numbers.
+<i class="no-highlight">199</i>&nbsp;        // Therefore, to ensure that the question order is always consistent to the user,
+<i class="no-highlight">200</i>&nbsp;        // compare feedbackQuestionId, which is guaranteed to be unique,
+<i class="no-highlight">201</i>&nbsp;        // when the questionNumbers are the same.
+<b class="nc"><i class="no-highlight">202</i>&nbsp;        return this.feedbackQuestionId.compareTo(o.feedbackQuestionId);</b>
+<i class="no-highlight">203</i>&nbsp;    }
+<i class="no-highlight">204</i>&nbsp;
+<i class="no-highlight">205</i>&nbsp;    @Override
+<i class="no-highlight">206</i>&nbsp;    public int hashCode() {
+<b class="fc"><i class="no-highlight">207</i>&nbsp;        int prime = 31;</b>
+<b class="fc"><i class="no-highlight">208</i>&nbsp;        int result = 1;</b>
+<i class="no-highlight">209</i>&nbsp;
+<b class="fc"><i class="no-highlight">210</i>&nbsp;        result = prime * result + (courseId == null ? 0 : courseId.hashCode());</b>
+<i class="no-highlight">211</i>&nbsp;
+<b class="fc"><i class="no-highlight">212</i>&nbsp;        result = prime * result + (feedbackSessionName == null ? 0 : feedbackSessionName.hashCode());</b>
+<i class="no-highlight">213</i>&nbsp;
+<b class="fc"><i class="no-highlight">214</i>&nbsp;        result = prime * result + (giverType == null ? 0 : giverType.hashCode());</b>
+<i class="no-highlight">215</i>&nbsp;
+<b class="fc"><i class="no-highlight">216</i>&nbsp;        result = prime * result + numberOfEntitiesToGiveFeedbackTo;</b>
+<i class="no-highlight">217</i>&nbsp;
+<b class="fc"><i class="no-highlight">218</i>&nbsp;        result = prime * result + questionNumber;</b>
+<i class="no-highlight">219</i>&nbsp;
+<b class="fc"><i class="no-highlight">220</i>&nbsp;        result = prime * result + (questionDetails == null ? 0 : questionDetails.hashCode());</b>
+<i class="no-highlight">221</i>&nbsp;
+<b class="fc"><i class="no-highlight">222</i>&nbsp;        result = prime * result + (questionDescription == null ? 0 : questionDescription.hashCode());</b>
+<i class="no-highlight">223</i>&nbsp;
+<b class="fc"><i class="no-highlight">224</i>&nbsp;        result = prime * result + (recipientType == null ? 0 : recipientType.hashCode());</b>
+<i class="no-highlight">225</i>&nbsp;
+<b class="fc"><i class="no-highlight">226</i>&nbsp;        result = prime * result + (showGiverNameTo == null ? 0 : showGiverNameTo.hashCode());</b>
+<i class="no-highlight">227</i>&nbsp;
+<b class="fc"><i class="no-highlight">228</i>&nbsp;        result = prime * result + (showRecipientNameTo == null ? 0 : showRecipientNameTo.hashCode());</b>
+<i class="no-highlight">229</i>&nbsp;
+<b class="fc"><i class="no-highlight">230</i>&nbsp;        result = prime * result + (showResponsesTo == null ? 0 : showResponsesTo.hashCode());</b>
+<i class="no-highlight">231</i>&nbsp;
+<b class="fc"><i class="no-highlight">232</i>&nbsp;        return result;</b>
+<i class="no-highlight">233</i>&nbsp;    }
+<i class="no-highlight">234</i>&nbsp;
+<i class="no-highlight">235</i>&nbsp;    @Override
+<i class="no-highlight">236</i>&nbsp;    public boolean equals(Object obj) {
+<b class="fc"><i class="no-highlight">237</i>&nbsp;        if (this == obj) {</b>
+<b class="nc"><i class="no-highlight">238</i>&nbsp;            return true;</b>
+<i class="no-highlight">239</i>&nbsp;        }
+<i class="no-highlight">240</i>&nbsp;
+<b class="fc"><i class="no-highlight">241</i>&nbsp;        if (obj == null) {</b>
+<b class="nc"><i class="no-highlight">242</i>&nbsp;            return false;</b>
+<i class="no-highlight">243</i>&nbsp;        }
+<i class="no-highlight">244</i>&nbsp;
+<b class="fc"><i class="no-highlight">245</i>&nbsp;        if (getClass() != obj.getClass()) {</b>
+<b class="fc"><i class="no-highlight">246</i>&nbsp;            return false;</b>
+<i class="no-highlight">247</i>&nbsp;        }
+<i class="no-highlight">248</i>&nbsp;
+<b class="fc"><i class="no-highlight">249</i>&nbsp;        FeedbackQuestionAttributes other = (FeedbackQuestionAttributes) obj;</b>
+<i class="no-highlight">250</i>&nbsp;
+<b class="fc"><i class="no-highlight">251</i>&nbsp;        if (courseId == null) {</b>
+<b class="nc"><i class="no-highlight">252</i>&nbsp;            if (other.courseId != null) {</b>
+<b class="nc"><i class="no-highlight">253</i>&nbsp;                return false;</b>
+<i class="no-highlight">254</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">255</i>&nbsp;        } else if (!courseId.equals(other.courseId)) {</b>
+<b class="fc"><i class="no-highlight">256</i>&nbsp;            return false;</b>
+<i class="no-highlight">257</i>&nbsp;        }
+<i class="no-highlight">258</i>&nbsp;
+<b class="fc"><i class="no-highlight">259</i>&nbsp;        if (feedbackSessionName == null) {</b>
+<b class="nc"><i class="no-highlight">260</i>&nbsp;            if (other.feedbackSessionName != null) {</b>
+<b class="nc"><i class="no-highlight">261</i>&nbsp;                return false;</b>
+<i class="no-highlight">262</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">263</i>&nbsp;        } else if (!feedbackSessionName.equals(other.feedbackSessionName)) {</b>
+<b class="nc"><i class="no-highlight">264</i>&nbsp;            return false;</b>
+<i class="no-highlight">265</i>&nbsp;        }
+<i class="no-highlight">266</i>&nbsp;
+<b class="fc"><i class="no-highlight">267</i>&nbsp;        if (giverType != other.giverType) {</b>
+<b class="nc"><i class="no-highlight">268</i>&nbsp;            return false;</b>
+<i class="no-highlight">269</i>&nbsp;        }
+<i class="no-highlight">270</i>&nbsp;
+<b class="fc"><i class="no-highlight">271</i>&nbsp;        if (numberOfEntitiesToGiveFeedbackTo != other.numberOfEntitiesToGiveFeedbackTo) {</b>
+<b class="nc"><i class="no-highlight">272</i>&nbsp;            return false;</b>
+<i class="no-highlight">273</i>&nbsp;        }
+<i class="no-highlight">274</i>&nbsp;
+<b class="fc"><i class="no-highlight">275</i>&nbsp;        if (questionNumber != other.questionNumber) {</b>
+<b class="nc"><i class="no-highlight">276</i>&nbsp;            return false;</b>
+<i class="no-highlight">277</i>&nbsp;        }
+<i class="no-highlight">278</i>&nbsp;
+<b class="fc"><i class="no-highlight">279</i>&nbsp;        if (questionDetails == null) {</b>
+<b class="nc"><i class="no-highlight">280</i>&nbsp;            if (other.questionDetails != null) {</b>
+<b class="nc"><i class="no-highlight">281</i>&nbsp;                return false;</b>
+<i class="no-highlight">282</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">283</i>&nbsp;        } else if (!questionDetails.equals(other.questionDetails)) {</b>
+<b class="nc"><i class="no-highlight">284</i>&nbsp;            return false;</b>
+<i class="no-highlight">285</i>&nbsp;        }
+<i class="no-highlight">286</i>&nbsp;
+<b class="fc"><i class="no-highlight">287</i>&nbsp;        if (questionDescription == null) {</b>
+<b class="fc"><i class="no-highlight">288</i>&nbsp;            if (other.questionDescription != null) {</b>
+<b class="nc"><i class="no-highlight">289</i>&nbsp;                return false;</b>
+<i class="no-highlight">290</i>&nbsp;            }
+<b class="nc"><i class="no-highlight">291</i>&nbsp;        } else if (!questionDescription.equals(other.questionDescription)) {</b>
+<b class="nc"><i class="no-highlight">292</i>&nbsp;            return false;</b>
+<i class="no-highlight">293</i>&nbsp;        }
+<i class="no-highlight">294</i>&nbsp;
+<b class="fc"><i class="no-highlight">295</i>&nbsp;        if (recipientType != other.recipientType) {</b>
+<b class="nc"><i class="no-highlight">296</i>&nbsp;            return false;</b>
+<i class="no-highlight">297</i>&nbsp;        }
+<i class="no-highlight">298</i>&nbsp;
+<b class="fc"><i class="no-highlight">299</i>&nbsp;        if (showGiverNameTo == null) {</b>
+<b class="nc"><i class="no-highlight">300</i>&nbsp;            if (other.showGiverNameTo != null) {</b>
+<b class="nc"><i class="no-highlight">301</i>&nbsp;                return false;</b>
+<i class="no-highlight">302</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">303</i>&nbsp;        } else if (!showGiverNameTo.equals(other.showGiverNameTo)) {</b>
+<b class="nc"><i class="no-highlight">304</i>&nbsp;            return false;</b>
+<i class="no-highlight">305</i>&nbsp;        }
+<i class="no-highlight">306</i>&nbsp;
+<b class="fc"><i class="no-highlight">307</i>&nbsp;        if (showRecipientNameTo == null) {</b>
+<b class="nc"><i class="no-highlight">308</i>&nbsp;            if (other.showRecipientNameTo != null) {</b>
+<b class="nc"><i class="no-highlight">309</i>&nbsp;                return false;</b>
+<i class="no-highlight">310</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">311</i>&nbsp;        } else if (!showRecipientNameTo.equals(other.showRecipientNameTo)) {</b>
+<b class="nc"><i class="no-highlight">312</i>&nbsp;            return false;</b>
+<i class="no-highlight">313</i>&nbsp;        }
+<i class="no-highlight">314</i>&nbsp;
+<b class="fc"><i class="no-highlight">315</i>&nbsp;        if (showResponsesTo == null) {</b>
+<b class="nc"><i class="no-highlight">316</i>&nbsp;            if (other.showResponsesTo != null) {</b>
+<b class="nc"><i class="no-highlight">317</i>&nbsp;                return false;</b>
+<i class="no-highlight">318</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">319</i>&nbsp;        } else if (!showResponsesTo.equals(other.showResponsesTo)) {</b>
+<b class="nc"><i class="no-highlight">320</i>&nbsp;            return false;</b>
+<i class="no-highlight">321</i>&nbsp;        }
+<i class="no-highlight">322</i>&nbsp;
+<b class="fc"><i class="no-highlight">323</i>&nbsp;        return true;</b>
+<i class="no-highlight">324</i>&nbsp;    }
+<i class="no-highlight">325</i>&nbsp;
+<i class="no-highlight">326</i>&nbsp;    /**
+<i class="no-highlight">327</i>&nbsp;     * Removes irrelevant/extraneous response visibility option settings from the question.
+<i class="no-highlight">328</i>&nbsp;     */
+<i class="no-highlight">329</i>&nbsp;    public void removeIrrelevantVisibilityOptions() {
+<b class="fc"><i class="no-highlight">330</i>&nbsp;        List&lt;FeedbackParticipantType&gt; optionsToRemove = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">331</i>&nbsp;
+<b class="fc"><i class="no-highlight">332</i>&nbsp;        if (recipientType != null) {</b>
+<b class="fc"><i class="no-highlight">333</i>&nbsp;            switch (recipientType) {</b>
+<i class="no-highlight">334</i>&nbsp;            case NONE:
+<b class="fc"><i class="no-highlight">335</i>&nbsp;                optionsToRemove.add(FeedbackParticipantType.RECEIVER);</b>
+<b class="fc"><i class="no-highlight">336</i>&nbsp;                optionsToRemove.add(FeedbackParticipantType.RECEIVER_TEAM_MEMBERS);</b>
+<b class="fc"><i class="no-highlight">337</i>&nbsp;                break;</b>
+<i class="no-highlight">338</i>&nbsp;            case TEAMS:
+<i class="no-highlight">339</i>&nbsp;            case INSTRUCTORS:
+<i class="no-highlight">340</i>&nbsp;            case OWN_TEAM:
+<i class="no-highlight">341</i>&nbsp;            case OWN_TEAM_MEMBERS:
+<b class="fc"><i class="no-highlight">342</i>&nbsp;                optionsToRemove.add(FeedbackParticipantType.RECEIVER_TEAM_MEMBERS);</b>
+<b class="fc"><i class="no-highlight">343</i>&nbsp;                break;</b>
+<i class="no-highlight">344</i>&nbsp;            default:
+<i class="no-highlight">345</i>&nbsp;                break;
+<i class="no-highlight">346</i>&nbsp;            }
+<i class="no-highlight">347</i>&nbsp;        }
+<i class="no-highlight">348</i>&nbsp;
+<b class="fc"><i class="no-highlight">349</i>&nbsp;        if (giverType != null) {</b>
+<b class="fc"><i class="no-highlight">350</i>&nbsp;            switch (giverType) {</b>
+<i class="no-highlight">351</i>&nbsp;            case TEAMS:
+<i class="no-highlight">352</i>&nbsp;            case INSTRUCTORS:
+<b class="fc"><i class="no-highlight">353</i>&nbsp;                optionsToRemove.add(FeedbackParticipantType.OWN_TEAM_MEMBERS);</b>
+<b class="fc"><i class="no-highlight">354</i>&nbsp;                break;</b>
+<i class="no-highlight">355</i>&nbsp;            default:
+<i class="no-highlight">356</i>&nbsp;                break;
+<i class="no-highlight">357</i>&nbsp;            }
+<i class="no-highlight">358</i>&nbsp;        }
+<i class="no-highlight">359</i>&nbsp;
+<b class="fc"><i class="no-highlight">360</i>&nbsp;        if (showRecipientNameTo != null) {</b>
+<b class="fc"><i class="no-highlight">361</i>&nbsp;            showResponsesTo.removeAll(optionsToRemove);</b>
+<i class="no-highlight">362</i>&nbsp;        }
+<i class="no-highlight">363</i>&nbsp;
+<b class="fc"><i class="no-highlight">364</i>&nbsp;        if (showGiverNameTo != null) {</b>
+<b class="fc"><i class="no-highlight">365</i>&nbsp;            showGiverNameTo.removeAll(optionsToRemove);</b>
+<i class="no-highlight">366</i>&nbsp;        }
+<i class="no-highlight">367</i>&nbsp;
+<b class="fc"><i class="no-highlight">368</i>&nbsp;        if (showRecipientNameTo != null) {</b>
+<b class="fc"><i class="no-highlight">369</i>&nbsp;            showRecipientNameTo.removeAll(optionsToRemove);</b>
+<i class="no-highlight">370</i>&nbsp;        }
+<i class="no-highlight">371</i>&nbsp;    }
+<i class="no-highlight">372</i>&nbsp;
+<i class="no-highlight">373</i>&nbsp;    @Override
+<i class="no-highlight">374</i>&nbsp;    public void sanitizeForSaving() {
+<b class="fc"><i class="no-highlight">375</i>&nbsp;        this.questionDescription = SanitizationHelper.sanitizeForRichText(this.questionDescription);</b>
+<i class="no-highlight">376</i>&nbsp;    }
+<i class="no-highlight">377</i>&nbsp;
+<i class="no-highlight">378</i>&nbsp;    public FeedbackQuestionDetails getQuestionDetails() {
+<b class="fc"><i class="no-highlight">379</i>&nbsp;        return questionDetails;</b>
+<i class="no-highlight">380</i>&nbsp;    }
+<i class="no-highlight">381</i>&nbsp;
+<i class="no-highlight">382</i>&nbsp;    public void setQuestionDetails(FeedbackQuestionDetails newQuestionDetails) {
+<b class="fc"><i class="no-highlight">383</i>&nbsp;        this.questionDetails = newQuestionDetails.getDeepCopy();</b>
+<i class="no-highlight">384</i>&nbsp;    }
+<i class="no-highlight">385</i>&nbsp;
+<i class="no-highlight">386</i>&nbsp;    public FeedbackQuestionDetails getQuestionDetailsCopy() {
+<b class="fc"><i class="no-highlight">387</i>&nbsp;        return questionDetails.getDeepCopy();</b>
+<i class="no-highlight">388</i>&nbsp;    }
+<i class="no-highlight">389</i>&nbsp;
+<i class="no-highlight">390</i>&nbsp;    public String getSerializedQuestionDetails() {
+<b class="fc"><i class="no-highlight">391</i>&nbsp;        return questionDetails.getJsonString();</b>
+<i class="no-highlight">392</i>&nbsp;    }
+<i class="no-highlight">393</i>&nbsp;
+<i class="no-highlight">394</i>&nbsp;    public String getFeedbackQuestionId() {
+<b class="fc"><i class="no-highlight">395</i>&nbsp;        return feedbackQuestionId;</b>
+<i class="no-highlight">396</i>&nbsp;    }
+<i class="no-highlight">397</i>&nbsp;
+<i class="no-highlight">398</i>&nbsp;    public String getFeedbackSessionName() {
+<b class="fc"><i class="no-highlight">399</i>&nbsp;        return feedbackSessionName;</b>
+<i class="no-highlight">400</i>&nbsp;    }
+<i class="no-highlight">401</i>&nbsp;
+<i class="no-highlight">402</i>&nbsp;    public void setFeedbackSessionName(String feedbackSessionName) {
+<b class="fc"><i class="no-highlight">403</i>&nbsp;        this.feedbackSessionName = feedbackSessionName;</b>
+<i class="no-highlight">404</i>&nbsp;    }
+<i class="no-highlight">405</i>&nbsp;
+<i class="no-highlight">406</i>&nbsp;    public String getCourseId() {
+<b class="fc"><i class="no-highlight">407</i>&nbsp;        return courseId;</b>
+<i class="no-highlight">408</i>&nbsp;    }
+<i class="no-highlight">409</i>&nbsp;
+<i class="no-highlight">410</i>&nbsp;    public void setCourseId(String courseId) {
+<b class="fc"><i class="no-highlight">411</i>&nbsp;        this.courseId = courseId;</b>
+<i class="no-highlight">412</i>&nbsp;    }
+<i class="no-highlight">413</i>&nbsp;
+<i class="no-highlight">414</i>&nbsp;    public String getQuestionDescription() {
+<b class="fc"><i class="no-highlight">415</i>&nbsp;        return questionDescription;</b>
+<i class="no-highlight">416</i>&nbsp;    }
+<i class="no-highlight">417</i>&nbsp;
+<i class="no-highlight">418</i>&nbsp;    public void setQuestionDescription(String questionDescription) {
+<b class="fc"><i class="no-highlight">419</i>&nbsp;        this.questionDescription = questionDescription;</b>
+<i class="no-highlight">420</i>&nbsp;    }
+<i class="no-highlight">421</i>&nbsp;
+<i class="no-highlight">422</i>&nbsp;    public int getQuestionNumber() {
+<b class="fc"><i class="no-highlight">423</i>&nbsp;        return questionNumber;</b>
+<i class="no-highlight">424</i>&nbsp;    }
+<i class="no-highlight">425</i>&nbsp;
+<i class="no-highlight">426</i>&nbsp;    public void setQuestionNumber(int questionNumber) {
+<b class="fc"><i class="no-highlight">427</i>&nbsp;        this.questionNumber = questionNumber;</b>
+<i class="no-highlight">428</i>&nbsp;    }
+<i class="no-highlight">429</i>&nbsp;
+<i class="no-highlight">430</i>&nbsp;    public FeedbackQuestionType getQuestionType() {
+<b class="fc"><i class="no-highlight">431</i>&nbsp;        return questionDetails.getQuestionType();</b>
+<i class="no-highlight">432</i>&nbsp;    }
+<i class="no-highlight">433</i>&nbsp;
+<i class="no-highlight">434</i>&nbsp;    public FeedbackParticipantType getGiverType() {
+<b class="fc"><i class="no-highlight">435</i>&nbsp;        return giverType;</b>
+<i class="no-highlight">436</i>&nbsp;    }
+<i class="no-highlight">437</i>&nbsp;
+<i class="no-highlight">438</i>&nbsp;    public void setGiverType(FeedbackParticipantType giverType) {
+<b class="fc"><i class="no-highlight">439</i>&nbsp;        this.giverType = giverType;</b>
+<i class="no-highlight">440</i>&nbsp;    }
+<i class="no-highlight">441</i>&nbsp;
+<i class="no-highlight">442</i>&nbsp;    public FeedbackParticipantType getRecipientType() {
+<b class="fc"><i class="no-highlight">443</i>&nbsp;        return recipientType;</b>
+<i class="no-highlight">444</i>&nbsp;    }
+<i class="no-highlight">445</i>&nbsp;
+<i class="no-highlight">446</i>&nbsp;    public void setRecipientType(FeedbackParticipantType recipientType) {
+<b class="fc"><i class="no-highlight">447</i>&nbsp;        this.recipientType = recipientType;</b>
+<i class="no-highlight">448</i>&nbsp;    }
+<i class="no-highlight">449</i>&nbsp;
+<i class="no-highlight">450</i>&nbsp;    public int getNumberOfEntitiesToGiveFeedbackTo() {
+<b class="fc"><i class="no-highlight">451</i>&nbsp;        return numberOfEntitiesToGiveFeedbackTo;</b>
+<i class="no-highlight">452</i>&nbsp;    }
+<i class="no-highlight">453</i>&nbsp;
+<i class="no-highlight">454</i>&nbsp;    public void setNumberOfEntitiesToGiveFeedbackTo(int numberOfEntitiesToGiveFeedbackTo) {
+<b class="fc"><i class="no-highlight">455</i>&nbsp;        this.numberOfEntitiesToGiveFeedbackTo = numberOfEntitiesToGiveFeedbackTo;</b>
+<i class="no-highlight">456</i>&nbsp;    }
+<i class="no-highlight">457</i>&nbsp;
+<i class="no-highlight">458</i>&nbsp;    public List&lt;FeedbackParticipantType&gt; getShowResponsesTo() {
+<b class="fc"><i class="no-highlight">459</i>&nbsp;        return showResponsesTo;</b>
+<i class="no-highlight">460</i>&nbsp;    }
+<i class="no-highlight">461</i>&nbsp;
+<i class="no-highlight">462</i>&nbsp;    public void setShowResponsesTo(List&lt;FeedbackParticipantType&gt; showResponsesTo) {
+<b class="fc"><i class="no-highlight">463</i>&nbsp;        this.showResponsesTo = showResponsesTo;</b>
+<i class="no-highlight">464</i>&nbsp;    }
+<i class="no-highlight">465</i>&nbsp;
+<i class="no-highlight">466</i>&nbsp;    public List&lt;FeedbackParticipantType&gt; getShowGiverNameTo() {
+<b class="fc"><i class="no-highlight">467</i>&nbsp;        return showGiverNameTo;</b>
+<i class="no-highlight">468</i>&nbsp;    }
+<i class="no-highlight">469</i>&nbsp;
+<i class="no-highlight">470</i>&nbsp;    public void setShowGiverNameTo(List&lt;FeedbackParticipantType&gt; showGiverNameTo) {
+<b class="fc"><i class="no-highlight">471</i>&nbsp;        this.showGiverNameTo = showGiverNameTo;</b>
+<i class="no-highlight">472</i>&nbsp;    }
+<i class="no-highlight">473</i>&nbsp;
+<i class="no-highlight">474</i>&nbsp;    public List&lt;FeedbackParticipantType&gt; getShowRecipientNameTo() {
+<b class="fc"><i class="no-highlight">475</i>&nbsp;        return showRecipientNameTo;</b>
+<i class="no-highlight">476</i>&nbsp;    }
+<i class="no-highlight">477</i>&nbsp;
+<i class="no-highlight">478</i>&nbsp;    public void setShowRecipientNameTo(List&lt;FeedbackParticipantType&gt; showRecipientNameTo) {
+<b class="fc"><i class="no-highlight">479</i>&nbsp;        this.showRecipientNameTo = showRecipientNameTo;</b>
+<i class="no-highlight">480</i>&nbsp;    }
+<i class="no-highlight">481</i>&nbsp;
+<i class="no-highlight">482</i>&nbsp;    private static FeedbackQuestionDetails deserializeFeedbackQuestionDetails(
+<i class="no-highlight">483</i>&nbsp;            String questionDetailsInJson, FeedbackQuestionType questionType) {
+<b class="fc"><i class="no-highlight">484</i>&nbsp;        return JsonUtils.fromJson(questionDetailsInJson, questionType.getQuestionDetailsClass());</b>
+<i class="no-highlight">485</i>&nbsp;    }
+<i class="no-highlight">486</i>&nbsp;
+<i class="no-highlight">487</i>&nbsp;    /**
+<i class="no-highlight">488</i>&nbsp;     * Updates with {@link UpdateOptions}.
+<i class="no-highlight">489</i>&nbsp;     */
+<i class="no-highlight">490</i>&nbsp;    public void update(FeedbackQuestionAttributes.UpdateOptions updateOptions) {
+<b class="fc"><i class="no-highlight">491</i>&nbsp;        updateOptions.questionNumberOption.ifPresent(s -&gt; questionNumber = s);</b>
+<b class="fc"><i class="no-highlight">492</i>&nbsp;        updateOptions.questionDetailsOption.ifPresent(s -&gt; questionDetails = s.getDeepCopy());</b>
+<b class="fc"><i class="no-highlight">493</i>&nbsp;        updateOptions.questionDescriptionOption.ifPresent(s -&gt; questionDescription = s);</b>
+<b class="fc"><i class="no-highlight">494</i>&nbsp;        updateOptions.giverTypeOption.ifPresent(s -&gt; giverType = s);</b>
+<b class="fc"><i class="no-highlight">495</i>&nbsp;        updateOptions.recipientTypeOption.ifPresent(s -&gt; recipientType = s);</b>
+<b class="fc"><i class="no-highlight">496</i>&nbsp;        updateOptions.numberOfEntitiesToGiveFeedbackToOption.ifPresent(s -&gt; numberOfEntitiesToGiveFeedbackTo = s);</b>
+<b class="fc"><i class="no-highlight">497</i>&nbsp;        updateOptions.showResponsesToOption.ifPresent(s -&gt; showResponsesTo = s);</b>
+<b class="fc"><i class="no-highlight">498</i>&nbsp;        updateOptions.showGiverNameToOption.ifPresent(s -&gt; showGiverNameTo = s);</b>
+<b class="fc"><i class="no-highlight">499</i>&nbsp;        updateOptions.showRecipientNameToOption.ifPresent(s -&gt; showRecipientNameTo = s);</b>
+<i class="no-highlight">500</i>&nbsp;
+<b class="fc"><i class="no-highlight">501</i>&nbsp;        removeIrrelevantVisibilityOptions();</b>
+<i class="no-highlight">502</i>&nbsp;    }
+<i class="no-highlight">503</i>&nbsp;
+<i class="no-highlight">504</i>&nbsp;    /**
+<i class="no-highlight">505</i>&nbsp;     * Returns a {@link UpdateOptions.Builder}
+<i class="no-highlight">506</i>&nbsp;     * to build {@link UpdateOptions} for a question.
+<i class="no-highlight">507</i>&nbsp;     */
+<i class="no-highlight">508</i>&nbsp;    public static FeedbackQuestionAttributes.UpdateOptions.Builder updateOptionsBuilder(String feedbackQuestionId) {
+<b class="fc"><i class="no-highlight">509</i>&nbsp;        return new FeedbackQuestionAttributes.UpdateOptions.Builder(feedbackQuestionId);</b>
+<i class="no-highlight">510</i>&nbsp;    }
+<i class="no-highlight">511</i>&nbsp;
+<i class="no-highlight">512</i>&nbsp;    /**
+<i class="no-highlight">513</i>&nbsp;     * A Builder class for {@link FeedbackQuestionAttributes}.
+<i class="no-highlight">514</i>&nbsp;     */
+<b class="fc"><i class="no-highlight">515</i>&nbsp;    public static class Builder extends BasicBuilder&lt;FeedbackQuestionAttributes, Builder&gt; {</b>
+<i class="no-highlight">516</i>&nbsp;        private final FeedbackQuestionAttributes feedbackQuestionAttributes;
+<i class="no-highlight">517</i>&nbsp;
+<i class="no-highlight">518</i>&nbsp;        private Builder() {
+<b class="fc"><i class="no-highlight">519</i>&nbsp;            super(new UpdateOptions(&quot;&quot;));</b>
+<b class="fc"><i class="no-highlight">520</i>&nbsp;            thisBuilder = this;</b>
+<i class="no-highlight">521</i>&nbsp;
+<b class="fc"><i class="no-highlight">522</i>&nbsp;            feedbackQuestionAttributes = new FeedbackQuestionAttributes();</b>
+<i class="no-highlight">523</i>&nbsp;        }
+<i class="no-highlight">524</i>&nbsp;
+<i class="no-highlight">525</i>&nbsp;        public Builder withFeedbackSessionName(String feedbackSessionName) {
+<b class="fc"><i class="no-highlight">526</i>&nbsp;            assert feedbackSessionName != null;</b>
+<i class="no-highlight">527</i>&nbsp;
+<b class="fc"><i class="no-highlight">528</i>&nbsp;            feedbackQuestionAttributes.feedbackSessionName = feedbackSessionName;</b>
+<b class="fc"><i class="no-highlight">529</i>&nbsp;            return this;</b>
+<i class="no-highlight">530</i>&nbsp;        }
+<i class="no-highlight">531</i>&nbsp;
+<i class="no-highlight">532</i>&nbsp;        public Builder withCourseId(String courseId) {
+<b class="fc"><i class="no-highlight">533</i>&nbsp;            assert courseId != null;</b>
+<i class="no-highlight">534</i>&nbsp;
+<b class="fc"><i class="no-highlight">535</i>&nbsp;            feedbackQuestionAttributes.courseId = courseId;</b>
+<b class="fc"><i class="no-highlight">536</i>&nbsp;            return this;</b>
+<i class="no-highlight">537</i>&nbsp;        }
+<i class="no-highlight">538</i>&nbsp;
+<i class="no-highlight">539</i>&nbsp;        @Override
+<i class="no-highlight">540</i>&nbsp;        public FeedbackQuestionAttributes build() {
+<b class="fc"><i class="no-highlight">541</i>&nbsp;            feedbackQuestionAttributes.update(updateOptions);</b>
+<b class="fc"><i class="no-highlight">542</i>&nbsp;            feedbackQuestionAttributes.removeIrrelevantVisibilityOptions();</b>
+<i class="no-highlight">543</i>&nbsp;
+<b class="fc"><i class="no-highlight">544</i>&nbsp;            return feedbackQuestionAttributes;</b>
+<i class="no-highlight">545</i>&nbsp;        }
+<i class="no-highlight">546</i>&nbsp;    }
+<i class="no-highlight">547</i>&nbsp;
+<i class="no-highlight">548</i>&nbsp;    /**
+<i class="no-highlight">549</i>&nbsp;     * Helper class to specific the fields to update in {@link FeedbackQuestionAttributes}.
+<i class="no-highlight">550</i>&nbsp;     */
+<b class="fc"><i class="no-highlight">551</i>&nbsp;    public static class UpdateOptions {</b>
+<i class="no-highlight">552</i>&nbsp;        private String feedbackQuestionId;
+<i class="no-highlight">553</i>&nbsp;
+<b class="fc"><i class="no-highlight">554</i>&nbsp;        private UpdateOption&lt;FeedbackQuestionDetails&gt; questionDetailsOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">555</i>&nbsp;        private UpdateOption&lt;String&gt; questionDescriptionOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">556</i>&nbsp;        private UpdateOption&lt;Integer&gt; questionNumberOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">557</i>&nbsp;        private UpdateOption&lt;FeedbackParticipantType&gt; giverTypeOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">558</i>&nbsp;        private UpdateOption&lt;FeedbackParticipantType&gt; recipientTypeOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">559</i>&nbsp;        private UpdateOption&lt;Integer&gt; numberOfEntitiesToGiveFeedbackToOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">560</i>&nbsp;        private UpdateOption&lt;List&lt;FeedbackParticipantType&gt;&gt; showResponsesToOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">561</i>&nbsp;        private UpdateOption&lt;List&lt;FeedbackParticipantType&gt;&gt; showGiverNameToOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">562</i>&nbsp;        private UpdateOption&lt;List&lt;FeedbackParticipantType&gt;&gt; showRecipientNameToOption = UpdateOption.empty();</b>
+<i class="no-highlight">563</i>&nbsp;
+<b class="fc"><i class="no-highlight">564</i>&nbsp;        private UpdateOptions(String feedbackQuestionId) {</b>
+<b class="fc"><i class="no-highlight">565</i>&nbsp;            assert feedbackQuestionId != null;</b>
+<i class="no-highlight">566</i>&nbsp;
+<b class="fc"><i class="no-highlight">567</i>&nbsp;            this.feedbackQuestionId = feedbackQuestionId;</b>
+<i class="no-highlight">568</i>&nbsp;        }
+<i class="no-highlight">569</i>&nbsp;
+<i class="no-highlight">570</i>&nbsp;        public String getFeedbackQuestionId() {
+<b class="fc"><i class="no-highlight">571</i>&nbsp;            return feedbackQuestionId;</b>
+<i class="no-highlight">572</i>&nbsp;        }
+<i class="no-highlight">573</i>&nbsp;
+<i class="no-highlight">574</i>&nbsp;        @Override
+<i class="no-highlight">575</i>&nbsp;        public String toString() {
+<b class="fc"><i class="no-highlight">576</i>&nbsp;            return &quot;FeedbackQuestionAttributes.UpdateOptions [&quot;</b>
+<i class="no-highlight">577</i>&nbsp;                    + &quot;feedbackQuestionId = &quot; + feedbackQuestionId
+<b class="fc"><i class="no-highlight">578</i>&nbsp;                    + &quot;, questionDetails = &quot; + JsonUtils.toJson(questionDetailsOption)</b>
+<i class="no-highlight">579</i>&nbsp;                    + &quot;, questionDescription = &quot; + questionDescriptionOption
+<i class="no-highlight">580</i>&nbsp;                    + &quot;, questionNumber = &quot; + questionNumberOption
+<i class="no-highlight">581</i>&nbsp;                    + &quot;, giverType = &quot; + giverTypeOption
+<i class="no-highlight">582</i>&nbsp;                    + &quot;, recipientType = &quot; + recipientTypeOption
+<i class="no-highlight">583</i>&nbsp;                    + &quot;, numberOfEntitiesToGiveFeedbackTo = &quot; + numberOfEntitiesToGiveFeedbackToOption
+<i class="no-highlight">584</i>&nbsp;                    + &quot;, showResponsesTo = &quot; + showResponsesToOption
+<i class="no-highlight">585</i>&nbsp;                    + &quot;, showGiverNameTo = &quot; + showGiverNameToOption
+<i class="no-highlight">586</i>&nbsp;                    + &quot;, showRecipientNameTo = &quot; + showRecipientNameToOption
+<i class="no-highlight">587</i>&nbsp;                    + &quot;]&quot;;
+<i class="no-highlight">588</i>&nbsp;        }
+<i class="no-highlight">589</i>&nbsp;
+<i class="no-highlight">590</i>&nbsp;        /**
+<i class="no-highlight">591</i>&nbsp;         * Builder class to build {@link UpdateOptions}.
+<i class="no-highlight">592</i>&nbsp;         */
+<i class="no-highlight">593</i>&nbsp;        public static class Builder extends BasicBuilder&lt;UpdateOptions, Builder&gt; {
+<i class="no-highlight">594</i>&nbsp;
+<i class="no-highlight">595</i>&nbsp;            private Builder(String feedbackQuestionId) {
+<b class="fc"><i class="no-highlight">596</i>&nbsp;                super(new UpdateOptions(feedbackQuestionId));</b>
+<b class="fc"><i class="no-highlight">597</i>&nbsp;                thisBuilder = this;</b>
+<i class="no-highlight">598</i>&nbsp;            }
+<i class="no-highlight">599</i>&nbsp;
+<i class="no-highlight">600</i>&nbsp;            @Override
+<i class="no-highlight">601</i>&nbsp;            public UpdateOptions build() {
+<b class="fc"><i class="no-highlight">602</i>&nbsp;                return updateOptions;</b>
+<i class="no-highlight">603</i>&nbsp;            }
+<i class="no-highlight">604</i>&nbsp;
+<i class="no-highlight">605</i>&nbsp;        }
+<i class="no-highlight">606</i>&nbsp;
+<i class="no-highlight">607</i>&nbsp;    }
+<i class="no-highlight">608</i>&nbsp;
+<i class="no-highlight">609</i>&nbsp;    /**
+<i class="no-highlight">610</i>&nbsp;     * Basic builder to build {@link FeedbackQuestionAttributes} related classes.
+<i class="no-highlight">611</i>&nbsp;     *
+<i class="no-highlight">612</i>&nbsp;     * @param &lt;T&gt; type to be built
+<i class="no-highlight">613</i>&nbsp;     * @param &lt;B&gt; type of the builder
+<i class="no-highlight">614</i>&nbsp;     */
+<b class="fc"><i class="no-highlight">615</i>&nbsp;    private abstract static class BasicBuilder&lt;T, B extends BasicBuilder&lt;T, B&gt;&gt; {</b>
+<i class="no-highlight">616</i>&nbsp;
+<i class="no-highlight">617</i>&nbsp;        FeedbackQuestionAttributes.UpdateOptions updateOptions;
+<i class="no-highlight">618</i>&nbsp;        B thisBuilder;
+<i class="no-highlight">619</i>&nbsp;
+<b class="fc"><i class="no-highlight">620</i>&nbsp;        BasicBuilder(UpdateOptions updateOptions) {</b>
+<b class="fc"><i class="no-highlight">621</i>&nbsp;            this.updateOptions = updateOptions;</b>
+<i class="no-highlight">622</i>&nbsp;        }
+<i class="no-highlight">623</i>&nbsp;
+<i class="no-highlight">624</i>&nbsp;        public B withQuestionDetails(FeedbackQuestionDetails questionDetails) {
+<b class="fc"><i class="no-highlight">625</i>&nbsp;            assert questionDetails != null;</b>
+<i class="no-highlight">626</i>&nbsp;
+<b class="fc"><i class="no-highlight">627</i>&nbsp;            updateOptions.questionDetailsOption = UpdateOption.of(questionDetails.getDeepCopy());</b>
+<b class="fc"><i class="no-highlight">628</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">629</i>&nbsp;        }
+<i class="no-highlight">630</i>&nbsp;
+<i class="no-highlight">631</i>&nbsp;        public B withQuestionDescription(String questionDescription) {
+<i class="no-highlight">632</i>&nbsp;            // questionDescription can be null
+<i class="no-highlight">633</i>&nbsp;
+<b class="fc"><i class="no-highlight">634</i>&nbsp;            updateOptions.questionDescriptionOption = UpdateOption.of(questionDescription);</b>
+<b class="fc"><i class="no-highlight">635</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">636</i>&nbsp;        }
+<i class="no-highlight">637</i>&nbsp;
+<i class="no-highlight">638</i>&nbsp;        public B withQuestionNumber(int questionNumber) {
+<b class="fc"><i class="no-highlight">639</i>&nbsp;            updateOptions.questionNumberOption = UpdateOption.of(questionNumber);</b>
+<b class="fc"><i class="no-highlight">640</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">641</i>&nbsp;        }
+<i class="no-highlight">642</i>&nbsp;
+<i class="no-highlight">643</i>&nbsp;        public B withGiverType(FeedbackParticipantType giverType) {
+<b class="fc"><i class="no-highlight">644</i>&nbsp;            assert giverType != null;</b>
+<i class="no-highlight">645</i>&nbsp;
+<b class="fc"><i class="no-highlight">646</i>&nbsp;            updateOptions.giverTypeOption = UpdateOption.of(giverType);</b>
+<b class="fc"><i class="no-highlight">647</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">648</i>&nbsp;        }
+<i class="no-highlight">649</i>&nbsp;
+<i class="no-highlight">650</i>&nbsp;        public B withRecipientType(FeedbackParticipantType recipientType) {
+<b class="fc"><i class="no-highlight">651</i>&nbsp;            assert recipientType != null;</b>
+<i class="no-highlight">652</i>&nbsp;
+<b class="fc"><i class="no-highlight">653</i>&nbsp;            updateOptions.recipientTypeOption = UpdateOption.of(recipientType);</b>
+<b class="fc"><i class="no-highlight">654</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">655</i>&nbsp;        }
+<i class="no-highlight">656</i>&nbsp;
+<i class="no-highlight">657</i>&nbsp;        public B withNumberOfEntitiesToGiveFeedbackTo(int numberOfEntitiesToGiveFeedbackTo) {
+<b class="fc"><i class="no-highlight">658</i>&nbsp;            updateOptions.numberOfEntitiesToGiveFeedbackToOption = UpdateOption.of(numberOfEntitiesToGiveFeedbackTo);</b>
+<b class="fc"><i class="no-highlight">659</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">660</i>&nbsp;        }
+<i class="no-highlight">661</i>&nbsp;
+<i class="no-highlight">662</i>&nbsp;        public B withShowResponsesTo(List&lt;FeedbackParticipantType&gt; showResponsesTo) {
+<b class="fc"><i class="no-highlight">663</i>&nbsp;            assert showResponsesTo != null;</b>
+<b class="fc"><i class="no-highlight">664</i>&nbsp;            assert !showResponsesTo.contains(null);</b>
+<i class="no-highlight">665</i>&nbsp;
+<b class="fc"><i class="no-highlight">666</i>&nbsp;            updateOptions.showResponsesToOption = UpdateOption.of(new ArrayList&lt;&gt;(showResponsesTo));</b>
+<b class="fc"><i class="no-highlight">667</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">668</i>&nbsp;        }
+<i class="no-highlight">669</i>&nbsp;
+<i class="no-highlight">670</i>&nbsp;        public B withShowGiverNameTo(List&lt;FeedbackParticipantType&gt; showGiverNameTo) {
+<b class="fc"><i class="no-highlight">671</i>&nbsp;            assert showGiverNameTo != null;</b>
+<b class="fc"><i class="no-highlight">672</i>&nbsp;            assert !showGiverNameTo.contains(null);</b>
+<i class="no-highlight">673</i>&nbsp;
+<b class="fc"><i class="no-highlight">674</i>&nbsp;            updateOptions.showGiverNameToOption = UpdateOption.of(new ArrayList&lt;&gt;(showGiverNameTo));</b>
+<b class="fc"><i class="no-highlight">675</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">676</i>&nbsp;        }
+<i class="no-highlight">677</i>&nbsp;
+<i class="no-highlight">678</i>&nbsp;        public B withShowRecipientNameTo(List&lt;FeedbackParticipantType&gt; showRecipientNameTo) {
+<b class="fc"><i class="no-highlight">679</i>&nbsp;            assert showRecipientNameTo != null;</b>
+<b class="fc"><i class="no-highlight">680</i>&nbsp;            assert !showRecipientNameTo.contains(null);</b>
+<i class="no-highlight">681</i>&nbsp;
+<b class="fc"><i class="no-highlight">682</i>&nbsp;            updateOptions.showRecipientNameToOption = UpdateOption.of(new ArrayList&lt;&gt;(showRecipientNameTo));</b>
+<b class="fc"><i class="no-highlight">683</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">684</i>&nbsp;        }
+<i class="no-highlight">685</i>&nbsp;
+<i class="no-highlight">686</i>&nbsp;        public abstract T build();
+<i class="no-highlight">687</i>&nbsp;
+<i class="no-highlight">688</i>&nbsp;    }
+<i class="no-highlight">689</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:52</div>
+</div>
+</body>
+</html>

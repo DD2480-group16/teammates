@@ -1,0 +1,151 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > SendErrorReportAction</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.ui.webapi</a>
+</div>
+
+<h1>Coverage Summary for Class: SendErrorReportAction (teammates.ui.webapi)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SendErrorReportAction</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (12/12)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.ui.webapi;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import teammates.common.util.Logger;
+<i class="no-highlight">4</i>&nbsp;import teammates.ui.request.ErrorReportRequest;
+<i class="no-highlight">5</i>&nbsp;import teammates.ui.request.InvalidHttpRequestBodyException;
+<i class="no-highlight">6</i>&nbsp;
+<i class="no-highlight">7</i>&nbsp;/**
+<i class="no-highlight">8</i>&nbsp; * Actions: sends an error report to the system admin.
+<i class="no-highlight">9</i>&nbsp; */
+<b class="fc"><i class="no-highlight">10</i>&nbsp;class SendErrorReportAction extends Action {</b>
+<b class="fc"><i class="no-highlight">11</i>&nbsp;    private static final Logger log = Logger.getLogger();</b>
+<i class="no-highlight">12</i>&nbsp;
+<i class="no-highlight">13</i>&nbsp;    @Override
+<i class="no-highlight">14</i>&nbsp;    AuthType getMinAuthLevel() {
+<i class="no-highlight">15</i>&nbsp;        // Anyone can submit an error report
+<b class="fc"><i class="no-highlight">16</i>&nbsp;        return AuthType.PUBLIC;</b>
+<i class="no-highlight">17</i>&nbsp;    }
+<i class="no-highlight">18</i>&nbsp;
+<i class="no-highlight">19</i>&nbsp;    @Override
+<i class="no-highlight">20</i>&nbsp;    void checkSpecificAccessControl() {
+<i class="no-highlight">21</i>&nbsp;        // Anyone can submit an error report
+<i class="no-highlight">22</i>&nbsp;    }
+<i class="no-highlight">23</i>&nbsp;
+<i class="no-highlight">24</i>&nbsp;    @Override
+<i class="no-highlight">25</i>&nbsp;    public JsonResult execute() throws InvalidHttpRequestBodyException {
+<b class="fc"><i class="no-highlight">26</i>&nbsp;        ErrorReportRequest report = getAndValidateRequestBody(ErrorReportRequest.class);</b>
+<i class="no-highlight">27</i>&nbsp;
+<i class="no-highlight">28</i>&nbsp;        // Severe logs will trigger email to the system admin
+<b class="fc"><i class="no-highlight">29</i>&nbsp;        log.severe(getUserErrorReportLogMessage(report));</b>
+<i class="no-highlight">30</i>&nbsp;
+<b class="fc"><i class="no-highlight">31</i>&nbsp;        return new JsonResult(&quot;Error report successfully sent&quot;);</b>
+<i class="no-highlight">32</i>&nbsp;    }
+<i class="no-highlight">33</i>&nbsp;
+<i class="no-highlight">34</i>&nbsp;    /**
+<i class="no-highlight">35</i>&nbsp;     * Gets the user error report that will be sent to the system admin.
+<i class="no-highlight">36</i>&nbsp;     */
+<i class="no-highlight">37</i>&nbsp;    String getUserErrorReportLogMessage(ErrorReportRequest report) {
+<b class="fc"><i class="no-highlight">38</i>&nbsp;        String user = userInfo == null ? &quot;Non-logged in user&quot; : userInfo.id;</b>
+<b class="fc"><i class="no-highlight">39</i>&nbsp;        return &quot;====== USER FEEDBACK ABOUT ERROR ======&quot; + System.lineSeparator()</b>
+<b class="fc"><i class="no-highlight">40</i>&nbsp;                + &quot;USER: &quot; + user + System.lineSeparator()</b>
+<b class="fc"><i class="no-highlight">41</i>&nbsp;                + &quot;REQUEST ID: &quot; + report.getRequestId() + System.lineSeparator()</b>
+<b class="fc"><i class="no-highlight">42</i>&nbsp;                + &quot;SUBJECT: &quot; + report.getSubject() + System.lineSeparator()</b>
+<b class="fc"><i class="no-highlight">43</i>&nbsp;                + &quot;CONTENT: &quot; + report.getContent();</b>
+<i class="no-highlight">44</i>&nbsp;    }
+<i class="no-highlight">45</i>&nbsp;
+<i class="no-highlight">46</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:52</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,405 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > FeedbackSession</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.storage.entity</a>
+</div>
+
+<h1>Coverage Summary for Class: FeedbackSession (teammates.storage.entity)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FeedbackSession</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84.1%
+  </span>
+  <span class="absValue">
+    (37/44)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    89.2%
+  </span>
+  <span class="absValue">
+    (58/65)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.storage.entity;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.time.Instant;
+<i class="no-highlight">4</i>&nbsp;
+<i class="no-highlight">5</i>&nbsp;import com.googlecode.objectify.annotation.Entity;
+<i class="no-highlight">6</i>&nbsp;import com.googlecode.objectify.annotation.Id;
+<i class="no-highlight">7</i>&nbsp;import com.googlecode.objectify.annotation.Index;
+<i class="no-highlight">8</i>&nbsp;import com.googlecode.objectify.annotation.Translate;
+<i class="no-highlight">9</i>&nbsp;import com.googlecode.objectify.annotation.Unindex;
+<i class="no-highlight">10</i>&nbsp;
+<i class="no-highlight">11</i>&nbsp;/**
+<i class="no-highlight">12</i>&nbsp; * Represents an instructor-created Feedback Session.
+<i class="no-highlight">13</i>&nbsp; */
+<i class="no-highlight">14</i>&nbsp;@Entity
+<i class="no-highlight">15</i>&nbsp;@Index
+<i class="no-highlight">16</i>&nbsp;public class FeedbackSession extends BaseEntity {
+<i class="no-highlight">17</i>&nbsp;
+<i class="no-highlight">18</i>&nbsp;    // PMD.UnusedPrivateField and SingularField are suppressed
+<i class="no-highlight">19</i>&nbsp;    // as feedbackSessionId is persisted to the database
+<i class="no-highlight">20</i>&nbsp;    /**
+<i class="no-highlight">21</i>&nbsp;     * The unique id of the entity.
+<i class="no-highlight">22</i>&nbsp;     *
+<i class="no-highlight">23</i>&nbsp;     * @see #generateId(String, String)
+<i class="no-highlight">24</i>&nbsp;     */
+<i class="no-highlight">25</i>&nbsp;    @SuppressWarnings({&quot;PMD.UnusedPrivateField&quot;, &quot;PMD.SingularField&quot;})
+<i class="no-highlight">26</i>&nbsp;    @Id
+<i class="no-highlight">27</i>&nbsp;    private transient String feedbackSessionId;
+<i class="no-highlight">28</i>&nbsp;
+<i class="no-highlight">29</i>&nbsp;    private String feedbackSessionName;
+<i class="no-highlight">30</i>&nbsp;
+<i class="no-highlight">31</i>&nbsp;    private String courseId;
+<i class="no-highlight">32</i>&nbsp;
+<i class="no-highlight">33</i>&nbsp;    private String creatorEmail;
+<i class="no-highlight">34</i>&nbsp;
+<i class="no-highlight">35</i>&nbsp;    @Unindex
+<i class="no-highlight">36</i>&nbsp;    private String instructions;
+<i class="no-highlight">37</i>&nbsp;
+<i class="no-highlight">38</i>&nbsp;    @Translate(InstantTranslatorFactory.class)
+<i class="no-highlight">39</i>&nbsp;    private Instant createdTime;
+<i class="no-highlight">40</i>&nbsp;
+<i class="no-highlight">41</i>&nbsp;    @Translate(InstantTranslatorFactory.class)
+<i class="no-highlight">42</i>&nbsp;    private Instant deletedTime;
+<i class="no-highlight">43</i>&nbsp;
+<i class="no-highlight">44</i>&nbsp;    @Translate(InstantTranslatorFactory.class)
+<i class="no-highlight">45</i>&nbsp;    private Instant startTime;
+<i class="no-highlight">46</i>&nbsp;
+<i class="no-highlight">47</i>&nbsp;    @Translate(InstantTranslatorFactory.class)
+<i class="no-highlight">48</i>&nbsp;    private Instant endTime;
+<i class="no-highlight">49</i>&nbsp;
+<i class="no-highlight">50</i>&nbsp;    @Translate(InstantTranslatorFactory.class)
+<i class="no-highlight">51</i>&nbsp;    private Instant sessionVisibleFromTime;
+<i class="no-highlight">52</i>&nbsp;
+<i class="no-highlight">53</i>&nbsp;    @Translate(InstantTranslatorFactory.class)
+<i class="no-highlight">54</i>&nbsp;    private Instant resultsVisibleFromTime;
+<i class="no-highlight">55</i>&nbsp;
+<i class="no-highlight">56</i>&nbsp;    private String timeZone;
+<i class="no-highlight">57</i>&nbsp;
+<i class="no-highlight">58</i>&nbsp;    @Unindex
+<i class="no-highlight">59</i>&nbsp;    private long gracePeriod;
+<i class="no-highlight">60</i>&nbsp;
+<i class="no-highlight">61</i>&nbsp;    private boolean sentOpeningSoonEmail;
+<i class="no-highlight">62</i>&nbsp;
+<i class="no-highlight">63</i>&nbsp;    private boolean sentOpenEmail;
+<i class="no-highlight">64</i>&nbsp;
+<i class="no-highlight">65</i>&nbsp;    private boolean sentClosingEmail;
+<i class="no-highlight">66</i>&nbsp;
+<i class="no-highlight">67</i>&nbsp;    private boolean sentClosedEmail;
+<i class="no-highlight">68</i>&nbsp;
+<i class="no-highlight">69</i>&nbsp;    private boolean sentPublishedEmail;
+<i class="no-highlight">70</i>&nbsp;
+<i class="no-highlight">71</i>&nbsp;    private boolean isOpeningEmailEnabled;
+<i class="no-highlight">72</i>&nbsp;
+<i class="no-highlight">73</i>&nbsp;    private boolean isClosingEmailEnabled;
+<i class="no-highlight">74</i>&nbsp;
+<i class="no-highlight">75</i>&nbsp;    private boolean isPublishedEmailEnabled;
+<i class="no-highlight">76</i>&nbsp;
+<i class="no-highlight">77</i>&nbsp;    @SuppressWarnings(&quot;unused&quot;)
+<b class="nc"><i class="no-highlight">78</i>&nbsp;    private FeedbackSession() {</b>
+<i class="no-highlight">79</i>&nbsp;        // required by Objectify
+<i class="no-highlight">80</i>&nbsp;    }
+<i class="no-highlight">81</i>&nbsp;
+<i class="no-highlight">82</i>&nbsp;    public FeedbackSession(String feedbackSessionName, String courseId, String creatorEmail,
+<i class="no-highlight">83</i>&nbsp;            String instructions, Instant createdTime, Instant deletedTime, Instant startTime, Instant endTime,
+<i class="no-highlight">84</i>&nbsp;            Instant sessionVisibleFromTime, Instant resultsVisibleFromTime, String timeZone, long gracePeriod,
+<i class="no-highlight">85</i>&nbsp;            boolean sentOpeningSoonEmail, boolean sentOpenEmail, boolean sentClosingEmail,
+<i class="no-highlight">86</i>&nbsp;            boolean sentClosedEmail, boolean sentPublishedEmail, boolean isOpeningEmailEnabled,
+<b class="fc"><i class="no-highlight">87</i>&nbsp;            boolean isClosingEmailEnabled, boolean isPublishedEmailEnabled) {</b>
+<b class="fc"><i class="no-highlight">88</i>&nbsp;        this.feedbackSessionName = feedbackSessionName;</b>
+<b class="fc"><i class="no-highlight">89</i>&nbsp;        this.courseId = courseId;</b>
+<b class="fc"><i class="no-highlight">90</i>&nbsp;        this.creatorEmail = creatorEmail;</b>
+<b class="fc"><i class="no-highlight">91</i>&nbsp;        this.instructions = instructions;</b>
+<b class="fc"><i class="no-highlight">92</i>&nbsp;        this.createdTime = createdTime;</b>
+<b class="fc"><i class="no-highlight">93</i>&nbsp;        this.deletedTime = deletedTime;</b>
+<b class="fc"><i class="no-highlight">94</i>&nbsp;        this.startTime = startTime;</b>
+<b class="fc"><i class="no-highlight">95</i>&nbsp;        this.endTime = endTime;</b>
+<b class="fc"><i class="no-highlight">96</i>&nbsp;        this.sessionVisibleFromTime = sessionVisibleFromTime;</b>
+<b class="fc"><i class="no-highlight">97</i>&nbsp;        this.resultsVisibleFromTime = resultsVisibleFromTime;</b>
+<b class="fc"><i class="no-highlight">98</i>&nbsp;        this.timeZone = timeZone;</b>
+<b class="fc"><i class="no-highlight">99</i>&nbsp;        this.gracePeriod = gracePeriod;</b>
+<b class="fc"><i class="no-highlight">100</i>&nbsp;        this.sentOpeningSoonEmail = sentOpeningSoonEmail;</b>
+<b class="fc"><i class="no-highlight">101</i>&nbsp;        this.sentOpenEmail = sentOpenEmail;</b>
+<b class="fc"><i class="no-highlight">102</i>&nbsp;        this.sentClosingEmail = sentClosingEmail;</b>
+<b class="fc"><i class="no-highlight">103</i>&nbsp;        this.sentClosedEmail = sentClosedEmail;</b>
+<b class="fc"><i class="no-highlight">104</i>&nbsp;        this.sentPublishedEmail = sentPublishedEmail;</b>
+<b class="fc"><i class="no-highlight">105</i>&nbsp;        this.isOpeningEmailEnabled = isOpeningEmailEnabled;</b>
+<b class="fc"><i class="no-highlight">106</i>&nbsp;        this.isClosingEmailEnabled = isClosingEmailEnabled;</b>
+<b class="fc"><i class="no-highlight">107</i>&nbsp;        this.isPublishedEmailEnabled = isPublishedEmailEnabled;</b>
+<b class="fc"><i class="no-highlight">108</i>&nbsp;        this.feedbackSessionId = generateId(this.feedbackSessionName, this.courseId);</b>
+<i class="no-highlight">109</i>&nbsp;    }
+<i class="no-highlight">110</i>&nbsp;
+<i class="no-highlight">111</i>&nbsp;    /**
+<i class="no-highlight">112</i>&nbsp;     * Generates an unique ID for the feedback session.
+<i class="no-highlight">113</i>&nbsp;     */
+<i class="no-highlight">114</i>&nbsp;    public static String generateId(String feedbackSessionName, String courseId) {
+<i class="no-highlight">115</i>&nbsp;        // Format is feedbackSessionName%courseId
+<b class="fc"><i class="no-highlight">116</i>&nbsp;        return feedbackSessionName + &#39;%&#39; + courseId;</b>
+<i class="no-highlight">117</i>&nbsp;    }
+<i class="no-highlight">118</i>&nbsp;
+<i class="no-highlight">119</i>&nbsp;    public String getFeedbackSessionName() {
+<b class="fc"><i class="no-highlight">120</i>&nbsp;        return feedbackSessionName;</b>
+<i class="no-highlight">121</i>&nbsp;    }
+<i class="no-highlight">122</i>&nbsp;
+<i class="no-highlight">123</i>&nbsp;    public void setFeedbackSessionName(String feedbackSessionName) {
+<b class="nc"><i class="no-highlight">124</i>&nbsp;        this.feedbackSessionName = feedbackSessionName;</b>
+<i class="no-highlight">125</i>&nbsp;    }
+<i class="no-highlight">126</i>&nbsp;
+<i class="no-highlight">127</i>&nbsp;    public String getCourseId() {
+<b class="fc"><i class="no-highlight">128</i>&nbsp;        return courseId;</b>
+<i class="no-highlight">129</i>&nbsp;    }
+<i class="no-highlight">130</i>&nbsp;
+<i class="no-highlight">131</i>&nbsp;    public void setCourseId(String courseId) {
+<b class="nc"><i class="no-highlight">132</i>&nbsp;        this.courseId = courseId;</b>
+<i class="no-highlight">133</i>&nbsp;    }
+<i class="no-highlight">134</i>&nbsp;
+<i class="no-highlight">135</i>&nbsp;    public String getCreatorEmail() {
+<b class="fc"><i class="no-highlight">136</i>&nbsp;        return creatorEmail;</b>
+<i class="no-highlight">137</i>&nbsp;    }
+<i class="no-highlight">138</i>&nbsp;
+<i class="no-highlight">139</i>&nbsp;    public void setCreatorEmail(String creatorId) {
+<b class="nc"><i class="no-highlight">140</i>&nbsp;        this.creatorEmail = creatorId;</b>
+<i class="no-highlight">141</i>&nbsp;    }
+<i class="no-highlight">142</i>&nbsp;
+<i class="no-highlight">143</i>&nbsp;    public String getInstructions() {
+<b class="fc"><i class="no-highlight">144</i>&nbsp;        return instructions;</b>
+<i class="no-highlight">145</i>&nbsp;    }
+<i class="no-highlight">146</i>&nbsp;
+<i class="no-highlight">147</i>&nbsp;    public void setInstructions(String instructions) {
+<b class="fc"><i class="no-highlight">148</i>&nbsp;        this.instructions = instructions;</b>
+<i class="no-highlight">149</i>&nbsp;    }
+<i class="no-highlight">150</i>&nbsp;
+<i class="no-highlight">151</i>&nbsp;    public Instant getCreatedTime() {
+<b class="fc"><i class="no-highlight">152</i>&nbsp;        return createdTime;</b>
+<i class="no-highlight">153</i>&nbsp;    }
+<i class="no-highlight">154</i>&nbsp;
+<i class="no-highlight">155</i>&nbsp;    public void setCreatedTime(Instant createdTime) {
+<b class="nc"><i class="no-highlight">156</i>&nbsp;        this.createdTime = createdTime;</b>
+<i class="no-highlight">157</i>&nbsp;    }
+<i class="no-highlight">158</i>&nbsp;
+<i class="no-highlight">159</i>&nbsp;    public Instant getDeletedTime() {
+<b class="fc"><i class="no-highlight">160</i>&nbsp;        return deletedTime;</b>
+<i class="no-highlight">161</i>&nbsp;    }
+<i class="no-highlight">162</i>&nbsp;
+<i class="no-highlight">163</i>&nbsp;    public void setDeletedTime(Instant deletedTime) {
+<b class="fc"><i class="no-highlight">164</i>&nbsp;        this.deletedTime = deletedTime;</b>
+<i class="no-highlight">165</i>&nbsp;    }
+<i class="no-highlight">166</i>&nbsp;
+<i class="no-highlight">167</i>&nbsp;    public Instant getStartTime() {
+<b class="fc"><i class="no-highlight">168</i>&nbsp;        return startTime;</b>
+<i class="no-highlight">169</i>&nbsp;    }
+<i class="no-highlight">170</i>&nbsp;
+<i class="no-highlight">171</i>&nbsp;    public void setStartTime(Instant startTime) {
+<b class="fc"><i class="no-highlight">172</i>&nbsp;        this.startTime = startTime;</b>
+<i class="no-highlight">173</i>&nbsp;    }
+<i class="no-highlight">174</i>&nbsp;
+<i class="no-highlight">175</i>&nbsp;    public Instant getEndTime() {
+<b class="fc"><i class="no-highlight">176</i>&nbsp;        return endTime;</b>
+<i class="no-highlight">177</i>&nbsp;    }
+<i class="no-highlight">178</i>&nbsp;
+<i class="no-highlight">179</i>&nbsp;    public void setEndTime(Instant endTime) {
+<b class="fc"><i class="no-highlight">180</i>&nbsp;        this.endTime = endTime;</b>
+<i class="no-highlight">181</i>&nbsp;    }
+<i class="no-highlight">182</i>&nbsp;
+<i class="no-highlight">183</i>&nbsp;    public Instant getSessionVisibleFromTime() {
+<b class="fc"><i class="no-highlight">184</i>&nbsp;        return sessionVisibleFromTime;</b>
+<i class="no-highlight">185</i>&nbsp;    }
+<i class="no-highlight">186</i>&nbsp;
+<i class="no-highlight">187</i>&nbsp;    public void setSessionVisibleFromTime(Instant sessionVisibleFromTime) {
+<b class="fc"><i class="no-highlight">188</i>&nbsp;        this.sessionVisibleFromTime = sessionVisibleFromTime;</b>
+<i class="no-highlight">189</i>&nbsp;    }
+<i class="no-highlight">190</i>&nbsp;
+<i class="no-highlight">191</i>&nbsp;    public Instant getResultsVisibleFromTime() {
+<b class="fc"><i class="no-highlight">192</i>&nbsp;        return resultsVisibleFromTime;</b>
+<i class="no-highlight">193</i>&nbsp;    }
+<i class="no-highlight">194</i>&nbsp;
+<i class="no-highlight">195</i>&nbsp;    public void setResultsVisibleFromTime(Instant resultsVisibleFromTime) {
+<b class="fc"><i class="no-highlight">196</i>&nbsp;        this.resultsVisibleFromTime = resultsVisibleFromTime;</b>
+<i class="no-highlight">197</i>&nbsp;    }
+<i class="no-highlight">198</i>&nbsp;
+<i class="no-highlight">199</i>&nbsp;    public String getTimeZone() {
+<b class="fc"><i class="no-highlight">200</i>&nbsp;        return timeZone;</b>
+<i class="no-highlight">201</i>&nbsp;    }
+<i class="no-highlight">202</i>&nbsp;
+<i class="no-highlight">203</i>&nbsp;    public void setTimeZone(String timeZone) {
+<b class="fc"><i class="no-highlight">204</i>&nbsp;        this.timeZone = timeZone;</b>
+<i class="no-highlight">205</i>&nbsp;    }
+<i class="no-highlight">206</i>&nbsp;
+<i class="no-highlight">207</i>&nbsp;    public long getGracePeriod() {
+<b class="fc"><i class="no-highlight">208</i>&nbsp;        return gracePeriod;</b>
+<i class="no-highlight">209</i>&nbsp;    }
+<i class="no-highlight">210</i>&nbsp;
+<i class="no-highlight">211</i>&nbsp;    public void setGracePeriod(long gracePeriod) {
+<b class="fc"><i class="no-highlight">212</i>&nbsp;        this.gracePeriod = gracePeriod;</b>
+<i class="no-highlight">213</i>&nbsp;    }
+<i class="no-highlight">214</i>&nbsp;
+<i class="no-highlight">215</i>&nbsp;    public boolean isSentOpeningSoonEmail() {
+<b class="fc"><i class="no-highlight">216</i>&nbsp;        return sentOpeningSoonEmail;</b>
+<i class="no-highlight">217</i>&nbsp;    }
+<i class="no-highlight">218</i>&nbsp;
+<i class="no-highlight">219</i>&nbsp;    public void setSentOpeningSoonEmail(boolean sentOpeningSoonEmail) {
+<b class="fc"><i class="no-highlight">220</i>&nbsp;        this.sentOpeningSoonEmail = sentOpeningSoonEmail;</b>
+<i class="no-highlight">221</i>&nbsp;    }
+<i class="no-highlight">222</i>&nbsp;
+<i class="no-highlight">223</i>&nbsp;    public boolean isSentOpenEmail() {
+<b class="fc"><i class="no-highlight">224</i>&nbsp;        return sentOpenEmail;</b>
+<i class="no-highlight">225</i>&nbsp;    }
+<i class="no-highlight">226</i>&nbsp;
+<i class="no-highlight">227</i>&nbsp;    public void setSentOpenEmail(boolean sentOpenEmail) {
+<b class="fc"><i class="no-highlight">228</i>&nbsp;        this.sentOpenEmail = sentOpenEmail;</b>
+<i class="no-highlight">229</i>&nbsp;    }
+<i class="no-highlight">230</i>&nbsp;
+<i class="no-highlight">231</i>&nbsp;    public boolean isSentClosingEmail() {
+<b class="fc"><i class="no-highlight">232</i>&nbsp;        return sentClosingEmail;</b>
+<i class="no-highlight">233</i>&nbsp;    }
+<i class="no-highlight">234</i>&nbsp;
+<i class="no-highlight">235</i>&nbsp;    public void setSentClosingEmail(boolean sentClosingEmail) {
+<b class="fc"><i class="no-highlight">236</i>&nbsp;        this.sentClosingEmail = sentClosingEmail;</b>
+<i class="no-highlight">237</i>&nbsp;    }
+<i class="no-highlight">238</i>&nbsp;
+<i class="no-highlight">239</i>&nbsp;    public boolean isSentClosedEmail() {
+<b class="fc"><i class="no-highlight">240</i>&nbsp;        return sentClosedEmail;</b>
+<i class="no-highlight">241</i>&nbsp;    }
+<i class="no-highlight">242</i>&nbsp;
+<i class="no-highlight">243</i>&nbsp;    public void setSentClosedEmail(boolean sentClosedEmail) {
+<b class="fc"><i class="no-highlight">244</i>&nbsp;        this.sentClosedEmail = sentClosedEmail;</b>
+<i class="no-highlight">245</i>&nbsp;    }
+<i class="no-highlight">246</i>&nbsp;
+<i class="no-highlight">247</i>&nbsp;    public boolean isSentPublishedEmail() {
+<b class="fc"><i class="no-highlight">248</i>&nbsp;        return sentPublishedEmail;</b>
+<i class="no-highlight">249</i>&nbsp;    }
+<i class="no-highlight">250</i>&nbsp;
+<i class="no-highlight">251</i>&nbsp;    public void setSentPublishedEmail(boolean sentPublishedEmail) {
+<b class="fc"><i class="no-highlight">252</i>&nbsp;        this.sentPublishedEmail = sentPublishedEmail;</b>
+<i class="no-highlight">253</i>&nbsp;    }
+<i class="no-highlight">254</i>&nbsp;
+<i class="no-highlight">255</i>&nbsp;    public boolean isOpeningEmailEnabled() {
+<b class="fc"><i class="no-highlight">256</i>&nbsp;        return isOpeningEmailEnabled;</b>
+<i class="no-highlight">257</i>&nbsp;    }
+<i class="no-highlight">258</i>&nbsp;
+<i class="no-highlight">259</i>&nbsp;    public void setIsOpeningEmailEnabled(boolean isOpeningEmailEnabled) {
+<b class="nc"><i class="no-highlight">260</i>&nbsp;        this.isOpeningEmailEnabled = isOpeningEmailEnabled;</b>
+<i class="no-highlight">261</i>&nbsp;    }
+<i class="no-highlight">262</i>&nbsp;
+<i class="no-highlight">263</i>&nbsp;    public boolean isClosingEmailEnabled() {
+<b class="fc"><i class="no-highlight">264</i>&nbsp;        return isClosingEmailEnabled;</b>
+<i class="no-highlight">265</i>&nbsp;    }
+<i class="no-highlight">266</i>&nbsp;
+<i class="no-highlight">267</i>&nbsp;    public void setSendClosingEmail(boolean isClosingEmailEnabled) {
+<b class="fc"><i class="no-highlight">268</i>&nbsp;        this.isClosingEmailEnabled = isClosingEmailEnabled;</b>
+<i class="no-highlight">269</i>&nbsp;    }
+<i class="no-highlight">270</i>&nbsp;
+<i class="no-highlight">271</i>&nbsp;    public boolean isPublishedEmailEnabled() {
+<b class="fc"><i class="no-highlight">272</i>&nbsp;        return isPublishedEmailEnabled;</b>
+<i class="no-highlight">273</i>&nbsp;    }
+<i class="no-highlight">274</i>&nbsp;
+<i class="no-highlight">275</i>&nbsp;    public void setSendPublishedEmail(boolean isPublishedEmailEnabled) {
+<b class="fc"><i class="no-highlight">276</i>&nbsp;        this.isPublishedEmailEnabled = isPublishedEmailEnabled;</b>
+<i class="no-highlight">277</i>&nbsp;    }
+<i class="no-highlight">278</i>&nbsp;
+<i class="no-highlight">279</i>&nbsp;    @Override
+<i class="no-highlight">280</i>&nbsp;    public String toString() {
+<b class="nc"><i class="no-highlight">281</i>&nbsp;        return &quot;FeedbackSession [feedbackSessionName=&quot; + feedbackSessionName</b>
+<i class="no-highlight">282</i>&nbsp;                + &quot;, courseId=&quot; + courseId + &quot;, creatorId=&quot; + creatorEmail
+<i class="no-highlight">283</i>&nbsp;                + &quot;, instructions=&quot; + instructions + &quot;, createdTime=&quot;
+<i class="no-highlight">284</i>&nbsp;                + createdTime + &quot;, deletedTime=&quot; + deletedTime + &quot;, startTime=&quot; + startTime
+<i class="no-highlight">285</i>&nbsp;                + &quot;, endTime=&quot; + endTime + &quot;, sessionVisibleFromTime=&quot;
+<i class="no-highlight">286</i>&nbsp;                + sessionVisibleFromTime + &quot;, resultsVisibleFromTime=&quot;
+<i class="no-highlight">287</i>&nbsp;                + resultsVisibleFromTime + &quot;, timeZone=&quot; + timeZone
+<i class="no-highlight">288</i>&nbsp;                + &quot;, gracePeriod=&quot; + gracePeriod
+<i class="no-highlight">289</i>&nbsp;                + &quot;, sentOpeningSoonEmail=&quot; + sentOpeningSoonEmail
+<i class="no-highlight">290</i>&nbsp;                + &quot;, sentOpenEmail=&quot; + sentOpenEmail
+<i class="no-highlight">291</i>&nbsp;                + &quot;, sentClosingEmail=&quot; + sentClosingEmail
+<i class="no-highlight">292</i>&nbsp;                + &quot;, sentClosedEmail=&quot; + sentClosedEmail
+<i class="no-highlight">293</i>&nbsp;                + &quot;, sentPublishedEmail=&quot; + sentPublishedEmail
+<i class="no-highlight">294</i>&nbsp;                + &quot;, isOpeningEmailEnabled=&quot; + isOpeningEmailEnabled
+<i class="no-highlight">295</i>&nbsp;                + &quot;, isClosingEmailEnabled=&quot; + isClosingEmailEnabled
+<i class="no-highlight">296</i>&nbsp;                + &quot;, isPublishedEmailEnabled=&quot; + isPublishedEmailEnabled
+<i class="no-highlight">297</i>&nbsp;                + &quot;]&quot;;
+<i class="no-highlight">298</i>&nbsp;    }
+<i class="no-highlight">299</i>&nbsp;
+<i class="no-highlight">300</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:53</div>
+</div>
+</body>
+</html>

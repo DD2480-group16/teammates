@@ -1,0 +1,563 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > FeedbackResponseCommentsLogic</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.logic.core</a>
+</div>
+
+<h1>Coverage Summary for Class: FeedbackResponseCommentsLogic (teammates.logic.core)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FeedbackResponseCommentsLogic</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (26/26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.8%
+  </span>
+  <span class="absValue">
+    (119/131)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">FeedbackResponseCommentsLogic$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (27/27)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.9%
+  </span>
+  <span class="absValue">
+    (120/132)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.logic.core;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.time.Instant;
+<i class="no-highlight">4</i>&nbsp;import java.util.List;
+<i class="no-highlight">5</i>&nbsp;import java.util.Set;
+<i class="no-highlight">6</i>&nbsp;
+<i class="no-highlight">7</i>&nbsp;import javax.annotation.Nullable;
+<i class="no-highlight">8</i>&nbsp;
+<i class="no-highlight">9</i>&nbsp;import teammates.common.datatransfer.AttributesDeletionQuery;
+<i class="no-highlight">10</i>&nbsp;import teammates.common.datatransfer.CourseRoster;
+<i class="no-highlight">11</i>&nbsp;import teammates.common.datatransfer.FeedbackParticipantType;
+<i class="no-highlight">12</i>&nbsp;import teammates.common.datatransfer.attributes.FeedbackQuestionAttributes;
+<i class="no-highlight">13</i>&nbsp;import teammates.common.datatransfer.attributes.FeedbackResponseAttributes;
+<i class="no-highlight">14</i>&nbsp;import teammates.common.datatransfer.attributes.FeedbackResponseCommentAttributes;
+<i class="no-highlight">15</i>&nbsp;import teammates.common.datatransfer.attributes.FeedbackSessionAttributes;
+<i class="no-highlight">16</i>&nbsp;import teammates.common.datatransfer.attributes.InstructorAttributes;
+<i class="no-highlight">17</i>&nbsp;import teammates.common.datatransfer.attributes.StudentAttributes;
+<i class="no-highlight">18</i>&nbsp;import teammates.common.exception.EntityAlreadyExistsException;
+<i class="no-highlight">19</i>&nbsp;import teammates.common.exception.EntityDoesNotExistException;
+<i class="no-highlight">20</i>&nbsp;import teammates.common.exception.InvalidParametersException;
+<i class="no-highlight">21</i>&nbsp;import teammates.storage.api.FeedbackResponseCommentsDb;
+<i class="no-highlight">22</i>&nbsp;
+<i class="no-highlight">23</i>&nbsp;/**
+<i class="no-highlight">24</i>&nbsp; * Handles operations related to feedback response comments.
+<i class="no-highlight">25</i>&nbsp; *
+<i class="no-highlight">26</i>&nbsp; * @see FeedbackResponseCommentAttributes
+<i class="no-highlight">27</i>&nbsp; * @see FeedbackResponseCommentsDb
+<i class="no-highlight">28</i>&nbsp; */
+<i class="no-highlight">29</i>&nbsp;public final class FeedbackResponseCommentsLogic {
+<i class="no-highlight">30</i>&nbsp;
+<b class="fc"><i class="no-highlight">31</i>&nbsp;    private static final FeedbackResponseCommentsLogic instance = new FeedbackResponseCommentsLogic();</b>
+<i class="no-highlight">32</i>&nbsp;
+<b class="fc"><i class="no-highlight">33</i>&nbsp;    private final FeedbackResponseCommentsDb frcDb = FeedbackResponseCommentsDb.inst();</b>
+<i class="no-highlight">34</i>&nbsp;
+<i class="no-highlight">35</i>&nbsp;    private CoursesLogic coursesLogic;
+<i class="no-highlight">36</i>&nbsp;    private FeedbackResponsesLogic frLogic;
+<i class="no-highlight">37</i>&nbsp;    private FeedbackSessionsLogic fsLogic;
+<i class="no-highlight">38</i>&nbsp;    private InstructorsLogic instructorsLogic;
+<i class="no-highlight">39</i>&nbsp;    private StudentsLogic studentsLogic;
+<i class="no-highlight">40</i>&nbsp;
+<b class="fc"><i class="no-highlight">41</i>&nbsp;    private FeedbackResponseCommentsLogic() {</b>
+<i class="no-highlight">42</i>&nbsp;        // prevent initialization
+<i class="no-highlight">43</i>&nbsp;    }
+<i class="no-highlight">44</i>&nbsp;
+<i class="no-highlight">45</i>&nbsp;    public static FeedbackResponseCommentsLogic inst() {
+<b class="fc"><i class="no-highlight">46</i>&nbsp;        return instance;</b>
+<i class="no-highlight">47</i>&nbsp;    }
+<i class="no-highlight">48</i>&nbsp;
+<i class="no-highlight">49</i>&nbsp;    void initLogicDependencies() {
+<b class="fc"><i class="no-highlight">50</i>&nbsp;        coursesLogic = CoursesLogic.inst();</b>
+<b class="fc"><i class="no-highlight">51</i>&nbsp;        frLogic = FeedbackResponsesLogic.inst();</b>
+<b class="fc"><i class="no-highlight">52</i>&nbsp;        fsLogic = FeedbackSessionsLogic.inst();</b>
+<b class="fc"><i class="no-highlight">53</i>&nbsp;        instructorsLogic = InstructorsLogic.inst();</b>
+<b class="fc"><i class="no-highlight">54</i>&nbsp;        studentsLogic = StudentsLogic.inst();</b>
+<i class="no-highlight">55</i>&nbsp;    }
+<i class="no-highlight">56</i>&nbsp;
+<i class="no-highlight">57</i>&nbsp;    /**
+<i class="no-highlight">58</i>&nbsp;     * Creates a feedback response comment.
+<i class="no-highlight">59</i>&nbsp;     *
+<i class="no-highlight">60</i>&nbsp;     * &lt;p&gt;If the comment is given by feedback participant, ownership of the corresponding response
+<i class="no-highlight">61</i>&nbsp;     * of the comment is not checked.&lt;/p&gt;
+<i class="no-highlight">62</i>&nbsp;     */
+<i class="no-highlight">63</i>&nbsp;    public FeedbackResponseCommentAttributes createFeedbackResponseComment(FeedbackResponseCommentAttributes frComment)
+<i class="no-highlight">64</i>&nbsp;            throws InvalidParametersException, EntityDoesNotExistException, EntityAlreadyExistsException {
+<b class="fc"><i class="no-highlight">65</i>&nbsp;        verifyIsCoursePresent(frComment.getCourseId());</b>
+<b class="fc"><i class="no-highlight">66</i>&nbsp;        verifyIsUserOfCourse(frComment.getCourseId(), frComment.getCommentGiver(), frComment.getCommentGiverType(),</b>
+<b class="fc"><i class="no-highlight">67</i>&nbsp;                frComment.isCommentFromFeedbackParticipant());</b>
+<b class="fc"><i class="no-highlight">68</i>&nbsp;        verifyIsFeedbackSessionOfCourse(frComment.getCourseId(), frComment.getFeedbackSessionName());</b>
+<i class="no-highlight">69</i>&nbsp;
+<b class="fc"><i class="no-highlight">70</i>&nbsp;        return frcDb.createEntity(frComment);</b>
+<i class="no-highlight">71</i>&nbsp;    }
+<i class="no-highlight">72</i>&nbsp;
+<i class="no-highlight">73</i>&nbsp;    /**
+<i class="no-highlight">74</i>&nbsp;     * Gets a feedback response comment.
+<i class="no-highlight">75</i>&nbsp;     */
+<i class="no-highlight">76</i>&nbsp;    public FeedbackResponseCommentAttributes getFeedbackResponseComment(Long feedbackResponseCommentId) {
+<b class="fc"><i class="no-highlight">77</i>&nbsp;        return frcDb.getFeedbackResponseComment(feedbackResponseCommentId);</b>
+<i class="no-highlight">78</i>&nbsp;    }
+<i class="no-highlight">79</i>&nbsp;
+<i class="no-highlight">80</i>&nbsp;    /**
+<i class="no-highlight">81</i>&nbsp;     * Gets a feedback response comment by &quot;fake&quot; unique constraint response-giver-createdAt.
+<i class="no-highlight">82</i>&nbsp;     *
+<i class="no-highlight">83</i>&nbsp;     * &lt;p&gt;The method is only used in testing&lt;/p&gt;
+<i class="no-highlight">84</i>&nbsp;     */
+<i class="no-highlight">85</i>&nbsp;    public FeedbackResponseCommentAttributes getFeedbackResponseComment(
+<i class="no-highlight">86</i>&nbsp;            String responseId, String giverEmail, Instant creationDate) {
+<b class="fc"><i class="no-highlight">87</i>&nbsp;        return frcDb.getFeedbackResponseComment(responseId, giverEmail, creationDate);</b>
+<i class="no-highlight">88</i>&nbsp;    }
+<i class="no-highlight">89</i>&nbsp;
+<i class="no-highlight">90</i>&nbsp;    /**
+<i class="no-highlight">91</i>&nbsp;     * Gets all response comments for a response.
+<i class="no-highlight">92</i>&nbsp;     */
+<i class="no-highlight">93</i>&nbsp;    public List&lt;FeedbackResponseCommentAttributes&gt; getFeedbackResponseCommentForResponse(String feedbackResponseId) {
+<b class="fc"><i class="no-highlight">94</i>&nbsp;        return frcDb.getFeedbackResponseCommentsForResponse(feedbackResponseId);</b>
+<i class="no-highlight">95</i>&nbsp;    }
+<i class="no-highlight">96</i>&nbsp;
+<i class="no-highlight">97</i>&nbsp;    /**
+<i class="no-highlight">98</i>&nbsp;     * Gets comment associated with the response.
+<i class="no-highlight">99</i>&nbsp;     *
+<i class="no-highlight">100</i>&nbsp;     * &lt;p&gt;The comment is given by a feedback participant to explain the response&lt;/p&gt;
+<i class="no-highlight">101</i>&nbsp;     *
+<i class="no-highlight">102</i>&nbsp;     * @param feedbackResponseId the response id
+<i class="no-highlight">103</i>&nbsp;     */
+<i class="no-highlight">104</i>&nbsp;    public FeedbackResponseCommentAttributes getFeedbackResponseCommentForResponseFromParticipant(
+<i class="no-highlight">105</i>&nbsp;            String feedbackResponseId) {
+<b class="fc"><i class="no-highlight">106</i>&nbsp;        return frcDb.getFeedbackResponseCommentForResponseFromParticipant(feedbackResponseId);</b>
+<i class="no-highlight">107</i>&nbsp;    }
+<i class="no-highlight">108</i>&nbsp;
+<i class="no-highlight">109</i>&nbsp;    /**
+<i class="no-highlight">110</i>&nbsp;     * Gets all feedback response comments for session in a section.
+<i class="no-highlight">111</i>&nbsp;     *
+<i class="no-highlight">112</i>&nbsp;     * @param courseId the course ID of the feedback session
+<i class="no-highlight">113</i>&nbsp;     * @param feedbackSessionName the feedback session name
+<i class="no-highlight">114</i>&nbsp;     * @param section if null, will retrieve all comments in the session
+<i class="no-highlight">115</i>&nbsp;     * @return a list of feedback response comments
+<i class="no-highlight">116</i>&nbsp;     */
+<i class="no-highlight">117</i>&nbsp;    public List&lt;FeedbackResponseCommentAttributes&gt; getFeedbackResponseCommentForSessionInSection(
+<i class="no-highlight">118</i>&nbsp;            String courseId, String feedbackSessionName, @Nullable String section) {
+<b class="fc"><i class="no-highlight">119</i>&nbsp;        if (section == null) {</b>
+<b class="fc"><i class="no-highlight">120</i>&nbsp;            return frcDb.getFeedbackResponseCommentsForSession(courseId, feedbackSessionName);</b>
+<i class="no-highlight">121</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">122</i>&nbsp;        return frcDb.getFeedbackResponseCommentsForSessionInSection(courseId, feedbackSessionName, section);</b>
+<i class="no-highlight">123</i>&nbsp;    }
+<i class="no-highlight">124</i>&nbsp;
+<i class="no-highlight">125</i>&nbsp;    /**
+<i class="no-highlight">126</i>&nbsp;     * Gets all feedback response comments for a question in a section.
+<i class="no-highlight">127</i>&nbsp;     *
+<i class="no-highlight">128</i>&nbsp;     * @param questionId the ID of the question
+<i class="no-highlight">129</i>&nbsp;     * @param section if null, will retrieve all comments for the question
+<i class="no-highlight">130</i>&nbsp;     * @return a list of feedback response comments
+<i class="no-highlight">131</i>&nbsp;     */
+<i class="no-highlight">132</i>&nbsp;    public List&lt;FeedbackResponseCommentAttributes&gt; getFeedbackResponseCommentForQuestionInSection(
+<i class="no-highlight">133</i>&nbsp;            String questionId, @Nullable String section) {
+<b class="fc"><i class="no-highlight">134</i>&nbsp;        if (section == null) {</b>
+<b class="fc"><i class="no-highlight">135</i>&nbsp;            return frcDb.getFeedbackResponseCommentsForQuestion(questionId);</b>
+<i class="no-highlight">136</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">137</i>&nbsp;        return frcDb.getFeedbackResponseCommentsForQuestionInSection(questionId, section);</b>
+<i class="no-highlight">138</i>&nbsp;    }
+<i class="no-highlight">139</i>&nbsp;
+<i class="no-highlight">140</i>&nbsp;    /**
+<i class="no-highlight">141</i>&nbsp;     * Updates all email fields of feedback response comments with the new email.
+<i class="no-highlight">142</i>&nbsp;     */
+<i class="no-highlight">143</i>&nbsp;    public void updateFeedbackResponseCommentsEmails(String courseId, String oldEmail, String updatedEmail) {
+<b class="fc"><i class="no-highlight">144</i>&nbsp;        frcDb.updateGiverEmailOfFeedbackResponseComments(courseId, oldEmail, updatedEmail);</b>
+<b class="fc"><i class="no-highlight">145</i>&nbsp;        frcDb.updateLastEditorEmailOfFeedbackResponseComments(courseId, oldEmail, updatedEmail);</b>
+<i class="no-highlight">146</i>&nbsp;    }
+<i class="no-highlight">147</i>&nbsp;
+<i class="no-highlight">148</i>&nbsp;    /**
+<i class="no-highlight">149</i>&nbsp;     * Updates all common fields of feedback response comments with the same field from its parent response.
+<i class="no-highlight">150</i>&nbsp;     *
+<i class="no-highlight">151</i>&nbsp;     * &lt;p&gt;Currently, this method only updates comment&#39;s giverSection and receiverSection for a given response.&lt;/p&gt;
+<i class="no-highlight">152</i>&nbsp;     */
+<i class="no-highlight">153</i>&nbsp;    public void updateFeedbackResponseCommentsForResponse(String feedbackResponseId)
+<i class="no-highlight">154</i>&nbsp;            throws InvalidParametersException, EntityDoesNotExistException {
+<b class="fc"><i class="no-highlight">155</i>&nbsp;        List&lt;FeedbackResponseCommentAttributes&gt; comments = getFeedbackResponseCommentForResponse(feedbackResponseId);</b>
+<b class="fc"><i class="no-highlight">156</i>&nbsp;        FeedbackResponseAttributes response = frLogic.getFeedbackResponse(feedbackResponseId);</b>
+<b class="fc"><i class="no-highlight">157</i>&nbsp;        for (FeedbackResponseCommentAttributes comment : comments) {</b>
+<b class="fc"><i class="no-highlight">158</i>&nbsp;            frcDb.updateFeedbackResponseComment(</b>
+<b class="fc"><i class="no-highlight">159</i>&nbsp;                    FeedbackResponseCommentAttributes.updateOptionsBuilder(comment.getId())</b>
+<b class="fc"><i class="no-highlight">160</i>&nbsp;                            .withGiverSection(response.getGiverSection())</b>
+<b class="fc"><i class="no-highlight">161</i>&nbsp;                            .withReceiverSection(response.getRecipientSection())</b>
+<b class="fc"><i class="no-highlight">162</i>&nbsp;                            .build()</b>
+<i class="no-highlight">163</i>&nbsp;            );
+<b class="fc"><i class="no-highlight">164</i>&nbsp;        }</b>
+<i class="no-highlight">165</i>&nbsp;    }
+<i class="no-highlight">166</i>&nbsp;
+<i class="no-highlight">167</i>&nbsp;    /**
+<i class="no-highlight">168</i>&nbsp;     * Updates a feedback response comment by {@link FeedbackResponseCommentAttributes.UpdateOptions}.
+<i class="no-highlight">169</i>&nbsp;     *
+<i class="no-highlight">170</i>&nbsp;     * @return updated comment
+<i class="no-highlight">171</i>&nbsp;     * @throws InvalidParametersException if attributes to update are not valid
+<i class="no-highlight">172</i>&nbsp;     * @throws EntityDoesNotExistException if the comment cannot be found
+<i class="no-highlight">173</i>&nbsp;     */
+<i class="no-highlight">174</i>&nbsp;    public FeedbackResponseCommentAttributes updateFeedbackResponseComment(
+<i class="no-highlight">175</i>&nbsp;            FeedbackResponseCommentAttributes.UpdateOptions updateOptions)
+<i class="no-highlight">176</i>&nbsp;            throws InvalidParametersException, EntityDoesNotExistException {
+<i class="no-highlight">177</i>&nbsp;
+<b class="fc"><i class="no-highlight">178</i>&nbsp;        return frcDb.updateFeedbackResponseComment(updateOptions);</b>
+<i class="no-highlight">179</i>&nbsp;    }
+<i class="no-highlight">180</i>&nbsp;
+<i class="no-highlight">181</i>&nbsp;    /**
+<i class="no-highlight">182</i>&nbsp;     * Gets all comments given by a user in a course.
+<i class="no-highlight">183</i>&nbsp;     */
+<i class="no-highlight">184</i>&nbsp;    public List&lt;FeedbackResponseCommentAttributes&gt; getFeedbackResponseCommentsForGiver(
+<i class="no-highlight">185</i>&nbsp;            String courseId, String giverEmail) {
+<b class="fc"><i class="no-highlight">186</i>&nbsp;        return frcDb.getFeedbackResponseCommentForGiver(courseId, giverEmail);</b>
+<i class="no-highlight">187</i>&nbsp;    }
+<i class="no-highlight">188</i>&nbsp;
+<i class="no-highlight">189</i>&nbsp;    /**
+<i class="no-highlight">190</i>&nbsp;     * Deletes a comment.
+<i class="no-highlight">191</i>&nbsp;     */
+<i class="no-highlight">192</i>&nbsp;    public void deleteFeedbackResponseComment(long commentId) {
+<b class="fc"><i class="no-highlight">193</i>&nbsp;        frcDb.deleteFeedbackResponseComment(commentId);</b>
+<i class="no-highlight">194</i>&nbsp;    }
+<i class="no-highlight">195</i>&nbsp;
+<i class="no-highlight">196</i>&nbsp;    /**
+<i class="no-highlight">197</i>&nbsp;     * Deletes comments using {@link AttributesDeletionQuery}.
+<i class="no-highlight">198</i>&nbsp;     */
+<i class="no-highlight">199</i>&nbsp;    public void deleteFeedbackResponseComments(AttributesDeletionQuery query) {
+<b class="fc"><i class="no-highlight">200</i>&nbsp;        frcDb.deleteFeedbackResponseComments(query);</b>
+<i class="no-highlight">201</i>&nbsp;    }
+<i class="no-highlight">202</i>&nbsp;
+<i class="no-highlight">203</i>&nbsp;    /**
+<i class="no-highlight">204</i>&nbsp;     * Returns true if the comment&#39;s giver name is visible to certain user.
+<i class="no-highlight">205</i>&nbsp;     */
+<i class="no-highlight">206</i>&nbsp;    public boolean isNameVisibleToUser(FeedbackResponseCommentAttributes comment, FeedbackResponseAttributes response,
+<i class="no-highlight">207</i>&nbsp;                                   String userEmail, CourseRoster roster) {
+<b class="fc"><i class="no-highlight">208</i>&nbsp;        List&lt;FeedbackParticipantType&gt; showNameTo = comment.getShowGiverNameTo();</b>
+<i class="no-highlight">209</i>&nbsp;        //in the old ver, name is always visible
+<b class="fc"><i class="no-highlight">210</i>&nbsp;        if (showNameTo == null || comment.isVisibilityFollowingFeedbackQuestion()) {</b>
+<b class="fc"><i class="no-highlight">211</i>&nbsp;            return true;</b>
+<i class="no-highlight">212</i>&nbsp;        }
+<i class="no-highlight">213</i>&nbsp;
+<i class="no-highlight">214</i>&nbsp;        //comment giver can always see
+<b class="fc"><i class="no-highlight">215</i>&nbsp;        if (userEmail.equals(comment.getCommentGiver())) {</b>
+<b class="fc"><i class="no-highlight">216</i>&nbsp;            return true;</b>
+<i class="no-highlight">217</i>&nbsp;        }
+<i class="no-highlight">218</i>&nbsp;
+<b class="fc"><i class="no-highlight">219</i>&nbsp;        return isFeedbackParticipantNameVisibleToUser(response, userEmail, roster, showNameTo);</b>
+<i class="no-highlight">220</i>&nbsp;    }
+<i class="no-highlight">221</i>&nbsp;
+<i class="no-highlight">222</i>&nbsp;    private boolean isFeedbackParticipantNameVisibleToUser(FeedbackResponseAttributes response,
+<i class="no-highlight">223</i>&nbsp;            String userEmail, CourseRoster roster, List&lt;FeedbackParticipantType&gt; showNameTo) {
+<b class="fc"><i class="no-highlight">224</i>&nbsp;        String responseGiverTeam = &quot;giverTeam&quot;;</b>
+<b class="fc"><i class="no-highlight">225</i>&nbsp;        if (roster.getStudentForEmail(response.getGiver()) != null) {</b>
+<b class="fc"><i class="no-highlight">226</i>&nbsp;            responseGiverTeam = roster.getStudentForEmail(response.getGiver()).getTeam();</b>
+<i class="no-highlight">227</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">228</i>&nbsp;        String responseRecipientTeam = &quot;recipientTeam&quot;;</b>
+<b class="fc"><i class="no-highlight">229</i>&nbsp;        if (roster.getStudentForEmail(response.getRecipient()) != null) {</b>
+<b class="fc"><i class="no-highlight">230</i>&nbsp;            responseRecipientTeam = roster.getStudentForEmail(response.getRecipient()).getTeam();</b>
+<i class="no-highlight">231</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">232</i>&nbsp;        String currentUserTeam = &quot;currentUserTeam&quot;;</b>
+<b class="fc"><i class="no-highlight">233</i>&nbsp;        if (roster.getStudentForEmail(userEmail) != null) {</b>
+<b class="fc"><i class="no-highlight">234</i>&nbsp;            currentUserTeam = roster.getStudentForEmail(userEmail).getTeam();</b>
+<i class="no-highlight">235</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">236</i>&nbsp;        for (FeedbackParticipantType type : showNameTo) {</b>
+<b class="fc"><i class="no-highlight">237</i>&nbsp;            switch (type) {</b>
+<i class="no-highlight">238</i>&nbsp;            case INSTRUCTORS:
+<b class="fc"><i class="no-highlight">239</i>&nbsp;                if (roster.getInstructorForEmail(userEmail) != null) {</b>
+<b class="fc"><i class="no-highlight">240</i>&nbsp;                    return true;</b>
+<i class="no-highlight">241</i>&nbsp;                }
+<i class="no-highlight">242</i>&nbsp;                break;
+<i class="no-highlight">243</i>&nbsp;            case OWN_TEAM_MEMBERS:
+<b class="fc"><i class="no-highlight">244</i>&nbsp;                if (responseGiverTeam.equals(currentUserTeam)) {</b>
+<b class="fc"><i class="no-highlight">245</i>&nbsp;                    return true;</b>
+<i class="no-highlight">246</i>&nbsp;                }
+<i class="no-highlight">247</i>&nbsp;                break;
+<i class="no-highlight">248</i>&nbsp;            case RECEIVER:
+<b class="fc"><i class="no-highlight">249</i>&nbsp;                if (userEmail.equals(response.getRecipient())) {</b>
+<b class="fc"><i class="no-highlight">250</i>&nbsp;                    return true;</b>
+<i class="no-highlight">251</i>&nbsp;                }
+<i class="no-highlight">252</i>&nbsp;                break;
+<i class="no-highlight">253</i>&nbsp;            case RECEIVER_TEAM_MEMBERS:
+<b class="fc"><i class="no-highlight">254</i>&nbsp;                if (responseRecipientTeam.equals(currentUserTeam)) {</b>
+<b class="fc"><i class="no-highlight">255</i>&nbsp;                    return true;</b>
+<i class="no-highlight">256</i>&nbsp;                }
+<i class="no-highlight">257</i>&nbsp;                break;
+<i class="no-highlight">258</i>&nbsp;            case STUDENTS:
+<b class="fc"><i class="no-highlight">259</i>&nbsp;                if (roster.getStudentForEmail(userEmail) != null) {</b>
+<b class="fc"><i class="no-highlight">260</i>&nbsp;                    return true;</b>
+<i class="no-highlight">261</i>&nbsp;                }
+<i class="no-highlight">262</i>&nbsp;                break;
+<i class="no-highlight">263</i>&nbsp;            case GIVER:
+<b class="fc"><i class="no-highlight">264</i>&nbsp;                if (userEmail.equals(response.getGiver())) {</b>
+<b class="fc"><i class="no-highlight">265</i>&nbsp;                    return true;</b>
+<i class="no-highlight">266</i>&nbsp;                }
+<i class="no-highlight">267</i>&nbsp;                break;
+<i class="no-highlight">268</i>&nbsp;            default:
+<i class="no-highlight">269</i>&nbsp;                break;
+<i class="no-highlight">270</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">271</i>&nbsp;        }</b>
+<b class="fc"><i class="no-highlight">272</i>&nbsp;        return false;</b>
+<i class="no-highlight">273</i>&nbsp;    }
+<i class="no-highlight">274</i>&nbsp;
+<i class="no-highlight">275</i>&nbsp;    /**
+<i class="no-highlight">276</i>&nbsp;     * Verifies whether the comment is visible to certain user.
+<i class="no-highlight">277</i>&nbsp;     * @return true/false
+<i class="no-highlight">278</i>&nbsp;     */
+<i class="no-highlight">279</i>&nbsp;    public boolean isResponseCommentVisibleForUser(String userEmail, boolean isInstructor,
+<i class="no-highlight">280</i>&nbsp;            StudentAttributes student, Set&lt;String&gt; studentsEmailInTeam, FeedbackResponseAttributes response,
+<i class="no-highlight">281</i>&nbsp;            FeedbackQuestionAttributes relatedQuestion, FeedbackResponseCommentAttributes relatedComment) {
+<i class="no-highlight">282</i>&nbsp;
+<b class="fc"><i class="no-highlight">283</i>&nbsp;        if (response == null || relatedQuestion == null) {</b>
+<b class="fc"><i class="no-highlight">284</i>&nbsp;            return false;</b>
+<i class="no-highlight">285</i>&nbsp;        }
+<i class="no-highlight">286</i>&nbsp;
+<b class="fc"><i class="no-highlight">287</i>&nbsp;        boolean isVisibilityFollowingFeedbackQuestion = relatedComment.isVisibilityFollowingFeedbackQuestion();</b>
+<b class="fc"><i class="no-highlight">288</i>&nbsp;        boolean isVisibleToGiver = isVisibilityFollowingFeedbackQuestion</b>
+<b class="fc"><i class="no-highlight">289</i>&nbsp;                                 || relatedComment.isVisibleTo(FeedbackParticipantType.GIVER);</b>
+<i class="no-highlight">290</i>&nbsp;
+<b class="fc"><i class="no-highlight">291</i>&nbsp;        boolean isVisibleToUser = isVisibleToUser(userEmail, response, relatedQuestion, relatedComment,</b>
+<i class="no-highlight">292</i>&nbsp;                isVisibleToGiver, isInstructor, !isInstructor);
+<i class="no-highlight">293</i>&nbsp;
+<b class="fc"><i class="no-highlight">294</i>&nbsp;        boolean isVisibleToUserTeam = isVisibleToUserTeam(student, studentsEmailInTeam, response,</b>
+<i class="no-highlight">295</i>&nbsp;                relatedQuestion, relatedComment, !isInstructor);
+<i class="no-highlight">296</i>&nbsp;
+<b class="fc"><i class="no-highlight">297</i>&nbsp;        return isVisibleToUser || isVisibleToUserTeam;</b>
+<i class="no-highlight">298</i>&nbsp;    }
+<i class="no-highlight">299</i>&nbsp;
+<i class="no-highlight">300</i>&nbsp;    private boolean isVisibleToUserTeam(StudentAttributes student, Set&lt;String&gt; studentsEmailInTeam,
+<i class="no-highlight">301</i>&nbsp;            FeedbackResponseAttributes response, FeedbackQuestionAttributes relatedQuestion,
+<i class="no-highlight">302</i>&nbsp;            FeedbackResponseCommentAttributes relatedComment, boolean isUserStudent) {
+<i class="no-highlight">303</i>&nbsp;
+<b class="fc"><i class="no-highlight">304</i>&nbsp;        boolean isUserInResponseRecipientTeamAndRelatedResponseCommentVisibleToRecipients =</b>
+<i class="no-highlight">305</i>&nbsp;                isUserStudent
+<b class="fc"><i class="no-highlight">306</i>&nbsp;                &amp;&amp; relatedQuestion.getRecipientType() == FeedbackParticipantType.TEAMS</b>
+<b class="nc"><i class="no-highlight">307</i>&nbsp;                &amp;&amp; isResponseCommentVisibleTo(relatedQuestion, relatedComment,</b>
+<i class="no-highlight">308</i>&nbsp;                                              FeedbackParticipantType.RECEIVER)
+<b class="nc"><i class="no-highlight">309</i>&nbsp;                &amp;&amp; response.getRecipient().equals(student.getTeam());</b>
+<i class="no-highlight">310</i>&nbsp;
+<b class="fc"><i class="no-highlight">311</i>&nbsp;        boolean isUserInResponseGiverTeamAndRelatedResponseCommentVisibleToGiversTeamMembers =</b>
+<b class="fc"><i class="no-highlight">312</i>&nbsp;                (relatedQuestion.getGiverType() == FeedbackParticipantType.TEAMS</b>
+<b class="fc"><i class="no-highlight">313</i>&nbsp;                || isResponseCommentVisibleTo(relatedQuestion, relatedComment,</b>
+<i class="no-highlight">314</i>&nbsp;                                              FeedbackParticipantType.OWN_TEAM_MEMBERS))
+<b class="fc"><i class="no-highlight">315</i>&nbsp;                &amp;&amp; (studentsEmailInTeam.contains(response.getGiver())</b>
+<b class="fc"><i class="no-highlight">316</i>&nbsp;                        || (isUserStudent &amp;&amp; student.getTeam().equals(response.getGiver())));</b>
+<i class="no-highlight">317</i>&nbsp;
+<b class="fc"><i class="no-highlight">318</i>&nbsp;        boolean isUserInResponseRecipientTeamAndRelatedResponseCommentVisibleToRecipientsTeamMembers =</b>
+<b class="fc"><i class="no-highlight">319</i>&nbsp;                isResponseCommentVisibleTo(relatedQuestion, relatedComment,</b>
+<i class="no-highlight">320</i>&nbsp;                                           FeedbackParticipantType.RECEIVER_TEAM_MEMBERS)
+<b class="fc"><i class="no-highlight">321</i>&nbsp;                &amp;&amp; studentsEmailInTeam.contains(response.getRecipient());</b>
+<i class="no-highlight">322</i>&nbsp;
+<b class="fc"><i class="no-highlight">323</i>&nbsp;        return isUserInResponseRecipientTeamAndRelatedResponseCommentVisibleToRecipients</b>
+<i class="no-highlight">324</i>&nbsp;                || isUserInResponseGiverTeamAndRelatedResponseCommentVisibleToGiversTeamMembers
+<i class="no-highlight">325</i>&nbsp;                || isUserInResponseRecipientTeamAndRelatedResponseCommentVisibleToRecipientsTeamMembers;
+<i class="no-highlight">326</i>&nbsp;    }
+<i class="no-highlight">327</i>&nbsp;
+<i class="no-highlight">328</i>&nbsp;    private boolean isVisibleToUser(String userEmail, FeedbackResponseAttributes response,
+<i class="no-highlight">329</i>&nbsp;            FeedbackQuestionAttributes relatedQuestion, FeedbackResponseCommentAttributes relatedComment,
+<i class="no-highlight">330</i>&nbsp;            boolean isVisibleToGiver, boolean isUserInstructor, boolean isUserStudent) {
+<i class="no-highlight">331</i>&nbsp;
+<b class="fc"><i class="no-highlight">332</i>&nbsp;        boolean isUserInstructorAndRelatedResponseCommentVisibleToInstructors =</b>
+<b class="fc"><i class="no-highlight">333</i>&nbsp;                isUserInstructor &amp;&amp; isResponseCommentVisibleTo(relatedQuestion, relatedComment,</b>
+<i class="no-highlight">334</i>&nbsp;                                                               FeedbackParticipantType.INSTRUCTORS);
+<i class="no-highlight">335</i>&nbsp;
+<b class="fc"><i class="no-highlight">336</i>&nbsp;        boolean isUserResponseRecipientAndRelatedResponseCommentVisibleToRecipients =</b>
+<b class="fc"><i class="no-highlight">337</i>&nbsp;                response.getRecipient().equals(userEmail) &amp;&amp; isResponseCommentVisibleTo(relatedQuestion,</b>
+<i class="no-highlight">338</i>&nbsp;                        relatedComment, FeedbackParticipantType.RECEIVER);
+<i class="no-highlight">339</i>&nbsp;
+<b class="fc"><i class="no-highlight">340</i>&nbsp;        boolean isUserResponseGiverAndRelatedResponseCommentVisibleToGivers =</b>
+<b class="fc"><i class="no-highlight">341</i>&nbsp;                response.getGiver().equals(userEmail) &amp;&amp; isVisibleToGiver;</b>
+<i class="no-highlight">342</i>&nbsp;
+<b class="fc"><i class="no-highlight">343</i>&nbsp;        boolean isUserRelatedResponseCommentGiver = relatedComment.getCommentGiver().equals(userEmail);</b>
+<i class="no-highlight">344</i>&nbsp;
+<b class="fc"><i class="no-highlight">345</i>&nbsp;        boolean isUserStudentAndRelatedResponseCommentVisibleToStudents =</b>
+<b class="fc"><i class="no-highlight">346</i>&nbsp;                isUserStudent &amp;&amp; isResponseCommentVisibleTo(relatedQuestion,</b>
+<i class="no-highlight">347</i>&nbsp;                        relatedComment, FeedbackParticipantType.STUDENTS);
+<i class="no-highlight">348</i>&nbsp;
+<b class="fc"><i class="no-highlight">349</i>&nbsp;        return isUserInstructorAndRelatedResponseCommentVisibleToInstructors</b>
+<i class="no-highlight">350</i>&nbsp;                || isUserResponseRecipientAndRelatedResponseCommentVisibleToRecipients
+<i class="no-highlight">351</i>&nbsp;                || isUserResponseGiverAndRelatedResponseCommentVisibleToGivers
+<i class="no-highlight">352</i>&nbsp;                || isUserRelatedResponseCommentGiver
+<i class="no-highlight">353</i>&nbsp;                || isUserStudentAndRelatedResponseCommentVisibleToStudents;
+<i class="no-highlight">354</i>&nbsp;    }
+<i class="no-highlight">355</i>&nbsp;
+<i class="no-highlight">356</i>&nbsp;    private boolean isResponseCommentVisibleTo(FeedbackQuestionAttributes relatedQuestion,
+<i class="no-highlight">357</i>&nbsp;                                               FeedbackResponseCommentAttributes relatedComment,
+<i class="no-highlight">358</i>&nbsp;                                               FeedbackParticipantType viewerType) {
+<b class="fc"><i class="no-highlight">359</i>&nbsp;        boolean isVisibilityFollowingFeedbackQuestion = relatedComment.isVisibilityFollowingFeedbackQuestion();</b>
+<b class="fc"><i class="no-highlight">360</i>&nbsp;        return isVisibilityFollowingFeedbackQuestion</b>
+<b class="fc"><i class="no-highlight">361</i>&nbsp;                ? relatedQuestion.isResponseVisibleTo(viewerType)</b>
+<b class="fc"><i class="no-highlight">362</i>&nbsp;                : relatedComment.isVisibleTo(viewerType);</b>
+<i class="no-highlight">363</i>&nbsp;    }
+<i class="no-highlight">364</i>&nbsp;
+<i class="no-highlight">365</i>&nbsp;    private void verifyIsCoursePresent(String courseId) throws EntityDoesNotExistException {
+<b class="fc"><i class="no-highlight">366</i>&nbsp;        if (!coursesLogic.isCoursePresent(courseId)) {</b>
+<b class="fc"><i class="no-highlight">367</i>&nbsp;            throw new EntityDoesNotExistException(</b>
+<i class="no-highlight">368</i>&nbsp;                    &quot;Trying to create feedback response comments for a course that does not exist.&quot;);
+<i class="no-highlight">369</i>&nbsp;        }
+<i class="no-highlight">370</i>&nbsp;    }
+<i class="no-highlight">371</i>&nbsp;
+<i class="no-highlight">372</i>&nbsp;    /**
+<i class="no-highlight">373</i>&nbsp;     * Verifies if comment giver is registered user/team of course.
+<i class="no-highlight">374</i>&nbsp;     *
+<i class="no-highlight">375</i>&nbsp;     * @param courseId id of course
+<i class="no-highlight">376</i>&nbsp;     * @param commentGiver person/team who gave comment
+<i class="no-highlight">377</i>&nbsp;     * @param commentGiverType type of comment giver
+<i class="no-highlight">378</i>&nbsp;     */
+<i class="no-highlight">379</i>&nbsp;    private void verifyIsUserOfCourse(String courseId, String commentGiver, FeedbackParticipantType commentGiverType,
+<i class="no-highlight">380</i>&nbsp;            boolean isCommentFromFeedbackParticipant) throws EntityDoesNotExistException {
+<b class="fc"><i class="no-highlight">381</i>&nbsp;        if (!isCommentFromFeedbackParticipant) {</b>
+<b class="fc"><i class="no-highlight">382</i>&nbsp;            InstructorAttributes instructor = instructorsLogic.getInstructorForEmail(courseId, commentGiver);</b>
+<b class="fc"><i class="no-highlight">383</i>&nbsp;            if (instructor == null) {</b>
+<b class="fc"><i class="no-highlight">384</i>&nbsp;                throw new EntityDoesNotExistException(&quot;User &quot; + commentGiver</b>
+<i class="no-highlight">385</i>&nbsp;                        + &quot; is not a registered instructor for course &quot; + courseId + &quot;.&quot;);
+<i class="no-highlight">386</i>&nbsp;            }
+<i class="no-highlight">387</i>&nbsp;            return;
+<i class="no-highlight">388</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">389</i>&nbsp;        switch (commentGiverType) {</b>
+<i class="no-highlight">390</i>&nbsp;        case STUDENTS:
+<b class="fc"><i class="no-highlight">391</i>&nbsp;            StudentAttributes student = studentsLogic.getStudentForEmail(courseId, commentGiver);</b>
+<b class="fc"><i class="no-highlight">392</i>&nbsp;            if (student == null) {</b>
+<b class="fc"><i class="no-highlight">393</i>&nbsp;                throw new EntityDoesNotExistException(&quot;User &quot; + commentGiver + &quot; is not a registered student for course &quot;</b>
+<i class="no-highlight">394</i>&nbsp;                        + courseId + &quot;.&quot;);
+<i class="no-highlight">395</i>&nbsp;            }
+<i class="no-highlight">396</i>&nbsp;            break;
+<i class="no-highlight">397</i>&nbsp;        case INSTRUCTORS:
+<b class="fc"><i class="no-highlight">398</i>&nbsp;            InstructorAttributes instructor = instructorsLogic.getInstructorForEmail(courseId, commentGiver);</b>
+<b class="fc"><i class="no-highlight">399</i>&nbsp;            if (instructor == null) {</b>
+<b class="nc"><i class="no-highlight">400</i>&nbsp;                throw new EntityDoesNotExistException(&quot;User &quot; + commentGiver</b>
+<i class="no-highlight">401</i>&nbsp;                        + &quot; is not a registered instructor for course &quot; + courseId + &quot;.&quot;);
+<i class="no-highlight">402</i>&nbsp;            }
+<i class="no-highlight">403</i>&nbsp;            break;
+<i class="no-highlight">404</i>&nbsp;        case TEAMS:
+<b class="nc"><i class="no-highlight">405</i>&nbsp;            List&lt;String&gt; teams = coursesLogic.getTeamsForCourse(courseId);</b>
+<b class="nc"><i class="no-highlight">406</i>&nbsp;            boolean isTeamPresentInCourse = false;</b>
+<b class="nc"><i class="no-highlight">407</i>&nbsp;            for (String team : teams) {</b>
+<b class="nc"><i class="no-highlight">408</i>&nbsp;                if (team.equals(commentGiver)) {</b>
+<b class="nc"><i class="no-highlight">409</i>&nbsp;                    isTeamPresentInCourse = true;</b>
+<b class="nc"><i class="no-highlight">410</i>&nbsp;                    break;</b>
+<i class="no-highlight">411</i>&nbsp;                }
+<b class="nc"><i class="no-highlight">412</i>&nbsp;            }</b>
+<b class="nc"><i class="no-highlight">413</i>&nbsp;            if (!isTeamPresentInCourse) {</b>
+<b class="nc"><i class="no-highlight">414</i>&nbsp;                throw new EntityDoesNotExistException(&quot;User &quot; + commentGiver + &quot; is not a registered team for course &quot;</b>
+<i class="no-highlight">415</i>&nbsp;                        + courseId + &quot;.&quot;);
+<i class="no-highlight">416</i>&nbsp;            }
+<i class="no-highlight">417</i>&nbsp;            break;
+<i class="no-highlight">418</i>&nbsp;        default:
+<b class="fc"><i class="no-highlight">419</i>&nbsp;            throw new EntityDoesNotExistException(&quot;Unknown giver type: &quot; + commentGiverType);</b>
+<i class="no-highlight">420</i>&nbsp;        }
+<i class="no-highlight">421</i>&nbsp;    }
+<i class="no-highlight">422</i>&nbsp;
+<i class="no-highlight">423</i>&nbsp;    private void verifyIsFeedbackSessionOfCourse(String courseId, String feedbackSessionName)
+<i class="no-highlight">424</i>&nbsp;            throws EntityDoesNotExistException {
+<b class="fc"><i class="no-highlight">425</i>&nbsp;        FeedbackSessionAttributes session = fsLogic.getFeedbackSession(feedbackSessionName, courseId);</b>
+<b class="fc"><i class="no-highlight">426</i>&nbsp;        if (session == null) {</b>
+<b class="fc"><i class="no-highlight">427</i>&nbsp;            throw new EntityDoesNotExistException(&quot;Feedback session &quot; + feedbackSessionName</b>
+<i class="no-highlight">428</i>&nbsp;                                                + &quot; is not a session for course &quot; + courseId + &quot;.&quot;);
+<i class="no-highlight">429</i>&nbsp;        }
+<i class="no-highlight">430</i>&nbsp;    }
+<i class="no-highlight">431</i>&nbsp;
+<i class="no-highlight">432</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:53</div>
+</div>
+</body>
+</html>

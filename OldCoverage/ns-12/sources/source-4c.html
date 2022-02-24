@@ -1,0 +1,192 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > GetStudentProfileAction</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.ui.webapi</a>
+</div>
+
+<h1>Coverage Summary for Class: GetStudentProfileAction (teammates.ui.webapi)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GetStudentProfileAction</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    94.1%
+  </span>
+  <span class="absValue">
+    (32/34)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.ui.webapi;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import teammates.common.datatransfer.attributes.StudentAttributes;
+<i class="no-highlight">4</i>&nbsp;import teammates.common.datatransfer.attributes.StudentProfileAttributes;
+<i class="no-highlight">5</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">6</i>&nbsp;import teammates.common.util.StringHelper;
+<i class="no-highlight">7</i>&nbsp;import teammates.ui.output.StudentProfileData;
+<i class="no-highlight">8</i>&nbsp;
+<i class="no-highlight">9</i>&nbsp;/**
+<i class="no-highlight">10</i>&nbsp; * Get a student&#39;s profile by an instructor, a classmate of the student, or the student itself.
+<i class="no-highlight">11</i>&nbsp; */
+<b class="fc"><i class="no-highlight">12</i>&nbsp;class GetStudentProfileAction extends Action {</b>
+<i class="no-highlight">13</i>&nbsp;
+<i class="no-highlight">14</i>&nbsp;    private static final String MESSAGE_NOT_STUDENT_ACCOUNT = &quot;You did not login as a student,&quot;
+<i class="no-highlight">15</i>&nbsp;            + &quot; so you cannot view your profile&quot;;
+<i class="no-highlight">16</i>&nbsp;    private static final String MESSAGE_STUDENT_NOT_FOUND = &quot;The student is not in the course you are given,&quot;
+<i class="no-highlight">17</i>&nbsp;            + &quot; so you cannot access the profile.&quot;;
+<i class="no-highlight">18</i>&nbsp;
+<i class="no-highlight">19</i>&nbsp;    @Override
+<i class="no-highlight">20</i>&nbsp;    AuthType getMinAuthLevel() {
+<b class="fc"><i class="no-highlight">21</i>&nbsp;        return AuthType.LOGGED_IN;</b>
+<i class="no-highlight">22</i>&nbsp;    }
+<i class="no-highlight">23</i>&nbsp;
+<i class="no-highlight">24</i>&nbsp;    @Override
+<i class="no-highlight">25</i>&nbsp;    void checkSpecificAccessControl() throws UnauthorizedAccessException {
+<b class="fc"><i class="no-highlight">26</i>&nbsp;        String studentEmail = getRequestParamValue(Const.ParamsNames.STUDENT_EMAIL);</b>
+<b class="fc"><i class="no-highlight">27</i>&nbsp;        String courseId = getRequestParamValue(Const.ParamsNames.COURSE_ID);</b>
+<b class="fc"><i class="no-highlight">28</i>&nbsp;        if (studentEmail == null || courseId == null) {</b>
+<i class="no-highlight">29</i>&nbsp;            // Student access his own profile
+<b class="fc"><i class="no-highlight">30</i>&nbsp;            if (!userInfo.isStudent) {</b>
+<b class="fc"><i class="no-highlight">31</i>&nbsp;                throw new UnauthorizedAccessException(MESSAGE_NOT_STUDENT_ACCOUNT);</b>
+<i class="no-highlight">32</i>&nbsp;            }
+<i class="no-highlight">33</i>&nbsp;        } else {
+<i class="no-highlight">34</i>&nbsp;            // Access someone else&#39;s profile
+<b class="fc"><i class="no-highlight">35</i>&nbsp;            StudentAttributes student = logic.getStudentForEmail(courseId, studentEmail);</b>
+<b class="fc"><i class="no-highlight">36</i>&nbsp;            if (student == null) {</b>
+<b class="fc"><i class="no-highlight">37</i>&nbsp;                throw new UnauthorizedAccessException(MESSAGE_STUDENT_NOT_FOUND);</b>
+<i class="no-highlight">38</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">39</i>&nbsp;            gateKeeper.verifyAccessibleForCurrentUserAsInstructorOrTeamMember(userInfo.id, courseId,</b>
+<b class="fc"><i class="no-highlight">40</i>&nbsp;                    student.getSection(), studentEmail);</b>
+<i class="no-highlight">41</i>&nbsp;        }
+<i class="no-highlight">42</i>&nbsp;    }
+<i class="no-highlight">43</i>&nbsp;
+<i class="no-highlight">44</i>&nbsp;    @Override
+<i class="no-highlight">45</i>&nbsp;    public JsonResult execute() {
+<i class="no-highlight">46</i>&nbsp;
+<i class="no-highlight">47</i>&nbsp;        String studentId;
+<b class="fc"><i class="no-highlight">48</i>&nbsp;        String studentEmail = getRequestParamValue(Const.ParamsNames.STUDENT_EMAIL);</b>
+<b class="fc"><i class="no-highlight">49</i>&nbsp;        String courseId = getRequestParamValue(Const.ParamsNames.COURSE_ID);</b>
+<b class="fc"><i class="no-highlight">50</i>&nbsp;        String studentName = &quot;&quot;;</b>
+<b class="fc"><i class="no-highlight">51</i>&nbsp;        if (studentEmail == null || courseId == null) {</b>
+<b class="fc"><i class="no-highlight">52</i>&nbsp;            if (userInfo == null) {</b>
+<b class="nc"><i class="no-highlight">53</i>&nbsp;                throw new EntityNotFoundException(&quot;No student found&quot;);</b>
+<i class="no-highlight">54</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">55</i>&nbsp;            studentId = userInfo.id;</b>
+<i class="no-highlight">56</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">57</i>&nbsp;            StudentAttributes student = logic.getStudentForEmail(courseId, studentEmail);</b>
+<b class="fc"><i class="no-highlight">58</i>&nbsp;            if (student == null) {</b>
+<b class="nc"><i class="no-highlight">59</i>&nbsp;                throw new EntityNotFoundException(&quot;No student found&quot;);</b>
+<i class="no-highlight">60</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">61</i>&nbsp;            studentId = student.getGoogleId();</b>
+<b class="fc"><i class="no-highlight">62</i>&nbsp;            studentName = student.getName();</b>
+<i class="no-highlight">63</i>&nbsp;        }
+<i class="no-highlight">64</i>&nbsp;
+<i class="no-highlight">65</i>&nbsp;        StudentProfileAttributes studentProfile;
+<i class="no-highlight">66</i>&nbsp;
+<b class="fc"><i class="no-highlight">67</i>&nbsp;        if (StringHelper.isEmpty(studentId)) {</b>
+<b class="fc"><i class="no-highlight">68</i>&nbsp;            studentProfile = StudentProfileAttributes.builder(&quot;&quot;).build();</b>
+<i class="no-highlight">69</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">70</i>&nbsp;            studentProfile = logic.getStudentProfile(studentId);</b>
+<b class="fc"><i class="no-highlight">71</i>&nbsp;            studentName = logic.getAccount(studentId).getName();</b>
+<i class="no-highlight">72</i>&nbsp;        }
+<i class="no-highlight">73</i>&nbsp;
+<b class="fc"><i class="no-highlight">74</i>&nbsp;        if (studentProfile == null) {</b>
+<i class="no-highlight">75</i>&nbsp;            // create one on the fly
+<b class="fc"><i class="no-highlight">76</i>&nbsp;            studentProfile = StudentProfileAttributes.builder(studentId).build();</b>
+<i class="no-highlight">77</i>&nbsp;        }
+<i class="no-highlight">78</i>&nbsp;
+<b class="fc"><i class="no-highlight">79</i>&nbsp;        StudentProfileData output = new StudentProfileData(studentName, studentProfile);</b>
+<i class="no-highlight">80</i>&nbsp;        // If student requesting and is not the student&#39;s own profile, hide some fields
+<b class="fc"><i class="no-highlight">81</i>&nbsp;        if (userInfo == null || userInfo.isStudent &amp;&amp; !userInfo.isInstructor &amp;&amp; !studentId.equals(userInfo.id)) {</b>
+<b class="fc"><i class="no-highlight">82</i>&nbsp;            output.hideInformationWhenViewedByOtherStudent();</b>
+<i class="no-highlight">83</i>&nbsp;        }
+<i class="no-highlight">84</i>&nbsp;
+<b class="fc"><i class="no-highlight">85</i>&nbsp;        return new JsonResult(output);</b>
+<i class="no-highlight">86</i>&nbsp;    }
+<i class="no-highlight">87</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:52</div>
+</div>
+</body>
+</html>

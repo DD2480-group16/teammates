@@ -1,0 +1,180 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > LocalTaskQueueService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.logic.core</a>
+</div>
+
+<h1>Coverage Summary for Class: LocalTaskQueueService (teammates.logic.core)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LocalTaskQueueService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (2/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    8.3%
+  </span>
+  <span class="absValue">
+    (2/24)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.logic.core;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.io.IOException;
+<i class="no-highlight">4</i>&nbsp;import java.net.URI;
+<i class="no-highlight">5</i>&nbsp;import java.net.URISyntaxException;
+<i class="no-highlight">6</i>&nbsp;import java.nio.charset.Charset;
+<i class="no-highlight">7</i>&nbsp;import java.util.ArrayList;
+<i class="no-highlight">8</i>&nbsp;import java.util.List;
+<i class="no-highlight">9</i>&nbsp;import java.util.Map;
+<i class="no-highlight">10</i>&nbsp;
+<i class="no-highlight">11</i>&nbsp;import org.apache.http.NameValuePair;
+<i class="no-highlight">12</i>&nbsp;import org.apache.http.client.methods.HttpPost;
+<i class="no-highlight">13</i>&nbsp;import org.apache.http.client.utils.URIBuilder;
+<i class="no-highlight">14</i>&nbsp;import org.apache.http.entity.StringEntity;
+<i class="no-highlight">15</i>&nbsp;import org.apache.http.impl.client.CloseableHttpClient;
+<i class="no-highlight">16</i>&nbsp;import org.apache.http.impl.client.HttpClients;
+<i class="no-highlight">17</i>&nbsp;import org.apache.http.message.BasicNameValuePair;
+<i class="no-highlight">18</i>&nbsp;
+<i class="no-highlight">19</i>&nbsp;import teammates.common.util.Config;
+<i class="no-highlight">20</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">21</i>&nbsp;import teammates.common.util.JsonUtils;
+<i class="no-highlight">22</i>&nbsp;import teammates.common.util.Logger;
+<i class="no-highlight">23</i>&nbsp;import teammates.common.util.TaskWrapper;
+<i class="no-highlight">24</i>&nbsp;
+<i class="no-highlight">25</i>&nbsp;/**
+<i class="no-highlight">26</i>&nbsp; * Holds functions for operations related to task queue in local dev environment.
+<i class="no-highlight">27</i>&nbsp; */
+<b class="fc"><i class="no-highlight">28</i>&nbsp;public class LocalTaskQueueService implements TaskQueueService {</b>
+<i class="no-highlight">29</i>&nbsp;
+<b class="fc"><i class="no-highlight">30</i>&nbsp;    private static final Logger log = Logger.getLogger();</b>
+<i class="no-highlight">31</i>&nbsp;
+<i class="no-highlight">32</i>&nbsp;    @Override
+<i class="no-highlight">33</i>&nbsp;    public void addDeferredTask(TaskWrapper task, long countdownTime) {
+<i class="no-highlight">34</i>&nbsp;        // In dev server, task queues are either not active (i.e. they will not be executed even if queued)
+<i class="no-highlight">35</i>&nbsp;        // or they will be executed immediately without going through any kind of &quot;queue&quot;
+<i class="no-highlight">36</i>&nbsp;
+<b class="nc"><i class="no-highlight">37</i>&nbsp;        if (!Config.TASKQUEUE_ACTIVE) {</b>
+<i class="no-highlight">38</i>&nbsp;            return;
+<i class="no-highlight">39</i>&nbsp;        }
+<b class="nc"><i class="no-highlight">40</i>&nbsp;        HttpPost post = new HttpPost(createBasicUri(</b>
+<b class="nc"><i class="no-highlight">41</i>&nbsp;                &quot;http://localhost:&quot; + Config.getPort() + task.getWorkerUrl(), task.getParamMap()));</b>
+<i class="no-highlight">42</i>&nbsp;
+<b class="nc"><i class="no-highlight">43</i>&nbsp;        if (task.getRequestBody() != null) {</b>
+<b class="nc"><i class="no-highlight">44</i>&nbsp;            StringEntity entity = new StringEntity(</b>
+<b class="nc"><i class="no-highlight">45</i>&nbsp;                    JsonUtils.toCompactJson(task.getRequestBody()), Charset.forName(Const.ENCODING));</b>
+<b class="nc"><i class="no-highlight">46</i>&nbsp;            post.setEntity(entity);</b>
+<i class="no-highlight">47</i>&nbsp;        }
+<i class="no-highlight">48</i>&nbsp;
+<b class="nc"><i class="no-highlight">49</i>&nbsp;        post.addHeader(&quot;X-AppEngine-QueueName&quot;, task.getQueueName());</b>
+<b class="nc"><i class="no-highlight">50</i>&nbsp;        post.addHeader(&quot;X-Google-DevAppserver-SkipAdminCheck&quot;, &quot;true&quot;);</b>
+<i class="no-highlight">51</i>&nbsp;
+<b class="nc"><i class="no-highlight">52</i>&nbsp;        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {</b>
+<b class="nc"><i class="no-highlight">53</i>&nbsp;            httpClient.execute(post);</b>
+<b class="nc"><i class="no-highlight">54</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i class="no-highlight">55</i>&nbsp;            log.severe(&quot;Error when executing HTTP request&quot;, e);</b>
+<b class="nc"><i class="no-highlight">56</i>&nbsp;        }</b>
+<i class="no-highlight">57</i>&nbsp;    }
+<i class="no-highlight">58</i>&nbsp;
+<i class="no-highlight">59</i>&nbsp;    private static URI createBasicUri(String url, Map&lt;String, String&gt; params) {
+<b class="nc"><i class="no-highlight">60</i>&nbsp;        List&lt;NameValuePair&gt; postParameters = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i class="no-highlight">61</i>&nbsp;        if (params != null) {</b>
+<b class="nc"><i class="no-highlight">62</i>&nbsp;            params.forEach((key, value) -&gt; postParameters.add(new BasicNameValuePair(key, value)));</b>
+<i class="no-highlight">63</i>&nbsp;        }
+<i class="no-highlight">64</i>&nbsp;
+<i class="no-highlight">65</i>&nbsp;        try {
+<b class="nc"><i class="no-highlight">66</i>&nbsp;            URIBuilder uriBuilder = new URIBuilder(url);</b>
+<b class="nc"><i class="no-highlight">67</i>&nbsp;            uriBuilder.addParameters(postParameters);</b>
+<i class="no-highlight">68</i>&nbsp;
+<b class="nc"><i class="no-highlight">69</i>&nbsp;            return uriBuilder.build();</b>
+<b class="nc"><i class="no-highlight">70</i>&nbsp;        } catch (URISyntaxException e) {</b>
+<b class="nc"><i class="no-highlight">71</i>&nbsp;            return null;</b>
+<i class="no-highlight">72</i>&nbsp;        }
+<i class="no-highlight">73</i>&nbsp;    }
+<i class="no-highlight">74</i>&nbsp;
+<i class="no-highlight">75</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:53</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,371 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > FeedbackSessionData</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.ui.output</a>
+</div>
+
+<h1>Coverage Summary for Class: FeedbackSessionData (teammates.ui.output)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FeedbackSessionData</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.6%
+  </span>
+  <span class="absValue">
+    (31/35)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    93.3%
+  </span>
+  <span class="absValue">
+    (83/89)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.ui.output;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.time.Instant;
+<i class="no-highlight">4</i>&nbsp;
+<i class="no-highlight">5</i>&nbsp;import javax.annotation.Nullable;
+<i class="no-highlight">6</i>&nbsp;
+<i class="no-highlight">7</i>&nbsp;import teammates.common.datatransfer.InstructorPermissionSet;
+<i class="no-highlight">8</i>&nbsp;import teammates.common.datatransfer.attributes.FeedbackSessionAttributes;
+<i class="no-highlight">9</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">10</i>&nbsp;import teammates.common.util.TimeHelper;
+<i class="no-highlight">11</i>&nbsp;
+<i class="no-highlight">12</i>&nbsp;/**
+<i class="no-highlight">13</i>&nbsp; * The API output format of {@link FeedbackSessionAttributes}.
+<i class="no-highlight">14</i>&nbsp; */
+<i class="no-highlight">15</i>&nbsp;public class FeedbackSessionData extends ApiOutput {
+<i class="no-highlight">16</i>&nbsp;    private final String courseId;
+<i class="no-highlight">17</i>&nbsp;    private final String timeZone;
+<i class="no-highlight">18</i>&nbsp;    private final String feedbackSessionName;
+<i class="no-highlight">19</i>&nbsp;    private final String instructions;
+<i class="no-highlight">20</i>&nbsp;
+<i class="no-highlight">21</i>&nbsp;    private final Long submissionStartTimestamp;
+<i class="no-highlight">22</i>&nbsp;    private final Long submissionEndTimestamp;
+<i class="no-highlight">23</i>&nbsp;    @Nullable
+<i class="no-highlight">24</i>&nbsp;    private Long sessionVisibleFromTimestamp;
+<i class="no-highlight">25</i>&nbsp;    @Nullable
+<i class="no-highlight">26</i>&nbsp;    private Long resultVisibleFromTimestamp;
+<i class="no-highlight">27</i>&nbsp;    private Long gracePeriod;
+<i class="no-highlight">28</i>&nbsp;
+<i class="no-highlight">29</i>&nbsp;    private SessionVisibleSetting sessionVisibleSetting;
+<i class="no-highlight">30</i>&nbsp;    @Nullable
+<i class="no-highlight">31</i>&nbsp;    private Long customSessionVisibleTimestamp;
+<i class="no-highlight">32</i>&nbsp;
+<i class="no-highlight">33</i>&nbsp;    private ResponseVisibleSetting responseVisibleSetting;
+<i class="no-highlight">34</i>&nbsp;    @Nullable
+<i class="no-highlight">35</i>&nbsp;    private Long customResponseVisibleTimestamp;
+<i class="no-highlight">36</i>&nbsp;
+<i class="no-highlight">37</i>&nbsp;    private FeedbackSessionSubmissionStatus submissionStatus;
+<i class="no-highlight">38</i>&nbsp;    private FeedbackSessionPublishStatus publishStatus;
+<i class="no-highlight">39</i>&nbsp;
+<i class="no-highlight">40</i>&nbsp;    private Boolean isClosingEmailEnabled;
+<i class="no-highlight">41</i>&nbsp;    private Boolean isPublishedEmailEnabled;
+<i class="no-highlight">42</i>&nbsp;
+<i class="no-highlight">43</i>&nbsp;    private long createdAtTimestamp;
+<i class="no-highlight">44</i>&nbsp;    @Nullable
+<i class="no-highlight">45</i>&nbsp;    private final Long deletedAtTimestamp;
+<i class="no-highlight">46</i>&nbsp;    @Nullable
+<i class="no-highlight">47</i>&nbsp;    private InstructorPermissionSet privileges;
+<i class="no-highlight">48</i>&nbsp;
+<b class="fc"><i class="no-highlight">49</i>&nbsp;    public FeedbackSessionData(FeedbackSessionAttributes feedbackSessionAttributes) {</b>
+<b class="fc"><i class="no-highlight">50</i>&nbsp;        String timeZone = feedbackSessionAttributes.getTimeZone();</b>
+<b class="fc"><i class="no-highlight">51</i>&nbsp;        this.courseId = feedbackSessionAttributes.getCourseId();</b>
+<b class="fc"><i class="no-highlight">52</i>&nbsp;        this.timeZone = timeZone;</b>
+<b class="fc"><i class="no-highlight">53</i>&nbsp;        this.feedbackSessionName = feedbackSessionAttributes.getFeedbackSessionName();</b>
+<b class="fc"><i class="no-highlight">54</i>&nbsp;        this.instructions = feedbackSessionAttributes.getInstructions();</b>
+<b class="fc"><i class="no-highlight">55</i>&nbsp;        this.submissionStartTimestamp = TimeHelper.getMidnightAdjustedInstantBasedOnZone(</b>
+<b class="fc"><i class="no-highlight">56</i>&nbsp;                feedbackSessionAttributes.getStartTime(), timeZone, true).toEpochMilli();</b>
+<b class="fc"><i class="no-highlight">57</i>&nbsp;        this.submissionEndTimestamp = TimeHelper.getMidnightAdjustedInstantBasedOnZone(</b>
+<b class="fc"><i class="no-highlight">58</i>&nbsp;                feedbackSessionAttributes.getEndTime(), timeZone, true).toEpochMilli();</b>
+<b class="fc"><i class="no-highlight">59</i>&nbsp;        this.gracePeriod = feedbackSessionAttributes.getGracePeriodMinutes();</b>
+<i class="no-highlight">60</i>&nbsp;
+<b class="fc"><i class="no-highlight">61</i>&nbsp;        Instant sessionVisibleTime = feedbackSessionAttributes.getSessionVisibleFromTime();</b>
+<b class="fc"><i class="no-highlight">62</i>&nbsp;        this.sessionVisibleFromTimestamp = TimeHelper.getMidnightAdjustedInstantBasedOnZone(</b>
+<b class="fc"><i class="no-highlight">63</i>&nbsp;                sessionVisibleTime, timeZone, true).toEpochMilli();</b>
+<b class="fc"><i class="no-highlight">64</i>&nbsp;        if (sessionVisibleTime.equals(Const.TIME_REPRESENTS_FOLLOW_OPENING)) {</b>
+<b class="fc"><i class="no-highlight">65</i>&nbsp;            this.sessionVisibleSetting = SessionVisibleSetting.AT_OPEN;</b>
+<i class="no-highlight">66</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">67</i>&nbsp;            this.sessionVisibleSetting = SessionVisibleSetting.CUSTOM;</b>
+<b class="fc"><i class="no-highlight">68</i>&nbsp;            this.customSessionVisibleTimestamp = this.sessionVisibleFromTimestamp;</b>
+<i class="no-highlight">69</i>&nbsp;        }
+<i class="no-highlight">70</i>&nbsp;
+<b class="fc"><i class="no-highlight">71</i>&nbsp;        Instant responseVisibleTime = feedbackSessionAttributes.getResultsVisibleFromTime();</b>
+<b class="fc"><i class="no-highlight">72</i>&nbsp;        this.resultVisibleFromTimestamp = TimeHelper.getMidnightAdjustedInstantBasedOnZone(</b>
+<b class="fc"><i class="no-highlight">73</i>&nbsp;                responseVisibleTime, timeZone, true).toEpochMilli();</b>
+<b class="fc"><i class="no-highlight">74</i>&nbsp;        if (responseVisibleTime.equals(Const.TIME_REPRESENTS_FOLLOW_VISIBLE)) {</b>
+<b class="nc"><i class="no-highlight">75</i>&nbsp;            this.responseVisibleSetting = ResponseVisibleSetting.AT_VISIBLE;</b>
+<b class="fc"><i class="no-highlight">76</i>&nbsp;        } else if (responseVisibleTime.equals(Const.TIME_REPRESENTS_LATER)) {</b>
+<b class="fc"><i class="no-highlight">77</i>&nbsp;            this.responseVisibleSetting = ResponseVisibleSetting.LATER;</b>
+<i class="no-highlight">78</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">79</i>&nbsp;            this.responseVisibleSetting = ResponseVisibleSetting.CUSTOM;</b>
+<b class="fc"><i class="no-highlight">80</i>&nbsp;            this.customResponseVisibleTimestamp = this.resultVisibleFromTimestamp;</b>
+<i class="no-highlight">81</i>&nbsp;        }
+<i class="no-highlight">82</i>&nbsp;
+<b class="fc"><i class="no-highlight">83</i>&nbsp;        if (!feedbackSessionAttributes.isVisible()) {</b>
+<b class="fc"><i class="no-highlight">84</i>&nbsp;            this.submissionStatus = FeedbackSessionSubmissionStatus.NOT_VISIBLE;</b>
+<i class="no-highlight">85</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">86</i>&nbsp;        if (feedbackSessionAttributes.isVisible() &amp;&amp; !feedbackSessionAttributes.isOpened()) {</b>
+<b class="fc"><i class="no-highlight">87</i>&nbsp;            this.submissionStatus = FeedbackSessionSubmissionStatus.VISIBLE_NOT_OPEN;</b>
+<i class="no-highlight">88</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">89</i>&nbsp;        if (feedbackSessionAttributes.isOpened()) {</b>
+<b class="fc"><i class="no-highlight">90</i>&nbsp;            this.submissionStatus = FeedbackSessionSubmissionStatus.OPEN;</b>
+<i class="no-highlight">91</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">92</i>&nbsp;        if (feedbackSessionAttributes.isClosed()) {</b>
+<b class="fc"><i class="no-highlight">93</i>&nbsp;            this.submissionStatus = FeedbackSessionSubmissionStatus.CLOSED;</b>
+<i class="no-highlight">94</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">95</i>&nbsp;        if (feedbackSessionAttributes.isInGracePeriod()) {</b>
+<b class="nc"><i class="no-highlight">96</i>&nbsp;            this.submissionStatus = FeedbackSessionSubmissionStatus.GRACE_PERIOD;</b>
+<i class="no-highlight">97</i>&nbsp;        }
+<i class="no-highlight">98</i>&nbsp;
+<b class="fc"><i class="no-highlight">99</i>&nbsp;        if (feedbackSessionAttributes.isPublished()) {</b>
+<b class="fc"><i class="no-highlight">100</i>&nbsp;            this.publishStatus = FeedbackSessionPublishStatus.PUBLISHED;</b>
+<i class="no-highlight">101</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">102</i>&nbsp;            this.publishStatus = FeedbackSessionPublishStatus.NOT_PUBLISHED;</b>
+<i class="no-highlight">103</i>&nbsp;        }
+<i class="no-highlight">104</i>&nbsp;
+<b class="fc"><i class="no-highlight">105</i>&nbsp;        this.isClosingEmailEnabled = feedbackSessionAttributes.isClosingEmailEnabled();</b>
+<b class="fc"><i class="no-highlight">106</i>&nbsp;        this.isPublishedEmailEnabled = feedbackSessionAttributes.isPublishedEmailEnabled();</b>
+<i class="no-highlight">107</i>&nbsp;
+<b class="fc"><i class="no-highlight">108</i>&nbsp;        this.createdAtTimestamp = feedbackSessionAttributes.getCreatedTime().toEpochMilli();</b>
+<b class="fc"><i class="no-highlight">109</i>&nbsp;        if (feedbackSessionAttributes.getDeletedTime() == null) {</b>
+<b class="fc"><i class="no-highlight">110</i>&nbsp;            this.deletedAtTimestamp = null;</b>
+<i class="no-highlight">111</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">112</i>&nbsp;            this.deletedAtTimestamp = feedbackSessionAttributes.getDeletedTime().toEpochMilli();</b>
+<i class="no-highlight">113</i>&nbsp;        }
+<i class="no-highlight">114</i>&nbsp;    }
+<i class="no-highlight">115</i>&nbsp;
+<i class="no-highlight">116</i>&nbsp;    public String getCourseId() {
+<b class="fc"><i class="no-highlight">117</i>&nbsp;        return courseId;</b>
+<i class="no-highlight">118</i>&nbsp;    }
+<i class="no-highlight">119</i>&nbsp;
+<i class="no-highlight">120</i>&nbsp;    public String getTimeZone() {
+<b class="fc"><i class="no-highlight">121</i>&nbsp;        return timeZone;</b>
+<i class="no-highlight">122</i>&nbsp;    }
+<i class="no-highlight">123</i>&nbsp;
+<i class="no-highlight">124</i>&nbsp;    public String getFeedbackSessionName() {
+<b class="fc"><i class="no-highlight">125</i>&nbsp;        return feedbackSessionName;</b>
+<i class="no-highlight">126</i>&nbsp;    }
+<i class="no-highlight">127</i>&nbsp;
+<i class="no-highlight">128</i>&nbsp;    public String getInstructions() {
+<b class="fc"><i class="no-highlight">129</i>&nbsp;        return instructions;</b>
+<i class="no-highlight">130</i>&nbsp;    }
+<i class="no-highlight">131</i>&nbsp;
+<i class="no-highlight">132</i>&nbsp;    public long getSubmissionStartTimestamp() {
+<b class="fc"><i class="no-highlight">133</i>&nbsp;        return submissionStartTimestamp;</b>
+<i class="no-highlight">134</i>&nbsp;    }
+<i class="no-highlight">135</i>&nbsp;
+<i class="no-highlight">136</i>&nbsp;    public long getSubmissionEndTimestamp() {
+<b class="fc"><i class="no-highlight">137</i>&nbsp;        return submissionEndTimestamp;</b>
+<i class="no-highlight">138</i>&nbsp;    }
+<i class="no-highlight">139</i>&nbsp;
+<i class="no-highlight">140</i>&nbsp;    public Long getSessionVisibleFromTimestamp() {
+<b class="nc"><i class="no-highlight">141</i>&nbsp;        return sessionVisibleFromTimestamp;</b>
+<i class="no-highlight">142</i>&nbsp;    }
+<i class="no-highlight">143</i>&nbsp;
+<i class="no-highlight">144</i>&nbsp;    public Long getResultVisibleFromTimestamp() {
+<b class="nc"><i class="no-highlight">145</i>&nbsp;        return resultVisibleFromTimestamp;</b>
+<i class="no-highlight">146</i>&nbsp;    }
+<i class="no-highlight">147</i>&nbsp;
+<i class="no-highlight">148</i>&nbsp;    public Long getGracePeriod() {
+<b class="fc"><i class="no-highlight">149</i>&nbsp;        return gracePeriod;</b>
+<i class="no-highlight">150</i>&nbsp;    }
+<i class="no-highlight">151</i>&nbsp;
+<i class="no-highlight">152</i>&nbsp;    public SessionVisibleSetting getSessionVisibleSetting() {
+<b class="fc"><i class="no-highlight">153</i>&nbsp;        return sessionVisibleSetting;</b>
+<i class="no-highlight">154</i>&nbsp;    }
+<i class="no-highlight">155</i>&nbsp;
+<i class="no-highlight">156</i>&nbsp;    public Long getCustomSessionVisibleTimestamp() {
+<b class="fc"><i class="no-highlight">157</i>&nbsp;        return customSessionVisibleTimestamp;</b>
+<i class="no-highlight">158</i>&nbsp;    }
+<i class="no-highlight">159</i>&nbsp;
+<i class="no-highlight">160</i>&nbsp;    public ResponseVisibleSetting getResponseVisibleSetting() {
+<b class="fc"><i class="no-highlight">161</i>&nbsp;        return responseVisibleSetting;</b>
+<i class="no-highlight">162</i>&nbsp;    }
+<i class="no-highlight">163</i>&nbsp;
+<i class="no-highlight">164</i>&nbsp;    public Long getCustomResponseVisibleTimestamp() {
+<b class="fc"><i class="no-highlight">165</i>&nbsp;        return customResponseVisibleTimestamp;</b>
+<i class="no-highlight">166</i>&nbsp;    }
+<i class="no-highlight">167</i>&nbsp;
+<i class="no-highlight">168</i>&nbsp;    public FeedbackSessionSubmissionStatus getSubmissionStatus() {
+<b class="fc"><i class="no-highlight">169</i>&nbsp;        return submissionStatus;</b>
+<i class="no-highlight">170</i>&nbsp;    }
+<i class="no-highlight">171</i>&nbsp;
+<i class="no-highlight">172</i>&nbsp;    public FeedbackSessionPublishStatus getPublishStatus() {
+<b class="fc"><i class="no-highlight">173</i>&nbsp;        return publishStatus;</b>
+<i class="no-highlight">174</i>&nbsp;    }
+<i class="no-highlight">175</i>&nbsp;
+<i class="no-highlight">176</i>&nbsp;    public Boolean getIsClosingEmailEnabled() {
+<b class="fc"><i class="no-highlight">177</i>&nbsp;        return isClosingEmailEnabled;</b>
+<i class="no-highlight">178</i>&nbsp;    }
+<i class="no-highlight">179</i>&nbsp;
+<i class="no-highlight">180</i>&nbsp;    public Boolean getIsPublishedEmailEnabled() {
+<b class="fc"><i class="no-highlight">181</i>&nbsp;        return isPublishedEmailEnabled;</b>
+<i class="no-highlight">182</i>&nbsp;    }
+<i class="no-highlight">183</i>&nbsp;
+<i class="no-highlight">184</i>&nbsp;    public void setSessionVisibleFromTimestamp(Long sessionVisibleFromTimestamp) {
+<b class="fc"><i class="no-highlight">185</i>&nbsp;        this.sessionVisibleFromTimestamp = sessionVisibleFromTimestamp;</b>
+<i class="no-highlight">186</i>&nbsp;    }
+<i class="no-highlight">187</i>&nbsp;
+<i class="no-highlight">188</i>&nbsp;    public void setResultVisibleFromTimestamp(Long resultVisibleFromTimestamp) {
+<b class="fc"><i class="no-highlight">189</i>&nbsp;        this.resultVisibleFromTimestamp = resultVisibleFromTimestamp;</b>
+<i class="no-highlight">190</i>&nbsp;    }
+<i class="no-highlight">191</i>&nbsp;
+<i class="no-highlight">192</i>&nbsp;    public void setGracePeriod(Long gracePeriod) {
+<b class="fc"><i class="no-highlight">193</i>&nbsp;        this.gracePeriod = gracePeriod;</b>
+<i class="no-highlight">194</i>&nbsp;    }
+<i class="no-highlight">195</i>&nbsp;
+<i class="no-highlight">196</i>&nbsp;    public void setSessionVisibleSetting(SessionVisibleSetting sessionVisibleSetting) {
+<b class="fc"><i class="no-highlight">197</i>&nbsp;        this.sessionVisibleSetting = sessionVisibleSetting;</b>
+<i class="no-highlight">198</i>&nbsp;    }
+<i class="no-highlight">199</i>&nbsp;
+<i class="no-highlight">200</i>&nbsp;    public void setCustomSessionVisibleTimestamp(Long customSessionVisibleTimestamp) {
+<b class="fc"><i class="no-highlight">201</i>&nbsp;        this.customSessionVisibleTimestamp = customSessionVisibleTimestamp;</b>
+<i class="no-highlight">202</i>&nbsp;    }
+<i class="no-highlight">203</i>&nbsp;
+<i class="no-highlight">204</i>&nbsp;    public void setResponseVisibleSetting(ResponseVisibleSetting responseVisibleSetting) {
+<b class="fc"><i class="no-highlight">205</i>&nbsp;        this.responseVisibleSetting = responseVisibleSetting;</b>
+<i class="no-highlight">206</i>&nbsp;    }
+<i class="no-highlight">207</i>&nbsp;
+<i class="no-highlight">208</i>&nbsp;    public void setCustomResponseVisibleTimestamp(Long customResponseVisibleTimestamp) {
+<b class="fc"><i class="no-highlight">209</i>&nbsp;        this.customResponseVisibleTimestamp = customResponseVisibleTimestamp;</b>
+<i class="no-highlight">210</i>&nbsp;    }
+<i class="no-highlight">211</i>&nbsp;
+<i class="no-highlight">212</i>&nbsp;    public void setPublishStatus(FeedbackSessionPublishStatus publishStatus) {
+<b class="nc"><i class="no-highlight">213</i>&nbsp;        this.publishStatus = publishStatus;</b>
+<i class="no-highlight">214</i>&nbsp;    }
+<i class="no-highlight">215</i>&nbsp;
+<i class="no-highlight">216</i>&nbsp;    public void setClosingEmailEnabled(Boolean closingEmailEnabled) {
+<b class="fc"><i class="no-highlight">217</i>&nbsp;        isClosingEmailEnabled = closingEmailEnabled;</b>
+<i class="no-highlight">218</i>&nbsp;    }
+<i class="no-highlight">219</i>&nbsp;
+<i class="no-highlight">220</i>&nbsp;    public void setPublishedEmailEnabled(Boolean publishedEmailEnabled) {
+<b class="fc"><i class="no-highlight">221</i>&nbsp;        isPublishedEmailEnabled = publishedEmailEnabled;</b>
+<i class="no-highlight">222</i>&nbsp;    }
+<i class="no-highlight">223</i>&nbsp;
+<i class="no-highlight">224</i>&nbsp;    public long getCreatedAtTimestamp() {
+<b class="fc"><i class="no-highlight">225</i>&nbsp;        return createdAtTimestamp;</b>
+<i class="no-highlight">226</i>&nbsp;    }
+<i class="no-highlight">227</i>&nbsp;
+<i class="no-highlight">228</i>&nbsp;    public void setCreatedAtTimestamp(long timestamp) {
+<b class="fc"><i class="no-highlight">229</i>&nbsp;        createdAtTimestamp = timestamp;</b>
+<i class="no-highlight">230</i>&nbsp;    }
+<i class="no-highlight">231</i>&nbsp;
+<i class="no-highlight">232</i>&nbsp;    public Long getDeletedAtTimestamp() {
+<b class="fc"><i class="no-highlight">233</i>&nbsp;        return deletedAtTimestamp;</b>
+<i class="no-highlight">234</i>&nbsp;    }
+<i class="no-highlight">235</i>&nbsp;
+<i class="no-highlight">236</i>&nbsp;    public InstructorPermissionSet getPrivileges() {
+<b class="nc"><i class="no-highlight">237</i>&nbsp;        return privileges;</b>
+<i class="no-highlight">238</i>&nbsp;    }
+<i class="no-highlight">239</i>&nbsp;
+<i class="no-highlight">240</i>&nbsp;    public void setPrivileges(InstructorPermissionSet privileges) {
+<b class="fc"><i class="no-highlight">241</i>&nbsp;        this.privileges = privileges;</b>
+<i class="no-highlight">242</i>&nbsp;    }
+<i class="no-highlight">243</i>&nbsp;
+<i class="no-highlight">244</i>&nbsp;    /**
+<i class="no-highlight">245</i>&nbsp;     * Hides some attributes to student.
+<i class="no-highlight">246</i>&nbsp;     */
+<i class="no-highlight">247</i>&nbsp;    public void hideInformationForStudent() {
+<b class="fc"><i class="no-highlight">248</i>&nbsp;        hideInformationForInstructor();</b>
+<b class="fc"><i class="no-highlight">249</i>&nbsp;        setSessionVisibleFromTimestamp(null);</b>
+<b class="fc"><i class="no-highlight">250</i>&nbsp;        setResultVisibleFromTimestamp(null);</b>
+<b class="fc"><i class="no-highlight">251</i>&nbsp;        setSessionVisibleSetting(null);</b>
+<b class="fc"><i class="no-highlight">252</i>&nbsp;        setCustomSessionVisibleTimestamp(null);</b>
+<b class="fc"><i class="no-highlight">253</i>&nbsp;        setResponseVisibleSetting(null);</b>
+<b class="fc"><i class="no-highlight">254</i>&nbsp;        setCustomResponseVisibleTimestamp(null);</b>
+<i class="no-highlight">255</i>&nbsp;    }
+<i class="no-highlight">256</i>&nbsp;
+<i class="no-highlight">257</i>&nbsp;    /**
+<i class="no-highlight">258</i>&nbsp;     * Hides some attributes to instructor without appropriate privilege.
+<i class="no-highlight">259</i>&nbsp;     */
+<i class="no-highlight">260</i>&nbsp;    public void hideInformationForInstructor() {
+<b class="fc"><i class="no-highlight">261</i>&nbsp;        setClosingEmailEnabled(null);</b>
+<b class="fc"><i class="no-highlight">262</i>&nbsp;        setPublishedEmailEnabled(null);</b>
+<b class="fc"><i class="no-highlight">263</i>&nbsp;        setGracePeriod(null);</b>
+<b class="fc"><i class="no-highlight">264</i>&nbsp;        setCreatedAtTimestamp(0);</b>
+<i class="no-highlight">265</i>&nbsp;    }
+<i class="no-highlight">266</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:53</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1016 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > FeedbackQuestionsLogic</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.logic.core</a>
+</div>
+
+<h1>Coverage Summary for Class: FeedbackQuestionsLogic (teammates.logic.core)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FeedbackQuestionsLogic</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (28/28)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    86.5%
+  </span>
+  <span class="absValue">
+    (351/406)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">FeedbackQuestionsLogic$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (29/29)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    86.5%
+  </span>
+  <span class="absValue">
+    (352/407)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.logic.core;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.util.ArrayList;
+<i class="no-highlight">4</i>&nbsp;import java.util.Collections;
+<i class="no-highlight">5</i>&nbsp;import java.util.HashMap;
+<i class="no-highlight">6</i>&nbsp;import java.util.HashSet;
+<i class="no-highlight">7</i>&nbsp;import java.util.List;
+<i class="no-highlight">8</i>&nbsp;import java.util.Map;
+<i class="no-highlight">9</i>&nbsp;import java.util.Set;
+<i class="no-highlight">10</i>&nbsp;import java.util.stream.Collectors;
+<i class="no-highlight">11</i>&nbsp;
+<i class="no-highlight">12</i>&nbsp;import javax.annotation.Nullable;
+<i class="no-highlight">13</i>&nbsp;
+<i class="no-highlight">14</i>&nbsp;import teammates.common.datatransfer.AttributesDeletionQuery;
+<i class="no-highlight">15</i>&nbsp;import teammates.common.datatransfer.CourseRoster;
+<i class="no-highlight">16</i>&nbsp;import teammates.common.datatransfer.FeedbackParticipantType;
+<i class="no-highlight">17</i>&nbsp;import teammates.common.datatransfer.attributes.FeedbackQuestionAttributes;
+<i class="no-highlight">18</i>&nbsp;import teammates.common.datatransfer.attributes.FeedbackSessionAttributes;
+<i class="no-highlight">19</i>&nbsp;import teammates.common.datatransfer.attributes.InstructorAttributes;
+<i class="no-highlight">20</i>&nbsp;import teammates.common.datatransfer.attributes.StudentAttributes;
+<i class="no-highlight">21</i>&nbsp;import teammates.common.datatransfer.questions.FeedbackMcqQuestionDetails;
+<i class="no-highlight">22</i>&nbsp;import teammates.common.datatransfer.questions.FeedbackMsqQuestionDetails;
+<i class="no-highlight">23</i>&nbsp;import teammates.common.datatransfer.questions.FeedbackQuestionType;
+<i class="no-highlight">24</i>&nbsp;import teammates.common.exception.EntityDoesNotExistException;
+<i class="no-highlight">25</i>&nbsp;import teammates.common.exception.InvalidParametersException;
+<i class="no-highlight">26</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">27</i>&nbsp;import teammates.common.util.Logger;
+<i class="no-highlight">28</i>&nbsp;import teammates.storage.api.FeedbackQuestionsDb;
+<i class="no-highlight">29</i>&nbsp;
+<i class="no-highlight">30</i>&nbsp;/**
+<i class="no-highlight">31</i>&nbsp; * Handles operations related to feedback questions.
+<i class="no-highlight">32</i>&nbsp; *
+<i class="no-highlight">33</i>&nbsp; * @see FeedbackQuestionAttributes
+<i class="no-highlight">34</i>&nbsp; * @see FeedbackQuestionsDb
+<i class="no-highlight">35</i>&nbsp; */
+<b class="fc"><i class="no-highlight">36</i>&nbsp;public final class FeedbackQuestionsLogic {</b>
+<i class="no-highlight">37</i>&nbsp;
+<i class="no-highlight">38</i>&nbsp;    static final String USER_NAME_FOR_SELF = &quot;Myself&quot;;
+<i class="no-highlight">39</i>&nbsp;
+<b class="fc"><i class="no-highlight">40</i>&nbsp;    private static final Logger log = Logger.getLogger();</b>
+<i class="no-highlight">41</i>&nbsp;
+<b class="fc"><i class="no-highlight">42</i>&nbsp;    private static final FeedbackQuestionsLogic instance = new FeedbackQuestionsLogic();</b>
+<i class="no-highlight">43</i>&nbsp;
+<b class="fc"><i class="no-highlight">44</i>&nbsp;    private final FeedbackQuestionsDb fqDb = FeedbackQuestionsDb.inst();</b>
+<i class="no-highlight">45</i>&nbsp;
+<i class="no-highlight">46</i>&nbsp;    private CoursesLogic coursesLogic;
+<i class="no-highlight">47</i>&nbsp;    private FeedbackResponsesLogic frLogic;
+<i class="no-highlight">48</i>&nbsp;    private FeedbackSessionsLogic fsLogic;
+<i class="no-highlight">49</i>&nbsp;    private InstructorsLogic instructorsLogic;
+<i class="no-highlight">50</i>&nbsp;    private StudentsLogic studentsLogic;
+<i class="no-highlight">51</i>&nbsp;
+<b class="fc"><i class="no-highlight">52</i>&nbsp;    private FeedbackQuestionsLogic() {</b>
+<i class="no-highlight">53</i>&nbsp;        // prevent initialization
+<i class="no-highlight">54</i>&nbsp;    }
+<i class="no-highlight">55</i>&nbsp;
+<i class="no-highlight">56</i>&nbsp;    public static FeedbackQuestionsLogic inst() {
+<b class="fc"><i class="no-highlight">57</i>&nbsp;        return instance;</b>
+<i class="no-highlight">58</i>&nbsp;    }
+<i class="no-highlight">59</i>&nbsp;
+<i class="no-highlight">60</i>&nbsp;    void initLogicDependencies() {
+<b class="fc"><i class="no-highlight">61</i>&nbsp;        coursesLogic = CoursesLogic.inst();</b>
+<b class="fc"><i class="no-highlight">62</i>&nbsp;        frLogic = FeedbackResponsesLogic.inst();</b>
+<b class="fc"><i class="no-highlight">63</i>&nbsp;        fsLogic = FeedbackSessionsLogic.inst();</b>
+<b class="fc"><i class="no-highlight">64</i>&nbsp;        instructorsLogic = InstructorsLogic.inst();</b>
+<b class="fc"><i class="no-highlight">65</i>&nbsp;        studentsLogic = StudentsLogic.inst();</b>
+<i class="no-highlight">66</i>&nbsp;    }
+<i class="no-highlight">67</i>&nbsp;
+<i class="no-highlight">68</i>&nbsp;    /**
+<i class="no-highlight">69</i>&nbsp;     * Creates a new feedback question.
+<i class="no-highlight">70</i>&nbsp;     *
+<i class="no-highlight">71</i>&nbsp;     * @return the created question
+<i class="no-highlight">72</i>&nbsp;     * @throws InvalidParametersException if the question is invalid
+<i class="no-highlight">73</i>&nbsp;     */
+<i class="no-highlight">74</i>&nbsp;    public FeedbackQuestionAttributes createFeedbackQuestion(FeedbackQuestionAttributes fqa)
+<i class="no-highlight">75</i>&nbsp;            throws InvalidParametersException {
+<i class="no-highlight">76</i>&nbsp;
+<b class="fc"><i class="no-highlight">77</i>&nbsp;        List&lt;FeedbackQuestionAttributes&gt; questionsBefore =</b>
+<b class="fc"><i class="no-highlight">78</i>&nbsp;                getFeedbackQuestionsForSession(fqa.getFeedbackSessionName(), fqa.getCourseId());</b>
+<i class="no-highlight">79</i>&nbsp;
+<b class="fc"><i class="no-highlight">80</i>&nbsp;        FeedbackQuestionAttributes createdQuestion = fqDb.putEntity(fqa);</b>
+<i class="no-highlight">81</i>&nbsp;
+<b class="fc"><i class="no-highlight">82</i>&nbsp;        adjustQuestionNumbers(questionsBefore.size() + 1, createdQuestion.getQuestionNumber(), questionsBefore);</b>
+<b class="fc"><i class="no-highlight">83</i>&nbsp;        return createdQuestion;</b>
+<i class="no-highlight">84</i>&nbsp;    }
+<i class="no-highlight">85</i>&nbsp;
+<i class="no-highlight">86</i>&nbsp;    /**
+<i class="no-highlight">87</i>&nbsp;     * Gets a single question corresponding to the given parameters. &lt;br&gt;&lt;br&gt;
+<i class="no-highlight">88</i>&nbsp;     * &lt;b&gt;Note:&lt;/b&gt;&lt;br&gt;
+<i class="no-highlight">89</i>&nbsp;     * *    This method should only be used if the question already exists in the&lt;br&gt;
+<i class="no-highlight">90</i>&nbsp;     * database and has an ID already generated.
+<i class="no-highlight">91</i>&nbsp;     */
+<i class="no-highlight">92</i>&nbsp;    public FeedbackQuestionAttributes getFeedbackQuestion(String feedbackQuestionId) {
+<b class="fc"><i class="no-highlight">93</i>&nbsp;        return fqDb.getFeedbackQuestion(feedbackQuestionId);</b>
+<i class="no-highlight">94</i>&nbsp;    }
+<i class="no-highlight">95</i>&nbsp;
+<i class="no-highlight">96</i>&nbsp;    /**
+<i class="no-highlight">97</i>&nbsp;     * Gets a single question corresponding to the given parameters.
+<i class="no-highlight">98</i>&nbsp;     */
+<i class="no-highlight">99</i>&nbsp;    public FeedbackQuestionAttributes getFeedbackQuestion(
+<i class="no-highlight">100</i>&nbsp;            String feedbackSessionName,
+<i class="no-highlight">101</i>&nbsp;            String courseId,
+<i class="no-highlight">102</i>&nbsp;            int questionNumber) {
+<b class="fc"><i class="no-highlight">103</i>&nbsp;        return fqDb.getFeedbackQuestion(feedbackSessionName,</b>
+<i class="no-highlight">104</i>&nbsp;                courseId, questionNumber);
+<i class="no-highlight">105</i>&nbsp;    }
+<i class="no-highlight">106</i>&nbsp;
+<i class="no-highlight">107</i>&nbsp;    /**
+<i class="no-highlight">108</i>&nbsp;     * Gets a {@link List} of every FeedbackQuestion in the given session.
+<i class="no-highlight">109</i>&nbsp;     */
+<i class="no-highlight">110</i>&nbsp;    public List&lt;FeedbackQuestionAttributes&gt; getFeedbackQuestionsForSession(
+<i class="no-highlight">111</i>&nbsp;            String feedbackSessionName, String courseId) {
+<i class="no-highlight">112</i>&nbsp;
+<b class="fc"><i class="no-highlight">113</i>&nbsp;        List&lt;FeedbackQuestionAttributes&gt; questions =</b>
+<b class="fc"><i class="no-highlight">114</i>&nbsp;                fqDb.getFeedbackQuestionsForSession(feedbackSessionName, courseId);</b>
+<b class="fc"><i class="no-highlight">115</i>&nbsp;        questions.sort(null);</b>
+<i class="no-highlight">116</i>&nbsp;
+<i class="no-highlight">117</i>&nbsp;        // check whether the question numbers are consistent
+<b class="fc"><i class="no-highlight">118</i>&nbsp;        if (questions.size() &gt; 1 &amp;&amp; !areQuestionNumbersConsistent(questions)) {</b>
+<b class="nc"><i class="no-highlight">119</i>&nbsp;            log.severe(courseId + &quot;: &quot; + feedbackSessionName + &quot; has invalid question numbers&quot;);</b>
+<i class="no-highlight">120</i>&nbsp;        }
+<i class="no-highlight">121</i>&nbsp;
+<b class="fc"><i class="no-highlight">122</i>&nbsp;        return questions;</b>
+<i class="no-highlight">123</i>&nbsp;    }
+<i class="no-highlight">124</i>&nbsp;
+<i class="no-highlight">125</i>&nbsp;    // TODO can be removed once we are sure that question numbers will be consistent
+<i class="no-highlight">126</i>&nbsp;    private boolean areQuestionNumbersConsistent(List&lt;FeedbackQuestionAttributes&gt; questions) {
+<b class="fc"><i class="no-highlight">127</i>&nbsp;        Set&lt;Integer&gt; questionNumbersInSession = new HashSet&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">128</i>&nbsp;        for (FeedbackQuestionAttributes question : questions) {</b>
+<b class="fc"><i class="no-highlight">129</i>&nbsp;            if (!questionNumbersInSession.add(question.getQuestionNumber())) {</b>
+<b class="nc"><i class="no-highlight">130</i>&nbsp;                return false;</b>
+<i class="no-highlight">131</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">132</i>&nbsp;        }</b>
+<i class="no-highlight">133</i>&nbsp;
+<b class="fc"><i class="no-highlight">134</i>&nbsp;        for (int i = 1; i &lt;= questions.size(); i++) {</b>
+<b class="fc"><i class="no-highlight">135</i>&nbsp;            if (!questionNumbersInSession.contains(i)) {</b>
+<b class="nc"><i class="no-highlight">136</i>&nbsp;                return false;</b>
+<i class="no-highlight">137</i>&nbsp;            }
+<i class="no-highlight">138</i>&nbsp;        }
+<i class="no-highlight">139</i>&nbsp;
+<b class="fc"><i class="no-highlight">140</i>&nbsp;        return true;</b>
+<i class="no-highlight">141</i>&nbsp;    }
+<i class="no-highlight">142</i>&nbsp;
+<i class="no-highlight">143</i>&nbsp;    /**
+<i class="no-highlight">144</i>&nbsp;     * Gets a {@code List} of all questions for the given session that instructors can view/submit.
+<i class="no-highlight">145</i>&nbsp;     */
+<i class="no-highlight">146</i>&nbsp;    public List&lt;FeedbackQuestionAttributes&gt; getFeedbackQuestionsForInstructors(
+<i class="no-highlight">147</i>&nbsp;            String feedbackSessionName, String courseId, String userEmail) {
+<b class="fc"><i class="no-highlight">148</i>&nbsp;        List&lt;FeedbackQuestionAttributes&gt; questions = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">149</i>&nbsp;
+<b class="fc"><i class="no-highlight">150</i>&nbsp;        questions.addAll(</b>
+<b class="fc"><i class="no-highlight">151</i>&nbsp;                fqDb.getFeedbackQuestionsForGiverType(</b>
+<i class="no-highlight">152</i>&nbsp;                        feedbackSessionName, courseId, FeedbackParticipantType.INSTRUCTORS));
+<i class="no-highlight">153</i>&nbsp;
+<b class="fc"><i class="no-highlight">154</i>&nbsp;        if (userEmail != null &amp;&amp; fsLogic.isCreatorOfSession(feedbackSessionName, courseId, userEmail)) {</b>
+<b class="fc"><i class="no-highlight">155</i>&nbsp;            questions.addAll(</b>
+<b class="fc"><i class="no-highlight">156</i>&nbsp;                    fqDb.getFeedbackQuestionsForGiverType(</b>
+<i class="no-highlight">157</i>&nbsp;                            feedbackSessionName, courseId, FeedbackParticipantType.SELF));
+<i class="no-highlight">158</i>&nbsp;        }
+<i class="no-highlight">159</i>&nbsp;
+<b class="fc"><i class="no-highlight">160</i>&nbsp;        questions.sort(null);</b>
+<b class="fc"><i class="no-highlight">161</i>&nbsp;        return questions;</b>
+<i class="no-highlight">162</i>&nbsp;    }
+<i class="no-highlight">163</i>&nbsp;
+<i class="no-highlight">164</i>&nbsp;    /**
+<i class="no-highlight">165</i>&nbsp;     * Filters through the given list of questions and returns a {@code List} of
+<i class="no-highlight">166</i>&nbsp;     * questions that instructors can view/submit.
+<i class="no-highlight">167</i>&nbsp;     */
+<i class="no-highlight">168</i>&nbsp;    public List&lt;FeedbackQuestionAttributes&gt; getFeedbackQuestionsForInstructors(
+<i class="no-highlight">169</i>&nbsp;            List&lt;FeedbackQuestionAttributes&gt; allQuestions, boolean isCreator) {
+<i class="no-highlight">170</i>&nbsp;
+<b class="fc"><i class="no-highlight">171</i>&nbsp;        List&lt;FeedbackQuestionAttributes&gt; questions = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">172</i>&nbsp;
+<b class="fc"><i class="no-highlight">173</i>&nbsp;        for (FeedbackQuestionAttributes question : allQuestions) {</b>
+<b class="fc"><i class="no-highlight">174</i>&nbsp;            if (question.getGiverType() == FeedbackParticipantType.INSTRUCTORS</b>
+<b class="fc"><i class="no-highlight">175</i>&nbsp;                    || question.getGiverType() == FeedbackParticipantType.SELF &amp;&amp; isCreator) {</b>
+<b class="fc"><i class="no-highlight">176</i>&nbsp;                questions.add(question);</b>
+<i class="no-highlight">177</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">178</i>&nbsp;        }</b>
+<i class="no-highlight">179</i>&nbsp;
+<b class="fc"><i class="no-highlight">180</i>&nbsp;        return questions;</b>
+<i class="no-highlight">181</i>&nbsp;    }
+<i class="no-highlight">182</i>&nbsp;
+<i class="no-highlight">183</i>&nbsp;    /**
+<i class="no-highlight">184</i>&nbsp;     * Gets a {@code List} of all questions for the given session that students can view/submit.
+<i class="no-highlight">185</i>&nbsp;     */
+<i class="no-highlight">186</i>&nbsp;    public List&lt;FeedbackQuestionAttributes&gt; getFeedbackQuestionsForStudents(
+<i class="no-highlight">187</i>&nbsp;            String feedbackSessionName, String courseId) {
+<b class="fc"><i class="no-highlight">188</i>&nbsp;        List&lt;FeedbackQuestionAttributes&gt; questions = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">189</i>&nbsp;
+<b class="fc"><i class="no-highlight">190</i>&nbsp;        questions.addAll(</b>
+<b class="fc"><i class="no-highlight">191</i>&nbsp;                fqDb.getFeedbackQuestionsForGiverType(</b>
+<i class="no-highlight">192</i>&nbsp;                        feedbackSessionName, courseId, FeedbackParticipantType.STUDENTS));
+<b class="fc"><i class="no-highlight">193</i>&nbsp;        questions.addAll(</b>
+<b class="fc"><i class="no-highlight">194</i>&nbsp;                fqDb.getFeedbackQuestionsForGiverType(</b>
+<i class="no-highlight">195</i>&nbsp;                        feedbackSessionName, courseId, FeedbackParticipantType.TEAMS));
+<i class="no-highlight">196</i>&nbsp;
+<b class="fc"><i class="no-highlight">197</i>&nbsp;        questions.sort(null);</b>
+<b class="fc"><i class="no-highlight">198</i>&nbsp;        return questions;</b>
+<i class="no-highlight">199</i>&nbsp;    }
+<i class="no-highlight">200</i>&nbsp;
+<i class="no-highlight">201</i>&nbsp;    /**
+<i class="no-highlight">202</i>&nbsp;     * Filters through the given list of questions and returns a {@code List} of
+<i class="no-highlight">203</i>&nbsp;     * questions that students can view/submit.
+<i class="no-highlight">204</i>&nbsp;     */
+<i class="no-highlight">205</i>&nbsp;    public List&lt;FeedbackQuestionAttributes&gt; getFeedbackQuestionsForStudents(
+<i class="no-highlight">206</i>&nbsp;            List&lt;FeedbackQuestionAttributes&gt; allQuestions) {
+<i class="no-highlight">207</i>&nbsp;
+<b class="fc"><i class="no-highlight">208</i>&nbsp;        List&lt;FeedbackQuestionAttributes&gt; questions = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">209</i>&nbsp;
+<b class="fc"><i class="no-highlight">210</i>&nbsp;        for (FeedbackQuestionAttributes question : allQuestions) {</b>
+<b class="fc"><i class="no-highlight">211</i>&nbsp;            if (question.getGiverType() == FeedbackParticipantType.STUDENTS</b>
+<b class="fc"><i class="no-highlight">212</i>&nbsp;                    || question.getGiverType() == FeedbackParticipantType.TEAMS) {</b>
+<b class="fc"><i class="no-highlight">213</i>&nbsp;                questions.add(question);</b>
+<i class="no-highlight">214</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">215</i>&nbsp;        }</b>
+<i class="no-highlight">216</i>&nbsp;
+<b class="fc"><i class="no-highlight">217</i>&nbsp;        return questions;</b>
+<i class="no-highlight">218</i>&nbsp;    }
+<i class="no-highlight">219</i>&nbsp;
+<i class="no-highlight">220</i>&nbsp;    /**
+<i class="no-highlight">221</i>&nbsp;     * Returns true if a session has question in either STUDENTS type or TEAMS type.
+<i class="no-highlight">222</i>&nbsp;     */
+<i class="no-highlight">223</i>&nbsp;    public boolean sessionHasQuestions(String feedbackSessionName, String courseId) {
+<b class="fc"><i class="no-highlight">224</i>&nbsp;        return fqDb.hasFeedbackQuestionsForGiverType(feedbackSessionName, courseId, FeedbackParticipantType.STUDENTS)</b>
+<b class="fc"><i class="no-highlight">225</i>&nbsp;                || fqDb.hasFeedbackQuestionsForGiverType(feedbackSessionName, courseId, FeedbackParticipantType.TEAMS);</b>
+<i class="no-highlight">226</i>&nbsp;    }
+<i class="no-highlight">227</i>&nbsp;
+<i class="no-highlight">228</i>&nbsp;    /**
+<i class="no-highlight">229</i>&nbsp;     * Returns true if a session has question in a specific giverType.
+<i class="no-highlight">230</i>&nbsp;     */
+<i class="no-highlight">231</i>&nbsp;    public boolean sessionHasQuestionsForGiverType(
+<i class="no-highlight">232</i>&nbsp;            String feedbackSessionName, String courseId, FeedbackParticipantType giverType) {
+<b class="fc"><i class="no-highlight">233</i>&nbsp;        return fqDb.hasFeedbackQuestionsForGiverType(feedbackSessionName, courseId, giverType);</b>
+<i class="no-highlight">234</i>&nbsp;    }
+<i class="no-highlight">235</i>&nbsp;
+<i class="no-highlight">236</i>&nbsp;    /**
+<i class="no-highlight">237</i>&nbsp;     * Gets the email-name mapping of recipients for the given question for the given giver.
+<i class="no-highlight">238</i>&nbsp;     */
+<i class="no-highlight">239</i>&nbsp;    Map&lt;String, String&gt; getRecipientsForQuestion(FeedbackQuestionAttributes question, String giver)
+<i class="no-highlight">240</i>&nbsp;            throws EntityDoesNotExistException {
+<i class="no-highlight">241</i>&nbsp;
+<b class="fc"><i class="no-highlight">242</i>&nbsp;        InstructorAttributes instructorGiver = instructorsLogic.getInstructorForEmail(question.getCourseId(), giver);</b>
+<b class="fc"><i class="no-highlight">243</i>&nbsp;        StudentAttributes studentGiver = studentsLogic.getStudentForEmail(question.getCourseId(), giver);</b>
+<i class="no-highlight">244</i>&nbsp;
+<b class="fc"><i class="no-highlight">245</i>&nbsp;        Map&lt;String, String&gt; recipients = new HashMap&lt;&gt;();</b>
+<i class="no-highlight">246</i>&nbsp;
+<b class="fc"><i class="no-highlight">247</i>&nbsp;        FeedbackParticipantType recipientType = question.getRecipientType();</b>
+<i class="no-highlight">248</i>&nbsp;
+<b class="fc"><i class="no-highlight">249</i>&nbsp;        String giverTeam = getGiverTeam(giver, instructorGiver, studentGiver);</b>
+<i class="no-highlight">250</i>&nbsp;
+<b class="fc"><i class="no-highlight">251</i>&nbsp;        String giverSection = getGiverSection(giver, instructorGiver, studentGiver);</b>
+<i class="no-highlight">252</i>&nbsp;
+<b class="fc"><i class="no-highlight">253</i>&nbsp;        switch (recipientType) {</b>
+<i class="no-highlight">254</i>&nbsp;        case SELF:
+<b class="fc"><i class="no-highlight">255</i>&nbsp;            if (question.getGiverType() == FeedbackParticipantType.TEAMS) {</b>
+<b class="fc"><i class="no-highlight">256</i>&nbsp;                recipients.put(studentGiver.getTeam(), studentGiver.getTeam());</b>
+<i class="no-highlight">257</i>&nbsp;            } else {
+<b class="fc"><i class="no-highlight">258</i>&nbsp;                recipients.put(giver, USER_NAME_FOR_SELF);</b>
+<i class="no-highlight">259</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">260</i>&nbsp;            break;</b>
+<i class="no-highlight">261</i>&nbsp;        case STUDENTS:
+<b class="fc"><i class="no-highlight">262</i>&nbsp;            List&lt;StudentAttributes&gt; studentsInCourse = studentsLogic.getStudentsForCourse(question.getCourseId());</b>
+<b class="fc"><i class="no-highlight">263</i>&nbsp;            for (StudentAttributes student : studentsInCourse) {</b>
+<i class="no-highlight">264</i>&nbsp;                // Ensure student does not evaluate himself
+<b class="fc"><i class="no-highlight">265</i>&nbsp;                if (!giver.equals(student.getEmail())) {</b>
+<b class="fc"><i class="no-highlight">266</i>&nbsp;                    recipients.put(student.getEmail(), student.getName());</b>
+<i class="no-highlight">267</i>&nbsp;                }
+<b class="fc"><i class="no-highlight">268</i>&nbsp;            }</b>
+<b class="fc"><i class="no-highlight">269</i>&nbsp;            break;</b>
+<i class="no-highlight">270</i>&nbsp;        case STUDENTS_IN_SAME_SECTION:
+<b class="nc"><i class="no-highlight">271</i>&nbsp;            List&lt;StudentAttributes&gt; studentsInSection =</b>
+<b class="nc"><i class="no-highlight">272</i>&nbsp;                    studentsLogic.getStudentsForSection(giverSection, question.getCourseId());</b>
+<b class="nc"><i class="no-highlight">273</i>&nbsp;            for (StudentAttributes student : studentsInSection) {</b>
+<i class="no-highlight">274</i>&nbsp;                // Ensure student does not evaluate himself
+<b class="nc"><i class="no-highlight">275</i>&nbsp;                if (!giver.equals(student.getEmail())) {</b>
+<b class="nc"><i class="no-highlight">276</i>&nbsp;                    recipients.put(student.getEmail(), student.getName());</b>
+<i class="no-highlight">277</i>&nbsp;                }
+<b class="nc"><i class="no-highlight">278</i>&nbsp;            }</b>
+<b class="nc"><i class="no-highlight">279</i>&nbsp;            break;</b>
+<i class="no-highlight">280</i>&nbsp;        case INSTRUCTORS:
+<b class="fc"><i class="no-highlight">281</i>&nbsp;            List&lt;InstructorAttributes&gt; instructorsInCourse =</b>
+<b class="fc"><i class="no-highlight">282</i>&nbsp;                    instructorsLogic.getInstructorsForCourse(question.getCourseId());</b>
+<b class="fc"><i class="no-highlight">283</i>&nbsp;            for (InstructorAttributes instr : instructorsInCourse) {</b>
+<i class="no-highlight">284</i>&nbsp;                // Ensure instructor does not evaluate himself
+<b class="fc"><i class="no-highlight">285</i>&nbsp;                if (!giver.equals(instr.getEmail())) {</b>
+<b class="fc"><i class="no-highlight">286</i>&nbsp;                    recipients.put(instr.getEmail(), instr.getName());</b>
+<i class="no-highlight">287</i>&nbsp;                }
+<b class="fc"><i class="no-highlight">288</i>&nbsp;            }</b>
+<b class="fc"><i class="no-highlight">289</i>&nbsp;            break;</b>
+<i class="no-highlight">290</i>&nbsp;        case TEAMS:
+<b class="fc"><i class="no-highlight">291</i>&nbsp;            List&lt;String&gt; teams = coursesLogic.getTeamsForCourse(question.getCourseId());</b>
+<b class="fc"><i class="no-highlight">292</i>&nbsp;            for (String team : teams) {</b>
+<i class="no-highlight">293</i>&nbsp;                // Ensure student(&#39;s team) does not evaluate own team.
+<b class="fc"><i class="no-highlight">294</i>&nbsp;                if (!giverTeam.equals(team)) {</b>
+<i class="no-highlight">295</i>&nbsp;                    // recipientEmail doubles as team name in this case.
+<b class="fc"><i class="no-highlight">296</i>&nbsp;                    recipients.put(team, team);</b>
+<i class="no-highlight">297</i>&nbsp;                }
+<b class="fc"><i class="no-highlight">298</i>&nbsp;            }</b>
+<b class="fc"><i class="no-highlight">299</i>&nbsp;            break;</b>
+<i class="no-highlight">300</i>&nbsp;        case TEAMS_IN_SAME_SECTION:
+<b class="nc"><i class="no-highlight">301</i>&nbsp;            List&lt;String&gt; teamsInSection = coursesLogic.getTeamsForSection(giverSection, question.getCourseId());</b>
+<b class="nc"><i class="no-highlight">302</i>&nbsp;            for (String team : teamsInSection) {</b>
+<i class="no-highlight">303</i>&nbsp;                // Ensure student(&#39;s team) does not evaluate own team.
+<b class="nc"><i class="no-highlight">304</i>&nbsp;                if (!giverTeam.equals(team)) {</b>
+<i class="no-highlight">305</i>&nbsp;                    // recipientEmail doubles as team name in this case.
+<b class="nc"><i class="no-highlight">306</i>&nbsp;                    recipients.put(team, team);</b>
+<i class="no-highlight">307</i>&nbsp;                }
+<b class="nc"><i class="no-highlight">308</i>&nbsp;            }</b>
+<b class="nc"><i class="no-highlight">309</i>&nbsp;            break;</b>
+<i class="no-highlight">310</i>&nbsp;        case OWN_TEAM:
+<b class="nc"><i class="no-highlight">311</i>&nbsp;            recipients.put(giverTeam, giverTeam);</b>
+<b class="nc"><i class="no-highlight">312</i>&nbsp;            break;</b>
+<i class="no-highlight">313</i>&nbsp;        case OWN_TEAM_MEMBERS:
+<b class="fc"><i class="no-highlight">314</i>&nbsp;            List&lt;StudentAttributes&gt; students = studentsLogic.getStudentsForTeam(giverTeam, question.getCourseId());</b>
+<b class="fc"><i class="no-highlight">315</i>&nbsp;            for (StudentAttributes student : students) {</b>
+<b class="fc"><i class="no-highlight">316</i>&nbsp;                if (!student.getEmail().equals(giver)) {</b>
+<b class="nc"><i class="no-highlight">317</i>&nbsp;                    recipients.put(student.getEmail(), student.getName());</b>
+<i class="no-highlight">318</i>&nbsp;                }
+<b class="fc"><i class="no-highlight">319</i>&nbsp;            }</b>
+<b class="fc"><i class="no-highlight">320</i>&nbsp;            break;</b>
+<i class="no-highlight">321</i>&nbsp;        case OWN_TEAM_MEMBERS_INCLUDING_SELF:
+<b class="nc"><i class="no-highlight">322</i>&nbsp;            List&lt;StudentAttributes&gt; teamMembers = studentsLogic.getStudentsForTeam(giverTeam, question.getCourseId());</b>
+<b class="nc"><i class="no-highlight">323</i>&nbsp;            for (StudentAttributes student : teamMembers) {</b>
+<i class="no-highlight">324</i>&nbsp;                // accepts self feedback too
+<b class="nc"><i class="no-highlight">325</i>&nbsp;                recipients.put(student.getEmail(), student.getName());</b>
+<b class="nc"><i class="no-highlight">326</i>&nbsp;            }</b>
+<b class="nc"><i class="no-highlight">327</i>&nbsp;            break;</b>
+<i class="no-highlight">328</i>&nbsp;        case NONE:
+<b class="fc"><i class="no-highlight">329</i>&nbsp;            recipients.put(Const.GENERAL_QUESTION, Const.GENERAL_QUESTION);</b>
+<b class="fc"><i class="no-highlight">330</i>&nbsp;            break;</b>
+<i class="no-highlight">331</i>&nbsp;        default:
+<i class="no-highlight">332</i>&nbsp;            break;
+<i class="no-highlight">333</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">334</i>&nbsp;        return recipients;</b>
+<i class="no-highlight">335</i>&nbsp;    }
+<i class="no-highlight">336</i>&nbsp;
+<i class="no-highlight">337</i>&nbsp;    /**
+<i class="no-highlight">338</i>&nbsp;     * Gets the recipients of a feedback question.
+<i class="no-highlight">339</i>&nbsp;     *
+<i class="no-highlight">340</i>&nbsp;     * @param question the feedback question
+<i class="no-highlight">341</i>&nbsp;     * @param instructorGiver can be null for student giver
+<i class="no-highlight">342</i>&nbsp;     * @param studentGiver can be null for instructor giver
+<i class="no-highlight">343</i>&nbsp;     * @param courseRoster if provided, the function can be completed without touching database
+<i class="no-highlight">344</i>&nbsp;     * @return a map which keys are the identifiers of the recipients and values are the names of the recipients
+<i class="no-highlight">345</i>&nbsp;     */
+<i class="no-highlight">346</i>&nbsp;    public Map&lt;String, String&gt; getRecipientsOfQuestion(
+<i class="no-highlight">347</i>&nbsp;            FeedbackQuestionAttributes question,
+<i class="no-highlight">348</i>&nbsp;            @Nullable InstructorAttributes instructorGiver, @Nullable StudentAttributes studentGiver,
+<i class="no-highlight">349</i>&nbsp;            @Nullable CourseRoster courseRoster) {
+<b class="fc"><i class="no-highlight">350</i>&nbsp;        assert instructorGiver != null || studentGiver != null;</b>
+<i class="no-highlight">351</i>&nbsp;
+<b class="fc"><i class="no-highlight">352</i>&nbsp;        Map&lt;String, String&gt; recipients = new HashMap&lt;&gt;();</b>
+<i class="no-highlight">353</i>&nbsp;
+<b class="fc"><i class="no-highlight">354</i>&nbsp;        boolean isStudentGiver = studentGiver != null;</b>
+<b class="fc"><i class="no-highlight">355</i>&nbsp;        boolean isInstructorGiver = instructorGiver != null;</b>
+<i class="no-highlight">356</i>&nbsp;
+<b class="fc"><i class="no-highlight">357</i>&nbsp;        String giverEmail = &quot;&quot;;</b>
+<b class="fc"><i class="no-highlight">358</i>&nbsp;        String giverTeam = &quot;&quot;;</b>
+<b class="fc"><i class="no-highlight">359</i>&nbsp;        String giverSection = &quot;&quot;;</b>
+<b class="fc"><i class="no-highlight">360</i>&nbsp;        if (isStudentGiver) {</b>
+<b class="fc"><i class="no-highlight">361</i>&nbsp;            giverEmail = studentGiver.getEmail();</b>
+<b class="fc"><i class="no-highlight">362</i>&nbsp;            giverTeam = studentGiver.getTeam();</b>
+<b class="fc"><i class="no-highlight">363</i>&nbsp;            giverSection = studentGiver.getSection();</b>
+<b class="fc"><i class="no-highlight">364</i>&nbsp;        } else if (isInstructorGiver) {</b>
+<b class="fc"><i class="no-highlight">365</i>&nbsp;            giverEmail = instructorGiver.getEmail();</b>
+<b class="fc"><i class="no-highlight">366</i>&nbsp;            giverTeam = Const.USER_TEAM_FOR_INSTRUCTOR;</b>
+<b class="fc"><i class="no-highlight">367</i>&nbsp;            giverSection = Const.DEFAULT_SECTION;</b>
+<i class="no-highlight">368</i>&nbsp;        }
+<i class="no-highlight">369</i>&nbsp;
+<b class="fc"><i class="no-highlight">370</i>&nbsp;        FeedbackParticipantType recipientType = question.getRecipientType();</b>
+<b class="fc"><i class="no-highlight">371</i>&nbsp;        FeedbackParticipantType generateOptionsFor = recipientType;</b>
+<i class="no-highlight">372</i>&nbsp;
+<b class="fc"><i class="no-highlight">373</i>&nbsp;        switch (recipientType) {</b>
+<i class="no-highlight">374</i>&nbsp;        case SELF:
+<b class="fc"><i class="no-highlight">375</i>&nbsp;            if (question.getGiverType() == FeedbackParticipantType.TEAMS) {</b>
+<b class="fc"><i class="no-highlight">376</i>&nbsp;                recipients.put(giverTeam, giverTeam);</b>
+<i class="no-highlight">377</i>&nbsp;            } else {
+<b class="fc"><i class="no-highlight">378</i>&nbsp;                recipients.put(giverEmail, USER_NAME_FOR_SELF);</b>
+<i class="no-highlight">379</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">380</i>&nbsp;            break;</b>
+<i class="no-highlight">381</i>&nbsp;        case STUDENTS:
+<i class="no-highlight">382</i>&nbsp;        case STUDENTS_IN_SAME_SECTION:
+<i class="no-highlight">383</i>&nbsp;            List&lt;StudentAttributes&gt; studentList;
+<b class="fc"><i class="no-highlight">384</i>&nbsp;            if (courseRoster == null) {</b>
+<b class="fc"><i class="no-highlight">385</i>&nbsp;                if (generateOptionsFor == FeedbackParticipantType.STUDENTS_IN_SAME_SECTION) {</b>
+<b class="nc"><i class="no-highlight">386</i>&nbsp;                    studentList = studentsLogic.getStudentsForSection(giverSection, question.getCourseId());</b>
+<i class="no-highlight">387</i>&nbsp;                } else {
+<b class="fc"><i class="no-highlight">388</i>&nbsp;                    studentList = studentsLogic.getStudentsForCourse(question.getCourseId());</b>
+<i class="no-highlight">389</i>&nbsp;                }
+<i class="no-highlight">390</i>&nbsp;            } else {
+<b class="fc"><i class="no-highlight">391</i>&nbsp;                if (generateOptionsFor == FeedbackParticipantType.STUDENTS_IN_SAME_SECTION) {</b>
+<b class="nc"><i class="no-highlight">392</i>&nbsp;                    final String finalGiverSection = giverSection;</b>
+<b class="nc"><i class="no-highlight">393</i>&nbsp;                    studentList = courseRoster.getStudents().stream()</b>
+<b class="nc"><i class="no-highlight">394</i>&nbsp;                            .filter(studentAttributes -&gt; studentAttributes.getSection()</b>
+<b class="nc"><i class="no-highlight">395</i>&nbsp;                                    .equals(finalGiverSection)).collect(Collectors.toList());</b>
+<b class="nc"><i class="no-highlight">396</i>&nbsp;                } else {</b>
+<b class="fc"><i class="no-highlight">397</i>&nbsp;                    studentList = courseRoster.getStudents();</b>
+<i class="no-highlight">398</i>&nbsp;                }
+<i class="no-highlight">399</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">400</i>&nbsp;            for (StudentAttributes student : studentList) {</b>
+<b class="fc"><i class="no-highlight">401</i>&nbsp;                if (isInstructorGiver &amp;&amp; !instructorGiver.isAllowedForPrivilege(</b>
+<b class="fc"><i class="no-highlight">402</i>&nbsp;                        student.getSection(), question.getFeedbackSessionName(),</b>
+<i class="no-highlight">403</i>&nbsp;                        Const.InstructorPermissions.CAN_SUBMIT_SESSION_IN_SECTIONS)) {
+<i class="no-highlight">404</i>&nbsp;                    // instructor can only see students in allowed sections for him/her
+<b class="nc"><i class="no-highlight">405</i>&nbsp;                    continue;</b>
+<i class="no-highlight">406</i>&nbsp;                }
+<i class="no-highlight">407</i>&nbsp;                // Ensure student does not evaluate himself
+<b class="fc"><i class="no-highlight">408</i>&nbsp;                if (!giverEmail.equals(student.getEmail())) {</b>
+<b class="fc"><i class="no-highlight">409</i>&nbsp;                    recipients.put(student.getEmail(), student.getName());</b>
+<i class="no-highlight">410</i>&nbsp;                }
+<b class="fc"><i class="no-highlight">411</i>&nbsp;            }</b>
+<b class="fc"><i class="no-highlight">412</i>&nbsp;            break;</b>
+<i class="no-highlight">413</i>&nbsp;        case INSTRUCTORS:
+<i class="no-highlight">414</i>&nbsp;            List&lt;InstructorAttributes&gt; instructorsInCourse;
+<b class="fc"><i class="no-highlight">415</i>&nbsp;            if (courseRoster == null) {</b>
+<b class="fc"><i class="no-highlight">416</i>&nbsp;                instructorsInCourse = instructorsLogic.getInstructorsForCourse(question.getCourseId());</b>
+<i class="no-highlight">417</i>&nbsp;            } else {
+<b class="fc"><i class="no-highlight">418</i>&nbsp;                instructorsInCourse = courseRoster.getInstructors();</b>
+<i class="no-highlight">419</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">420</i>&nbsp;            for (InstructorAttributes instr : instructorsInCourse) {</b>
+<i class="no-highlight">421</i>&nbsp;                // remove hidden instructors for students
+<b class="fc"><i class="no-highlight">422</i>&nbsp;                if (isStudentGiver &amp;&amp; !instr.isDisplayedToStudents()) {</b>
+<b class="fc"><i class="no-highlight">423</i>&nbsp;                    continue;</b>
+<i class="no-highlight">424</i>&nbsp;                }
+<i class="no-highlight">425</i>&nbsp;                // Ensure instructor does not evaluate himself
+<b class="fc"><i class="no-highlight">426</i>&nbsp;                if (!giverEmail.equals(instr.getEmail())) {</b>
+<b class="fc"><i class="no-highlight">427</i>&nbsp;                    recipients.put(instr.getEmail(), instr.getName());</b>
+<i class="no-highlight">428</i>&nbsp;                }
+<b class="fc"><i class="no-highlight">429</i>&nbsp;            }</b>
+<b class="fc"><i class="no-highlight">430</i>&nbsp;            break;</b>
+<i class="no-highlight">431</i>&nbsp;        case TEAMS:
+<i class="no-highlight">432</i>&nbsp;        case TEAMS_IN_SAME_SECTION:
+<i class="no-highlight">433</i>&nbsp;            Map&lt;String, List&lt;StudentAttributes&gt;&gt; teamToTeamMembersTable;
+<i class="no-highlight">434</i>&nbsp;            List&lt;StudentAttributes&gt; teamStudents;
+<b class="fc"><i class="no-highlight">435</i>&nbsp;            if (generateOptionsFor == FeedbackParticipantType.TEAMS_IN_SAME_SECTION) {</b>
+<b class="nc"><i class="no-highlight">436</i>&nbsp;                teamStudents = studentsLogic.getStudentsForSection(giverSection, question.getCourseId());</b>
+<b class="nc"><i class="no-highlight">437</i>&nbsp;                teamToTeamMembersTable = CourseRoster.buildTeamToMembersTable(teamStudents);</b>
+<i class="no-highlight">438</i>&nbsp;            } else {
+<b class="fc"><i class="no-highlight">439</i>&nbsp;                if (courseRoster == null) {</b>
+<b class="fc"><i class="no-highlight">440</i>&nbsp;                    teamStudents = studentsLogic.getStudentsForCourse(question.getCourseId());</b>
+<b class="fc"><i class="no-highlight">441</i>&nbsp;                    teamToTeamMembersTable = CourseRoster.buildTeamToMembersTable(teamStudents);</b>
+<i class="no-highlight">442</i>&nbsp;                } else {
+<b class="fc"><i class="no-highlight">443</i>&nbsp;                    teamToTeamMembersTable = courseRoster.getTeamToMembersTable();</b>
+<i class="no-highlight">444</i>&nbsp;                }
+<i class="no-highlight">445</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">446</i>&nbsp;            for (Map.Entry&lt;String, List&lt;StudentAttributes&gt;&gt; team : teamToTeamMembersTable.entrySet()) {</b>
+<b class="fc"><i class="no-highlight">447</i>&nbsp;                if (isInstructorGiver &amp;&amp; !instructorGiver.isAllowedForPrivilege(</b>
+<b class="fc"><i class="no-highlight">448</i>&nbsp;                        team.getValue().iterator().next().getSection(),</b>
+<b class="fc"><i class="no-highlight">449</i>&nbsp;                        question.getFeedbackSessionName(),</b>
+<i class="no-highlight">450</i>&nbsp;                        Const.InstructorPermissions.CAN_SUBMIT_SESSION_IN_SECTIONS)) {
+<i class="no-highlight">451</i>&nbsp;                    // instructor can only see teams in allowed sections for him/her
+<b class="nc"><i class="no-highlight">452</i>&nbsp;                    continue;</b>
+<i class="no-highlight">453</i>&nbsp;                }
+<i class="no-highlight">454</i>&nbsp;                // Ensure student(&#39;s team) does not evaluate own team.
+<b class="fc"><i class="no-highlight">455</i>&nbsp;                if (!giverTeam.equals(team.getKey())) {</b>
+<i class="no-highlight">456</i>&nbsp;                    // recipientEmail doubles as team name in this case.
+<b class="fc"><i class="no-highlight">457</i>&nbsp;                    recipients.put(team.getKey(), team.getKey());</b>
+<i class="no-highlight">458</i>&nbsp;                }
+<b class="fc"><i class="no-highlight">459</i>&nbsp;            }</b>
+<b class="fc"><i class="no-highlight">460</i>&nbsp;            break;</b>
+<i class="no-highlight">461</i>&nbsp;        case OWN_TEAM:
+<b class="fc"><i class="no-highlight">462</i>&nbsp;            recipients.put(giverTeam, giverTeam);</b>
+<b class="fc"><i class="no-highlight">463</i>&nbsp;            break;</b>
+<i class="no-highlight">464</i>&nbsp;        case OWN_TEAM_MEMBERS:
+<i class="no-highlight">465</i>&nbsp;            List&lt;StudentAttributes&gt; students;
+<b class="fc"><i class="no-highlight">466</i>&nbsp;            if (courseRoster == null) {</b>
+<b class="fc"><i class="no-highlight">467</i>&nbsp;                students = studentsLogic.getStudentsForTeam(giverTeam, question.getCourseId());</b>
+<i class="no-highlight">468</i>&nbsp;            } else {
+<b class="fc"><i class="no-highlight">469</i>&nbsp;                students = courseRoster.getTeamToMembersTable().getOrDefault(giverTeam, Collections.emptyList());</b>
+<i class="no-highlight">470</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">471</i>&nbsp;            for (StudentAttributes student : students) {</b>
+<b class="fc"><i class="no-highlight">472</i>&nbsp;                if (!student.getEmail().equals(giverEmail)) {</b>
+<b class="fc"><i class="no-highlight">473</i>&nbsp;                    recipients.put(student.getEmail(), student.getName());</b>
+<i class="no-highlight">474</i>&nbsp;                }
+<b class="fc"><i class="no-highlight">475</i>&nbsp;            }</b>
+<b class="fc"><i class="no-highlight">476</i>&nbsp;            break;</b>
+<i class="no-highlight">477</i>&nbsp;        case OWN_TEAM_MEMBERS_INCLUDING_SELF:
+<i class="no-highlight">478</i>&nbsp;            List&lt;StudentAttributes&gt; teamMembers;
+<b class="fc"><i class="no-highlight">479</i>&nbsp;            if (courseRoster == null) {</b>
+<b class="fc"><i class="no-highlight">480</i>&nbsp;                teamMembers = studentsLogic.getStudentsForTeam(giverTeam, question.getCourseId());</b>
+<i class="no-highlight">481</i>&nbsp;            } else {
+<b class="nc"><i class="no-highlight">482</i>&nbsp;                teamMembers = courseRoster.getTeamToMembersTable().getOrDefault(giverTeam, Collections.emptyList());</b>
+<i class="no-highlight">483</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">484</i>&nbsp;            for (StudentAttributes student : teamMembers) {</b>
+<i class="no-highlight">485</i>&nbsp;                // accepts self feedback too
+<b class="fc"><i class="no-highlight">486</i>&nbsp;                recipients.put(student.getEmail(), student.getName());</b>
+<b class="fc"><i class="no-highlight">487</i>&nbsp;            }</b>
+<b class="fc"><i class="no-highlight">488</i>&nbsp;            break;</b>
+<i class="no-highlight">489</i>&nbsp;        case NONE:
+<b class="fc"><i class="no-highlight">490</i>&nbsp;            recipients.put(Const.GENERAL_QUESTION, Const.GENERAL_QUESTION);</b>
+<b class="fc"><i class="no-highlight">491</i>&nbsp;            break;</b>
+<i class="no-highlight">492</i>&nbsp;        default:
+<i class="no-highlight">493</i>&nbsp;            break;
+<i class="no-highlight">494</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">495</i>&nbsp;        return recipients;</b>
+<i class="no-highlight">496</i>&nbsp;    }
+<i class="no-highlight">497</i>&nbsp;
+<i class="no-highlight">498</i>&nbsp;    /**
+<i class="no-highlight">499</i>&nbsp;     * Builds a complete giver to recipient map for a {@code relatedQuestion}.
+<i class="no-highlight">500</i>&nbsp;     *
+<i class="no-highlight">501</i>&nbsp;     * @param relatedQuestion The question to be considered
+<i class="no-highlight">502</i>&nbsp;     * @param courseRoster the roster in the course
+<i class="no-highlight">503</i>&nbsp;     * @return a map from giver to recipient for the question.
+<i class="no-highlight">504</i>&nbsp;     */
+<i class="no-highlight">505</i>&nbsp;    public Map&lt;String, Set&lt;String&gt;&gt; buildCompleteGiverRecipientMap(
+<i class="no-highlight">506</i>&nbsp;            FeedbackQuestionAttributes relatedQuestion, CourseRoster courseRoster) {
+<b class="fc"><i class="no-highlight">507</i>&nbsp;        Map&lt;String, Set&lt;String&gt;&gt; completeGiverRecipientMap = new HashMap&lt;&gt;();</b>
+<i class="no-highlight">508</i>&nbsp;
+<b class="fc"><i class="no-highlight">509</i>&nbsp;        List&lt;String&gt; possibleGivers = getPossibleGivers(relatedQuestion, courseRoster);</b>
+<b class="fc"><i class="no-highlight">510</i>&nbsp;        for (String possibleGiver : possibleGivers) {</b>
+<b class="fc"><i class="no-highlight">511</i>&nbsp;            switch (relatedQuestion.getGiverType()) {</b>
+<i class="no-highlight">512</i>&nbsp;            case STUDENTS:
+<b class="fc"><i class="no-highlight">513</i>&nbsp;                StudentAttributes studentGiver = courseRoster.getStudentForEmail(possibleGiver);</b>
+<b class="fc"><i class="no-highlight">514</i>&nbsp;                completeGiverRecipientMap</b>
+<b class="fc"><i class="no-highlight">515</i>&nbsp;                        .computeIfAbsent(possibleGiver, key -&gt; new HashSet&lt;&gt;())</b>
+<b class="fc"><i class="no-highlight">516</i>&nbsp;                        .addAll(getRecipientsOfQuestion(</b>
+<b class="fc"><i class="no-highlight">517</i>&nbsp;                                relatedQuestion, null, studentGiver, courseRoster).keySet());</b>
+<b class="fc"><i class="no-highlight">518</i>&nbsp;                break;</b>
+<i class="no-highlight">519</i>&nbsp;            case TEAMS:
+<b class="fc"><i class="no-highlight">520</i>&nbsp;                StudentAttributes oneTeamMember =</b>
+<b class="fc"><i class="no-highlight">521</i>&nbsp;                        courseRoster.getTeamToMembersTable().get(possibleGiver).iterator().next();</b>
+<b class="fc"><i class="no-highlight">522</i>&nbsp;                completeGiverRecipientMap</b>
+<b class="fc"><i class="no-highlight">523</i>&nbsp;                        .computeIfAbsent(possibleGiver, key -&gt; new HashSet&lt;&gt;())</b>
+<b class="fc"><i class="no-highlight">524</i>&nbsp;                        .addAll(getRecipientsOfQuestion(</b>
+<b class="fc"><i class="no-highlight">525</i>&nbsp;                                relatedQuestion, null, oneTeamMember, courseRoster).keySet());</b>
+<b class="fc"><i class="no-highlight">526</i>&nbsp;                break;</b>
+<i class="no-highlight">527</i>&nbsp;            case INSTRUCTORS:
+<i class="no-highlight">528</i>&nbsp;            case SELF:
+<b class="fc"><i class="no-highlight">529</i>&nbsp;                InstructorAttributes instructorGiver = courseRoster.getInstructorForEmail(possibleGiver);</b>
+<b class="fc"><i class="no-highlight">530</i>&nbsp;                completeGiverRecipientMap</b>
+<b class="fc"><i class="no-highlight">531</i>&nbsp;                        .computeIfAbsent(possibleGiver, key -&gt; new HashSet&lt;&gt;())</b>
+<b class="fc"><i class="no-highlight">532</i>&nbsp;                        .addAll(getRecipientsOfQuestion(</b>
+<b class="fc"><i class="no-highlight">533</i>&nbsp;                                relatedQuestion, instructorGiver, null, courseRoster).keySet());</b>
+<b class="fc"><i class="no-highlight">534</i>&nbsp;                break;</b>
+<i class="no-highlight">535</i>&nbsp;            default:
+<b class="nc"><i class="no-highlight">536</i>&nbsp;                log.severe(&quot;Invalid giver type specified&quot;);</b>
+<i class="no-highlight">537</i>&nbsp;                break;
+<i class="no-highlight">538</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">539</i>&nbsp;        }</b>
+<i class="no-highlight">540</i>&nbsp;
+<b class="fc"><i class="no-highlight">541</i>&nbsp;        return completeGiverRecipientMap;</b>
+<i class="no-highlight">542</i>&nbsp;    }
+<i class="no-highlight">543</i>&nbsp;
+<i class="no-highlight">544</i>&nbsp;    /**
+<i class="no-highlight">545</i>&nbsp;     * Gets possible giver identifiers for a feedback question.
+<i class="no-highlight">546</i>&nbsp;     *
+<i class="no-highlight">547</i>&nbsp;     * @param fqa the feedback question
+<i class="no-highlight">548</i>&nbsp;     * @param courseRoster roster of all students and instructors
+<i class="no-highlight">549</i>&nbsp;     * @return a list of giver identifier
+<i class="no-highlight">550</i>&nbsp;     */
+<i class="no-highlight">551</i>&nbsp;    private List&lt;String&gt; getPossibleGivers(
+<i class="no-highlight">552</i>&nbsp;            FeedbackQuestionAttributes fqa, CourseRoster courseRoster) {
+<b class="fc"><i class="no-highlight">553</i>&nbsp;        FeedbackParticipantType giverType = fqa.getGiverType();</b>
+<b class="fc"><i class="no-highlight">554</i>&nbsp;        List&lt;String&gt; possibleGivers = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">555</i>&nbsp;
+<b class="fc"><i class="no-highlight">556</i>&nbsp;        switch (giverType) {</b>
+<i class="no-highlight">557</i>&nbsp;        case STUDENTS:
+<b class="fc"><i class="no-highlight">558</i>&nbsp;            possibleGivers = courseRoster.getStudents()</b>
+<b class="fc"><i class="no-highlight">559</i>&nbsp;                    .stream()</b>
+<b class="fc"><i class="no-highlight">560</i>&nbsp;                    .map(StudentAttributes::getEmail)</b>
+<b class="fc"><i class="no-highlight">561</i>&nbsp;                    .collect(Collectors.toList());</b>
+<b class="fc"><i class="no-highlight">562</i>&nbsp;            break;</b>
+<i class="no-highlight">563</i>&nbsp;        case INSTRUCTORS:
+<b class="fc"><i class="no-highlight">564</i>&nbsp;            possibleGivers = courseRoster.getInstructors()</b>
+<b class="fc"><i class="no-highlight">565</i>&nbsp;                    .stream()</b>
+<b class="fc"><i class="no-highlight">566</i>&nbsp;                    .map(InstructorAttributes::getEmail)</b>
+<b class="fc"><i class="no-highlight">567</i>&nbsp;                    .collect(Collectors.toList());</b>
+<b class="fc"><i class="no-highlight">568</i>&nbsp;            break;</b>
+<i class="no-highlight">569</i>&nbsp;        case TEAMS:
+<b class="fc"><i class="no-highlight">570</i>&nbsp;            possibleGivers = new ArrayList&lt;&gt;(courseRoster.getTeamToMembersTable().keySet());</b>
+<b class="fc"><i class="no-highlight">571</i>&nbsp;            break;</b>
+<i class="no-highlight">572</i>&nbsp;        case SELF:
+<b class="fc"><i class="no-highlight">573</i>&nbsp;            FeedbackSessionAttributes feedbackSession =</b>
+<b class="fc"><i class="no-highlight">574</i>&nbsp;                    fsLogic.getFeedbackSession(fqa.getFeedbackSessionName(), fqa.getCourseId());</b>
+<b class="fc"><i class="no-highlight">575</i>&nbsp;            possibleGivers = Collections.singletonList(feedbackSession.getCreatorEmail());</b>
+<b class="fc"><i class="no-highlight">576</i>&nbsp;            break;</b>
+<i class="no-highlight">577</i>&nbsp;        default:
+<b class="nc"><i class="no-highlight">578</i>&nbsp;            log.severe(&quot;Invalid giver type specified&quot;);</b>
+<i class="no-highlight">579</i>&nbsp;            break;
+<i class="no-highlight">580</i>&nbsp;        }
+<i class="no-highlight">581</i>&nbsp;
+<b class="fc"><i class="no-highlight">582</i>&nbsp;        return possibleGivers;</b>
+<i class="no-highlight">583</i>&nbsp;    }
+<i class="no-highlight">584</i>&nbsp;
+<i class="no-highlight">585</i>&nbsp;    /**
+<i class="no-highlight">586</i>&nbsp;     * Populates fields that need dynamic generation in a question.
+<i class="no-highlight">587</i>&nbsp;     *
+<i class="no-highlight">588</i>&nbsp;     * &lt;p&gt;Currently, only MCQ/MSQ needs to generate choices dynamically.&lt;/p&gt;
+<i class="no-highlight">589</i>&nbsp;     *
+<i class="no-highlight">590</i>&nbsp;     * @param feedbackQuestionAttributes the question to populate
+<i class="no-highlight">591</i>&nbsp;     * @param emailOfEntityDoingQuestion the email of the entity doing the question
+<i class="no-highlight">592</i>&nbsp;     * @param teamOfEntityDoingQuestion the team of the entity doing the question. If the entity is an instructor,
+<i class="no-highlight">593</i>&nbsp;     *                                  it can be {@code null}.
+<i class="no-highlight">594</i>&nbsp;     */
+<i class="no-highlight">595</i>&nbsp;    public void populateFieldsToGenerateInQuestion(FeedbackQuestionAttributes feedbackQuestionAttributes,
+<i class="no-highlight">596</i>&nbsp;            String emailOfEntityDoingQuestion, String teamOfEntityDoingQuestion) {
+<i class="no-highlight">597</i>&nbsp;        List&lt;String&gt; optionList;
+<i class="no-highlight">598</i>&nbsp;
+<i class="no-highlight">599</i>&nbsp;        FeedbackParticipantType generateOptionsFor;
+<i class="no-highlight">600</i>&nbsp;
+<b class="fc"><i class="no-highlight">601</i>&nbsp;        if (feedbackQuestionAttributes.getQuestionType() == FeedbackQuestionType.MCQ) {</b>
+<b class="fc"><i class="no-highlight">602</i>&nbsp;            FeedbackMcqQuestionDetails feedbackMcqQuestionDetails =</b>
+<b class="fc"><i class="no-highlight">603</i>&nbsp;                    (FeedbackMcqQuestionDetails) feedbackQuestionAttributes.getQuestionDetailsCopy();</b>
+<b class="fc"><i class="no-highlight">604</i>&nbsp;            optionList = feedbackMcqQuestionDetails.getMcqChoices();</b>
+<b class="fc"><i class="no-highlight">605</i>&nbsp;            generateOptionsFor = feedbackMcqQuestionDetails.getGenerateOptionsFor();</b>
+<b class="fc"><i class="no-highlight">606</i>&nbsp;        } else if (feedbackQuestionAttributes.getQuestionType() == FeedbackQuestionType.MSQ) {</b>
+<b class="fc"><i class="no-highlight">607</i>&nbsp;            FeedbackMsqQuestionDetails feedbackMsqQuestionDetails =</b>
+<b class="fc"><i class="no-highlight">608</i>&nbsp;                    (FeedbackMsqQuestionDetails) feedbackQuestionAttributes.getQuestionDetailsCopy();</b>
+<b class="fc"><i class="no-highlight">609</i>&nbsp;            optionList = feedbackMsqQuestionDetails.getMsqChoices();</b>
+<b class="fc"><i class="no-highlight">610</i>&nbsp;            generateOptionsFor = feedbackMsqQuestionDetails.getGenerateOptionsFor();</b>
+<b class="fc"><i class="no-highlight">611</i>&nbsp;        } else {</b>
+<i class="no-highlight">612</i>&nbsp;            // other question types
+<i class="no-highlight">613</i>&nbsp;            return;
+<i class="no-highlight">614</i>&nbsp;        }
+<i class="no-highlight">615</i>&nbsp;
+<b class="fc"><i class="no-highlight">616</i>&nbsp;        switch (generateOptionsFor) {</b>
+<i class="no-highlight">617</i>&nbsp;        case NONE:
+<b class="fc"><i class="no-highlight">618</i>&nbsp;            break;</b>
+<i class="no-highlight">619</i>&nbsp;        case STUDENTS:
+<i class="no-highlight">620</i>&nbsp;        case STUDENTS_IN_SAME_SECTION:
+<i class="no-highlight">621</i>&nbsp;        case STUDENTS_EXCLUDING_SELF:
+<i class="no-highlight">622</i>&nbsp;            List&lt;StudentAttributes&gt; studentList;
+<b class="fc"><i class="no-highlight">623</i>&nbsp;            if (generateOptionsFor == FeedbackParticipantType.STUDENTS_IN_SAME_SECTION) {</b>
+<b class="nc"><i class="no-highlight">624</i>&nbsp;                String courseId = feedbackQuestionAttributes.getCourseId();</b>
+<b class="nc"><i class="no-highlight">625</i>&nbsp;                StudentAttributes studentAttributes =</b>
+<b class="nc"><i class="no-highlight">626</i>&nbsp;                        studentsLogic.getStudentForEmail(emailOfEntityDoingQuestion, courseId);</b>
+<b class="nc"><i class="no-highlight">627</i>&nbsp;                studentList = studentsLogic.getStudentsForSection(studentAttributes.getSection(), courseId);</b>
+<b class="nc"><i class="no-highlight">628</i>&nbsp;            } else {</b>
+<b class="fc"><i class="no-highlight">629</i>&nbsp;                studentList = studentsLogic.getStudentsForCourse(feedbackQuestionAttributes.getCourseId());</b>
+<i class="no-highlight">630</i>&nbsp;            }
+<i class="no-highlight">631</i>&nbsp;
+<b class="fc"><i class="no-highlight">632</i>&nbsp;            if (generateOptionsFor == FeedbackParticipantType.STUDENTS_EXCLUDING_SELF) {</b>
+<b class="fc"><i class="no-highlight">633</i>&nbsp;                studentList.removeIf(studentInList -&gt; studentInList.getEmail().equals(emailOfEntityDoingQuestion));</b>
+<i class="no-highlight">634</i>&nbsp;            }
+<i class="no-highlight">635</i>&nbsp;
+<b class="fc"><i class="no-highlight">636</i>&nbsp;            for (StudentAttributes student : studentList) {</b>
+<b class="fc"><i class="no-highlight">637</i>&nbsp;                optionList.add(student.getName() + &quot; (&quot; + student.getTeam() + &quot;)&quot;);</b>
+<b class="fc"><i class="no-highlight">638</i>&nbsp;            }</b>
+<i class="no-highlight">639</i>&nbsp;
+<b class="fc"><i class="no-highlight">640</i>&nbsp;            optionList.sort(null);</b>
+<b class="fc"><i class="no-highlight">641</i>&nbsp;            break;</b>
+<i class="no-highlight">642</i>&nbsp;        case TEAMS:
+<i class="no-highlight">643</i>&nbsp;        case TEAMS_IN_SAME_SECTION:
+<i class="no-highlight">644</i>&nbsp;        case TEAMS_EXCLUDING_SELF:
+<i class="no-highlight">645</i>&nbsp;            try {
+<i class="no-highlight">646</i>&nbsp;                List&lt;String&gt; teams;
+<b class="fc"><i class="no-highlight">647</i>&nbsp;                if (generateOptionsFor == FeedbackParticipantType.TEAMS_IN_SAME_SECTION) {</b>
+<b class="nc"><i class="no-highlight">648</i>&nbsp;                    String courseId = feedbackQuestionAttributes.getCourseId();</b>
+<b class="nc"><i class="no-highlight">649</i>&nbsp;                    StudentAttributes studentAttributes =</b>
+<b class="nc"><i class="no-highlight">650</i>&nbsp;                            studentsLogic.getStudentForEmail(emailOfEntityDoingQuestion, courseId);</b>
+<b class="nc"><i class="no-highlight">651</i>&nbsp;                    teams = coursesLogic.getTeamsForSection(studentAttributes.getSection(), courseId);</b>
+<b class="nc"><i class="no-highlight">652</i>&nbsp;                } else {</b>
+<b class="fc"><i class="no-highlight">653</i>&nbsp;                    teams = coursesLogic.getTeamsForCourse(feedbackQuestionAttributes.getCourseId());</b>
+<i class="no-highlight">654</i>&nbsp;                }
+<i class="no-highlight">655</i>&nbsp;
+<b class="fc"><i class="no-highlight">656</i>&nbsp;                if (generateOptionsFor == FeedbackParticipantType.TEAMS_EXCLUDING_SELF) {</b>
+<b class="fc"><i class="no-highlight">657</i>&nbsp;                    teams.removeIf(team -&gt; team.equals(teamOfEntityDoingQuestion));</b>
+<i class="no-highlight">658</i>&nbsp;                }
+<i class="no-highlight">659</i>&nbsp;
+<b class="fc"><i class="no-highlight">660</i>&nbsp;                for (String team : teams) {</b>
+<b class="fc"><i class="no-highlight">661</i>&nbsp;                    optionList.add(team);</b>
+<b class="fc"><i class="no-highlight">662</i>&nbsp;                }</b>
+<i class="no-highlight">663</i>&nbsp;
+<b class="fc"><i class="no-highlight">664</i>&nbsp;                optionList.sort(null);</b>
+<b class="nc"><i class="no-highlight">665</i>&nbsp;            } catch (EntityDoesNotExistException e) {</b>
+<b class="nc"><i class="no-highlight">666</i>&nbsp;                assert false : &quot;Course disappeared&quot;;</b>
+<b class="fc"><i class="no-highlight">667</i>&nbsp;            }</b>
+<b class="nc"><i class="no-highlight">668</i>&nbsp;            break;</b>
+<i class="no-highlight">669</i>&nbsp;        case OWN_TEAM_MEMBERS_INCLUDING_SELF:
+<i class="no-highlight">670</i>&nbsp;        case OWN_TEAM_MEMBERS:
+<b class="fc"><i class="no-highlight">671</i>&nbsp;            if (teamOfEntityDoingQuestion != null) {</b>
+<b class="fc"><i class="no-highlight">672</i>&nbsp;                List&lt;StudentAttributes&gt; teamMembers = studentsLogic.getStudentsForTeam(teamOfEntityDoingQuestion,</b>
+<b class="fc"><i class="no-highlight">673</i>&nbsp;                        feedbackQuestionAttributes.getCourseId());</b>
+<i class="no-highlight">674</i>&nbsp;
+<b class="fc"><i class="no-highlight">675</i>&nbsp;                if (generateOptionsFor == FeedbackParticipantType.OWN_TEAM_MEMBERS) {</b>
+<b class="fc"><i class="no-highlight">676</i>&nbsp;                    teamMembers.removeIf(teamMember -&gt; teamMember.getEmail().equals(emailOfEntityDoingQuestion));</b>
+<i class="no-highlight">677</i>&nbsp;                }
+<i class="no-highlight">678</i>&nbsp;
+<b class="fc"><i class="no-highlight">679</i>&nbsp;                teamMembers.forEach(teamMember -&gt; optionList.add(teamMember.getName()));</b>
+<i class="no-highlight">680</i>&nbsp;
+<b class="fc"><i class="no-highlight">681</i>&nbsp;                optionList.sort(null);</b>
+<b class="fc"><i class="no-highlight">682</i>&nbsp;            }</b>
+<i class="no-highlight">683</i>&nbsp;            break;
+<i class="no-highlight">684</i>&nbsp;        case INSTRUCTORS:
+<b class="fc"><i class="no-highlight">685</i>&nbsp;            List&lt;InstructorAttributes&gt; instructorList =</b>
+<b class="fc"><i class="no-highlight">686</i>&nbsp;                    instructorsLogic.getInstructorsForCourse(feedbackQuestionAttributes.getCourseId());</b>
+<i class="no-highlight">687</i>&nbsp;
+<b class="fc"><i class="no-highlight">688</i>&nbsp;            for (InstructorAttributes instructor : instructorList) {</b>
+<b class="fc"><i class="no-highlight">689</i>&nbsp;                optionList.add(instructor.getName());</b>
+<b class="fc"><i class="no-highlight">690</i>&nbsp;            }</b>
+<i class="no-highlight">691</i>&nbsp;
+<b class="fc"><i class="no-highlight">692</i>&nbsp;            optionList.sort(null);</b>
+<b class="fc"><i class="no-highlight">693</i>&nbsp;            break;</b>
+<i class="no-highlight">694</i>&nbsp;        default:
+<b class="nc"><i class="no-highlight">695</i>&nbsp;            assert false : &quot;Trying to generate options for neither students, teams nor instructors&quot;;</b>
+<i class="no-highlight">696</i>&nbsp;            break;
+<i class="no-highlight">697</i>&nbsp;        }
+<i class="no-highlight">698</i>&nbsp;
+<b class="fc"><i class="no-highlight">699</i>&nbsp;        if (feedbackQuestionAttributes.getQuestionType() == FeedbackQuestionType.MCQ) {</b>
+<b class="fc"><i class="no-highlight">700</i>&nbsp;            FeedbackMcqQuestionDetails feedbackMcqQuestionDetails =</b>
+<b class="fc"><i class="no-highlight">701</i>&nbsp;                    (FeedbackMcqQuestionDetails) feedbackQuestionAttributes.getQuestionDetailsCopy();</b>
+<b class="fc"><i class="no-highlight">702</i>&nbsp;            feedbackMcqQuestionDetails.setMcqChoices(optionList);</b>
+<b class="fc"><i class="no-highlight">703</i>&nbsp;            feedbackQuestionAttributes.setQuestionDetails(feedbackMcqQuestionDetails);</b>
+<b class="fc"><i class="no-highlight">704</i>&nbsp;        } else if (feedbackQuestionAttributes.getQuestionType() == FeedbackQuestionType.MSQ) {</b>
+<b class="fc"><i class="no-highlight">705</i>&nbsp;            FeedbackMsqQuestionDetails feedbackMsqQuestionDetails =</b>
+<b class="fc"><i class="no-highlight">706</i>&nbsp;                    (FeedbackMsqQuestionDetails) feedbackQuestionAttributes.getQuestionDetailsCopy();</b>
+<b class="fc"><i class="no-highlight">707</i>&nbsp;            feedbackMsqQuestionDetails.setMsqChoices(optionList);</b>
+<b class="fc"><i class="no-highlight">708</i>&nbsp;            feedbackQuestionAttributes.setQuestionDetails(feedbackMsqQuestionDetails);</b>
+<i class="no-highlight">709</i>&nbsp;        }
+<i class="no-highlight">710</i>&nbsp;    }
+<i class="no-highlight">711</i>&nbsp;
+<i class="no-highlight">712</i>&nbsp;    private String getGiverSection(String defaultSection, InstructorAttributes instructorGiver,
+<i class="no-highlight">713</i>&nbsp;                                StudentAttributes studentGiver) {
+<b class="fc"><i class="no-highlight">714</i>&nbsp;        String giverSection = defaultSection;</b>
+<b class="fc"><i class="no-highlight">715</i>&nbsp;        boolean isStudentGiver = studentGiver != null;</b>
+<b class="fc"><i class="no-highlight">716</i>&nbsp;        boolean isInstructorGiver = instructorGiver != null;</b>
+<b class="fc"><i class="no-highlight">717</i>&nbsp;        if (isStudentGiver) {</b>
+<b class="fc"><i class="no-highlight">718</i>&nbsp;            giverSection = studentGiver.getSection();</b>
+<b class="fc"><i class="no-highlight">719</i>&nbsp;        } else if (isInstructorGiver) {</b>
+<b class="fc"><i class="no-highlight">720</i>&nbsp;            giverSection = Const.DEFAULT_SECTION;</b>
+<i class="no-highlight">721</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">722</i>&nbsp;        return giverSection;</b>
+<i class="no-highlight">723</i>&nbsp;    }
+<i class="no-highlight">724</i>&nbsp;
+<i class="no-highlight">725</i>&nbsp;    private String getGiverTeam(String defaultTeam, InstructorAttributes instructorGiver,
+<i class="no-highlight">726</i>&nbsp;            StudentAttributes studentGiver) {
+<b class="fc"><i class="no-highlight">727</i>&nbsp;        String giverTeam = defaultTeam;</b>
+<b class="fc"><i class="no-highlight">728</i>&nbsp;        boolean isStudentGiver = studentGiver != null;</b>
+<b class="fc"><i class="no-highlight">729</i>&nbsp;        boolean isInstructorGiver = instructorGiver != null;</b>
+<b class="fc"><i class="no-highlight">730</i>&nbsp;        if (isStudentGiver) {</b>
+<b class="fc"><i class="no-highlight">731</i>&nbsp;            giverTeam = studentGiver.getTeam();</b>
+<b class="fc"><i class="no-highlight">732</i>&nbsp;        } else if (isInstructorGiver) {</b>
+<b class="fc"><i class="no-highlight">733</i>&nbsp;            giverTeam = Const.USER_TEAM_FOR_INSTRUCTOR;</b>
+<i class="no-highlight">734</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">735</i>&nbsp;        return giverTeam;</b>
+<i class="no-highlight">736</i>&nbsp;    }
+<i class="no-highlight">737</i>&nbsp;
+<i class="no-highlight">738</i>&nbsp;    /**
+<i class="no-highlight">739</i>&nbsp;     * Returns true if the feedback question has been fully answered by the given user.
+<i class="no-highlight">740</i>&nbsp;     */
+<i class="no-highlight">741</i>&nbsp;    public boolean isQuestionFullyAnsweredByUser(FeedbackQuestionAttributes question, String email)
+<i class="no-highlight">742</i>&nbsp;            throws EntityDoesNotExistException {
+<i class="no-highlight">743</i>&nbsp;
+<b class="fc"><i class="no-highlight">744</i>&nbsp;        int numberOfResponsesGiven =</b>
+<b class="fc"><i class="no-highlight">745</i>&nbsp;                frLogic.getFeedbackResponsesFromGiverForQuestion(question.getId(), email).size();</b>
+<b class="fc"><i class="no-highlight">746</i>&nbsp;        int numberOfResponsesNeeded =</b>
+<b class="fc"><i class="no-highlight">747</i>&nbsp;                question.getNumberOfEntitiesToGiveFeedbackTo();</b>
+<i class="no-highlight">748</i>&nbsp;
+<b class="fc"><i class="no-highlight">749</i>&nbsp;        if (numberOfResponsesNeeded == Const.MAX_POSSIBLE_RECIPIENTS) {</b>
+<b class="fc"><i class="no-highlight">750</i>&nbsp;            numberOfResponsesNeeded = getRecipientsForQuestion(question, email).size();</b>
+<i class="no-highlight">751</i>&nbsp;        }
+<i class="no-highlight">752</i>&nbsp;
+<b class="fc"><i class="no-highlight">753</i>&nbsp;        return numberOfResponsesGiven &gt;= numberOfResponsesNeeded;</b>
+<i class="no-highlight">754</i>&nbsp;    }
+<i class="no-highlight">755</i>&nbsp;
+<i class="no-highlight">756</i>&nbsp;    /**
+<i class="no-highlight">757</i>&nbsp;     * Updates a feedback question by {@code FeedbackQuestionAttributes.UpdateOptions}.
+<i class="no-highlight">758</i>&nbsp;     *
+<i class="no-highlight">759</i>&nbsp;     * &lt;p&gt;Cascade adjust the question number of questions in the same session.
+<i class="no-highlight">760</i>&nbsp;     *
+<i class="no-highlight">761</i>&nbsp;     * &lt;p&gt;Cascade adjust the existing response of the question.
+<i class="no-highlight">762</i>&nbsp;     *
+<i class="no-highlight">763</i>&nbsp;     * @return updated feedback question
+<i class="no-highlight">764</i>&nbsp;     * @throws InvalidParametersException if attributes to update are not valid
+<i class="no-highlight">765</i>&nbsp;     * @throws EntityDoesNotExistException if the feedback question cannot be found
+<i class="no-highlight">766</i>&nbsp;     */
+<i class="no-highlight">767</i>&nbsp;    public FeedbackQuestionAttributes updateFeedbackQuestionCascade(FeedbackQuestionAttributes.UpdateOptions updateOptions)
+<i class="no-highlight">768</i>&nbsp;            throws InvalidParametersException, EntityDoesNotExistException {
+<b class="fc"><i class="no-highlight">769</i>&nbsp;        FeedbackQuestionAttributes oldQuestion = fqDb.getFeedbackQuestion(updateOptions.getFeedbackQuestionId());</b>
+<b class="fc"><i class="no-highlight">770</i>&nbsp;        if (oldQuestion == null) {</b>
+<b class="fc"><i class="no-highlight">771</i>&nbsp;            throw new EntityDoesNotExistException(&quot;Trying to update a feedback question that does not exist.&quot;);</b>
+<i class="no-highlight">772</i>&nbsp;        }
+<i class="no-highlight">773</i>&nbsp;
+<b class="fc"><i class="no-highlight">774</i>&nbsp;        FeedbackQuestionAttributes newQuestion = oldQuestion.getCopy();</b>
+<b class="fc"><i class="no-highlight">775</i>&nbsp;        newQuestion.update(updateOptions);</b>
+<b class="fc"><i class="no-highlight">776</i>&nbsp;        int oldQuestionNumber = oldQuestion.getQuestionNumber();</b>
+<b class="fc"><i class="no-highlight">777</i>&nbsp;        int newQuestionNumber = newQuestion.getQuestionNumber();</b>
+<i class="no-highlight">778</i>&nbsp;
+<b class="fc"><i class="no-highlight">779</i>&nbsp;        List&lt;FeedbackQuestionAttributes&gt; previousQuestionsInSession = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">780</i>&nbsp;        if (oldQuestionNumber != newQuestionNumber) {</b>
+<i class="no-highlight">781</i>&nbsp;            // get questions in session before update
+<b class="fc"><i class="no-highlight">782</i>&nbsp;            String feedbackSessionName = oldQuestion.getFeedbackSessionName();</b>
+<b class="fc"><i class="no-highlight">783</i>&nbsp;            String courseId = oldQuestion.getCourseId();</b>
+<b class="fc"><i class="no-highlight">784</i>&nbsp;            previousQuestionsInSession = getFeedbackQuestionsForSession(feedbackSessionName, courseId);</b>
+<i class="no-highlight">785</i>&nbsp;        }
+<i class="no-highlight">786</i>&nbsp;
+<i class="no-highlight">787</i>&nbsp;        // update question
+<b class="fc"><i class="no-highlight">788</i>&nbsp;        FeedbackQuestionAttributes updatedQuestion = fqDb.updateFeedbackQuestion(updateOptions);</b>
+<i class="no-highlight">789</i>&nbsp;
+<b class="fc"><i class="no-highlight">790</i>&nbsp;        if (oldQuestionNumber != newQuestionNumber) {</b>
+<i class="no-highlight">791</i>&nbsp;            // shift other feedback questions (generate an empty &quot;slot&quot;)
+<b class="fc"><i class="no-highlight">792</i>&nbsp;            adjustQuestionNumbers(oldQuestionNumber, newQuestionNumber, previousQuestionsInSession);</b>
+<i class="no-highlight">793</i>&nbsp;        }
+<i class="no-highlight">794</i>&nbsp;
+<i class="no-highlight">795</i>&nbsp;        // adjust responses
+<b class="fc"><i class="no-highlight">796</i>&nbsp;        if (oldQuestion.areResponseDeletionsRequiredForChanges(updatedQuestion)) {</b>
+<b class="fc"><i class="no-highlight">797</i>&nbsp;            frLogic.deleteFeedbackResponsesForQuestionCascade(oldQuestion.getId());</b>
+<i class="no-highlight">798</i>&nbsp;        }
+<i class="no-highlight">799</i>&nbsp;
+<b class="fc"><i class="no-highlight">800</i>&nbsp;        return updatedQuestion;</b>
+<i class="no-highlight">801</i>&nbsp;    }
+<i class="no-highlight">802</i>&nbsp;
+<i class="no-highlight">803</i>&nbsp;    /**
+<i class="no-highlight">804</i>&nbsp;     * Adjust questions between the old and new number,
+<i class="no-highlight">805</i>&nbsp;     * if the new number is smaller, then shift up (increase qn#) all questions in between.
+<i class="no-highlight">806</i>&nbsp;     * if the new number is bigger, then shift down(decrease qn#) all questions in between.
+<i class="no-highlight">807</i>&nbsp;     */
+<i class="no-highlight">808</i>&nbsp;    private void adjustQuestionNumbers(int oldQuestionNumber,
+<i class="no-highlight">809</i>&nbsp;            int newQuestionNumber, List&lt;FeedbackQuestionAttributes&gt; questions) {
+<i class="no-highlight">810</i>&nbsp;        try {
+<b class="fc"><i class="no-highlight">811</i>&nbsp;            if (oldQuestionNumber &gt; newQuestionNumber &amp;&amp; oldQuestionNumber &gt;= 1) {</b>
+<b class="fc"><i class="no-highlight">812</i>&nbsp;                for (int i = oldQuestionNumber - 1; i &gt;= newQuestionNumber; i--) {</b>
+<b class="fc"><i class="no-highlight">813</i>&nbsp;                    FeedbackQuestionAttributes question = questions.get(i - 1);</b>
+<b class="fc"><i class="no-highlight">814</i>&nbsp;                    fqDb.updateFeedbackQuestion(</b>
+<b class="fc"><i class="no-highlight">815</i>&nbsp;                            FeedbackQuestionAttributes.updateOptionsBuilder(question.getId())</b>
+<b class="fc"><i class="no-highlight">816</i>&nbsp;                                    .withQuestionNumber(question.getQuestionNumber() + 1)</b>
+<b class="fc"><i class="no-highlight">817</i>&nbsp;                                    .build());</b>
+<i class="no-highlight">818</i>&nbsp;                }
+<b class="fc"><i class="no-highlight">819</i>&nbsp;            } else if (oldQuestionNumber &lt; newQuestionNumber &amp;&amp; oldQuestionNumber &lt; questions.size()) {</b>
+<b class="fc"><i class="no-highlight">820</i>&nbsp;                for (int i = oldQuestionNumber + 1; i &lt;= newQuestionNumber; i++) {</b>
+<b class="fc"><i class="no-highlight">821</i>&nbsp;                    FeedbackQuestionAttributes question = questions.get(i - 1);</b>
+<b class="fc"><i class="no-highlight">822</i>&nbsp;                    fqDb.updateFeedbackQuestion(</b>
+<b class="fc"><i class="no-highlight">823</i>&nbsp;                            FeedbackQuestionAttributes.updateOptionsBuilder(question.getId())</b>
+<b class="fc"><i class="no-highlight">824</i>&nbsp;                                    .withQuestionNumber(question.getQuestionNumber() - 1)</b>
+<b class="fc"><i class="no-highlight">825</i>&nbsp;                                    .build());</b>
+<i class="no-highlight">826</i>&nbsp;                }
+<i class="no-highlight">827</i>&nbsp;            }
+<b class="nc"><i class="no-highlight">828</i>&nbsp;        } catch (InvalidParametersException | EntityDoesNotExistException e) {</b>
+<b class="nc"><i class="no-highlight">829</i>&nbsp;            assert false : &quot;Adjusting question number should not cause: &quot; + e.getMessage();</b>
+<b class="fc"><i class="no-highlight">830</i>&nbsp;        }</b>
+<i class="no-highlight">831</i>&nbsp;    }
+<i class="no-highlight">832</i>&nbsp;
+<i class="no-highlight">833</i>&nbsp;    /**
+<i class="no-highlight">834</i>&nbsp;     * Deletes a feedback question cascade its responses and comments.
+<i class="no-highlight">835</i>&nbsp;     *
+<i class="no-highlight">836</i>&nbsp;     * &lt;p&gt;Silently fail if question does not exist.
+<i class="no-highlight">837</i>&nbsp;     */
+<i class="no-highlight">838</i>&nbsp;    public void deleteFeedbackQuestionCascade(String feedbackQuestionId) {
+<b class="fc"><i class="no-highlight">839</i>&nbsp;        FeedbackQuestionAttributes questionToDelete =</b>
+<b class="fc"><i class="no-highlight">840</i>&nbsp;                        getFeedbackQuestion(feedbackQuestionId);</b>
+<i class="no-highlight">841</i>&nbsp;
+<b class="fc"><i class="no-highlight">842</i>&nbsp;        if (questionToDelete == null) {</b>
+<i class="no-highlight">843</i>&nbsp;            return; // Silently fail if question does not exist.
+<i class="no-highlight">844</i>&nbsp;        }
+<i class="no-highlight">845</i>&nbsp;
+<i class="no-highlight">846</i>&nbsp;        // cascade delete responses for question.
+<b class="fc"><i class="no-highlight">847</i>&nbsp;        frLogic.deleteFeedbackResponsesForQuestionCascade(questionToDelete.getId());</b>
+<i class="no-highlight">848</i>&nbsp;
+<b class="fc"><i class="no-highlight">849</i>&nbsp;        List&lt;FeedbackQuestionAttributes&gt; questionsToShiftQnNumber =</b>
+<b class="fc"><i class="no-highlight">850</i>&nbsp;                getFeedbackQuestionsForSession(questionToDelete.getFeedbackSessionName(), questionToDelete.getCourseId());</b>
+<i class="no-highlight">851</i>&nbsp;
+<i class="no-highlight">852</i>&nbsp;        // delete question
+<b class="fc"><i class="no-highlight">853</i>&nbsp;        fqDb.deleteFeedbackQuestion(feedbackQuestionId);</b>
+<i class="no-highlight">854</i>&nbsp;
+<i class="no-highlight">855</i>&nbsp;        // adjust question numbers
+<b class="fc"><i class="no-highlight">856</i>&nbsp;        if (questionToDelete.getQuestionNumber() &lt; questionsToShiftQnNumber.size()) {</b>
+<b class="fc"><i class="no-highlight">857</i>&nbsp;            shiftQuestionNumbersDown(questionToDelete.getQuestionNumber(), questionsToShiftQnNumber);</b>
+<i class="no-highlight">858</i>&nbsp;        }
+<i class="no-highlight">859</i>&nbsp;    }
+<i class="no-highlight">860</i>&nbsp;
+<i class="no-highlight">861</i>&nbsp;    /**
+<i class="no-highlight">862</i>&nbsp;     * Deletes questions using {@link AttributesDeletionQuery}.
+<i class="no-highlight">863</i>&nbsp;     */
+<i class="no-highlight">864</i>&nbsp;    public void deleteFeedbackQuestions(AttributesDeletionQuery query) {
+<b class="fc"><i class="no-highlight">865</i>&nbsp;        fqDb.deleteFeedbackQuestions(query);</b>
+<i class="no-highlight">866</i>&nbsp;    }
+<i class="no-highlight">867</i>&nbsp;
+<i class="no-highlight">868</i>&nbsp;    // Shifts all question numbers after questionNumberToShiftFrom down by one.
+<i class="no-highlight">869</i>&nbsp;    private void shiftQuestionNumbersDown(int questionNumberToShiftFrom,
+<i class="no-highlight">870</i>&nbsp;            List&lt;FeedbackQuestionAttributes&gt; questionsToShift) {
+<b class="fc"><i class="no-highlight">871</i>&nbsp;        for (FeedbackQuestionAttributes question : questionsToShift) {</b>
+<b class="fc"><i class="no-highlight">872</i>&nbsp;            if (question.getQuestionNumber() &gt; questionNumberToShiftFrom) {</b>
+<i class="no-highlight">873</i>&nbsp;                try {
+<b class="fc"><i class="no-highlight">874</i>&nbsp;                    fqDb.updateFeedbackQuestion(</b>
+<b class="fc"><i class="no-highlight">875</i>&nbsp;                            FeedbackQuestionAttributes.updateOptionsBuilder(question.getId())</b>
+<b class="fc"><i class="no-highlight">876</i>&nbsp;                            .withQuestionNumber(question.getQuestionNumber() - 1)</b>
+<b class="fc"><i class="no-highlight">877</i>&nbsp;                            .build());</b>
+<b class="nc"><i class="no-highlight">878</i>&nbsp;                } catch (InvalidParametersException | EntityDoesNotExistException e) {</b>
+<b class="nc"><i class="no-highlight">879</i>&nbsp;                    assert false : &quot;Shifting question number should not cause: &quot; + e.getMessage();</b>
+<b class="fc"><i class="no-highlight">880</i>&nbsp;                }</b>
+<i class="no-highlight">881</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">882</i>&nbsp;        }</b>
+<i class="no-highlight">883</i>&nbsp;    }
+<i class="no-highlight">884</i>&nbsp;
+<i class="no-highlight">885</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:53</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,178 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ResourceEndpoints</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.ui.constants</a>
+</div>
+
+<h1>Coverage Summary for Class: ResourceEndpoints (teammates.ui.constants)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ResourceEndpoints</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/53)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.ui.constants;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import com.fasterxml.jackson.annotation.JsonValue;
+<i class="no-highlight">4</i>&nbsp;
+<i class="no-highlight">5</i>&nbsp;import teammates.common.util.Const.ResourceURIs;
+<i class="no-highlight">6</i>&nbsp;
+<i class="no-highlight">7</i>&nbsp;/**
+<i class="no-highlight">8</i>&nbsp; * API endpoints for resources.
+<i class="no-highlight">9</i>&nbsp; */
+<b class="nc"><i class="no-highlight">10</i>&nbsp;public enum ResourceEndpoints {</b>
+<i class="no-highlight">11</i>&nbsp;    //CHECKSTYLE.OFF:JavadocVariable
+<b class="nc"><i class="no-highlight">12</i>&nbsp;    ERROR_REPORT(ResourceURIs.ERROR_REPORT),</b>
+<b class="nc"><i class="no-highlight">13</i>&nbsp;    AUTH(ResourceURIs.AUTH),</b>
+<b class="nc"><i class="no-highlight">14</i>&nbsp;    AUTH_REGKEY(ResourceURIs.AUTH_REGKEY),</b>
+<b class="nc"><i class="no-highlight">15</i>&nbsp;    ACCOUNT(ResourceURIs.ACCOUNT),</b>
+<b class="nc"><i class="no-highlight">16</i>&nbsp;    ACCOUNT_RESET(ResourceURIs.ACCOUNT_RESET),</b>
+<b class="nc"><i class="no-highlight">17</i>&nbsp;    ACCOUNT_DOWNGRADE(ResourceURIs.ACCOUNT_DOWNGRADE),</b>
+<b class="nc"><i class="no-highlight">18</i>&nbsp;    ACCOUNT_REQUEST(ResourceURIs.ACCOUNT_REQUEST),</b>
+<b class="nc"><i class="no-highlight">19</i>&nbsp;    RESPONSE_COMMENT(ResourceURIs.RESPONSE_COMMENT),</b>
+<b class="nc"><i class="no-highlight">20</i>&nbsp;    COURSE(ResourceURIs.COURSE),</b>
+<b class="nc"><i class="no-highlight">21</i>&nbsp;    COURSE_ARCHIVE(ResourceURIs.COURSE_ARCHIVE),</b>
+<b class="nc"><i class="no-highlight">22</i>&nbsp;    BIN_COURSE(ResourceURIs.BIN_COURSE),</b>
+<b class="nc"><i class="no-highlight">23</i>&nbsp;    COURSE_SECTIONS(ResourceURIs.COURSE_SECTIONS),</b>
+<b class="nc"><i class="no-highlight">24</i>&nbsp;    COURSES(ResourceURIs.COURSES),</b>
+<b class="nc"><i class="no-highlight">25</i>&nbsp;    INSTRUCTORS(ResourceURIs.INSTRUCTORS),</b>
+<b class="nc"><i class="no-highlight">26</i>&nbsp;    INSTRUCTOR(ResourceURIs.INSTRUCTOR),</b>
+<b class="nc"><i class="no-highlight">27</i>&nbsp;    INSTRUCTOR_PRIVILEGE(ResourceURIs.INSTRUCTOR_PRIVILEGE),</b>
+<b class="nc"><i class="no-highlight">28</i>&nbsp;    INSTRUCTOR_KEY(ResourceURIs.INSTRUCTOR_KEY),</b>
+<b class="nc"><i class="no-highlight">29</i>&nbsp;    RESULT(ResourceURIs.RESULT),</b>
+<b class="nc"><i class="no-highlight">30</i>&nbsp;    STUDENTS(ResourceURIs.STUDENTS),</b>
+<b class="nc"><i class="no-highlight">31</i>&nbsp;    STUDENT(ResourceURIs.STUDENT),</b>
+<b class="nc"><i class="no-highlight">32</i>&nbsp;    STUDENT_KEY(ResourceURIs.STUDENT_KEY),</b>
+<b class="nc"><i class="no-highlight">33</i>&nbsp;    SESSIONS_ONGOING(ResourceURIs.SESSIONS_ONGOING),</b>
+<b class="nc"><i class="no-highlight">34</i>&nbsp;    SESSION(ResourceURIs.SESSION),</b>
+<b class="nc"><i class="no-highlight">35</i>&nbsp;    SESSION_LOGS(ResourceURIs.SESSION_LOGS),</b>
+<b class="nc"><i class="no-highlight">36</i>&nbsp;    SESSION_PUBLISH(ResourceURIs.SESSION_PUBLISH),</b>
+<b class="nc"><i class="no-highlight">37</i>&nbsp;    SESSION_REMIND_SUBMISSION(ResourceURIs.SESSION_REMIND_SUBMISSION),</b>
+<b class="nc"><i class="no-highlight">38</i>&nbsp;    SESSION_REMIND_RESULT(ResourceURIs.SESSION_REMIND_RESULT),</b>
+<b class="nc"><i class="no-highlight">39</i>&nbsp;    SESSION_STATS(ResourceURIs.SESSION_STATS),</b>
+<b class="nc"><i class="no-highlight">40</i>&nbsp;    SESSION_SUBMITTED_GIVER_SET(ResourceURIs.SESSION_SUBMITTED_GIVER_SET),</b>
+<b class="nc"><i class="no-highlight">41</i>&nbsp;    SESSIONS(ResourceURIs.SESSIONS),</b>
+<b class="nc"><i class="no-highlight">42</i>&nbsp;    BIN_SESSION(ResourceURIs.BIN_SESSION),</b>
+<b class="nc"><i class="no-highlight">43</i>&nbsp;    QUESTIONS(ResourceURIs.QUESTIONS),</b>
+<b class="nc"><i class="no-highlight">44</i>&nbsp;    QUESTION(ResourceURIs.QUESTION),</b>
+<b class="nc"><i class="no-highlight">45</i>&nbsp;    QUESTION_RECIPIENTS(ResourceURIs.QUESTION_RECIPIENTS),</b>
+<b class="nc"><i class="no-highlight">46</i>&nbsp;    RESPONSES(ResourceURIs.RESPONSES),</b>
+<b class="nc"><i class="no-highlight">47</i>&nbsp;    HAS_RESPONSES(ResourceURIs.HAS_RESPONSES),</b>
+<b class="nc"><i class="no-highlight">48</i>&nbsp;    JOIN(ResourceURIs.JOIN),</b>
+<b class="nc"><i class="no-highlight">49</i>&nbsp;    JOIN_REMIND(ResourceURIs.JOIN_REMIND),</b>
+<b class="nc"><i class="no-highlight">50</i>&nbsp;    TIMEZONE(ResourceURIs.TIMEZONE),</b>
+<b class="nc"><i class="no-highlight">51</i>&nbsp;    SESSION_LINKS_RECOVERY(ResourceURIs.SESSION_LINKS_RECOVERY),</b>
+<b class="nc"><i class="no-highlight">52</i>&nbsp;    NATIONALITIES(ResourceURIs.NATIONALITIES),</b>
+<b class="nc"><i class="no-highlight">53</i>&nbsp;    EMAIL(ResourceURIs.EMAIL),</b>
+<b class="nc"><i class="no-highlight">54</i>&nbsp;    STUDENT_PROFILE_PICTURE(ResourceURIs.STUDENT_PROFILE_PICTURE),</b>
+<b class="nc"><i class="no-highlight">55</i>&nbsp;    STUDENT_PROFILE(ResourceURIs.STUDENT_PROFILE),</b>
+<b class="nc"><i class="no-highlight">56</i>&nbsp;    SEARCH_ACCOUNT_REQUESTS(ResourceURIs.SEARCH_ACCOUNT_REQUESTS),</b>
+<b class="nc"><i class="no-highlight">57</i>&nbsp;    SEARCH_INSTRUCTORS(ResourceURIs.SEARCH_INSTRUCTORS),</b>
+<b class="nc"><i class="no-highlight">58</i>&nbsp;    SEARCH_STUDENTS(ResourceURIs.SEARCH_STUDENTS),</b>
+<b class="nc"><i class="no-highlight">59</i>&nbsp;    LOGS(ResourceURIs.LOGS),</b>
+<b class="nc"><i class="no-highlight">60</i>&nbsp;    ACTION_CLASS(ResourceURIs.ACTION_CLASS);</b>
+<i class="no-highlight">61</i>&nbsp;    //CHECKSTYLE.ON:JavadocVariable
+<i class="no-highlight">62</i>&nbsp;
+<i class="no-highlight">63</i>&nbsp;    private final String url;
+<i class="no-highlight">64</i>&nbsp;
+<b class="nc"><i class="no-highlight">65</i>&nbsp;    ResourceEndpoints(String s) {</b>
+<b class="nc"><i class="no-highlight">66</i>&nbsp;        this.url = s;</b>
+<i class="no-highlight">67</i>&nbsp;    }
+<i class="no-highlight">68</i>&nbsp;
+<i class="no-highlight">69</i>&nbsp;    @JsonValue
+<i class="no-highlight">70</i>&nbsp;    public String getUrl() {
+<b class="nc"><i class="no-highlight">71</i>&nbsp;        return url;</b>
+<i class="no-highlight">72</i>&nbsp;    }
+<i class="no-highlight">73</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:53</div>
+</div>
+</body>
+</html>

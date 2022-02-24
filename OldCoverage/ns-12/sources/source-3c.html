@@ -1,0 +1,228 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > GetFeedbackResponseCommentAction</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.ui.webapi</a>
+</div>
+
+<h1>Coverage Summary for Class: GetFeedbackResponseCommentAction (teammates.ui.webapi)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GetFeedbackResponseCommentAction</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    95.6%
+  </span>
+  <span class="absValue">
+    (43/45)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">GetFeedbackResponseCommentAction$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    95.7%
+  </span>
+  <span class="absValue">
+    (44/46)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.ui.webapi;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import org.apache.http.HttpStatus;
+<i class="no-highlight">4</i>&nbsp;
+<i class="no-highlight">5</i>&nbsp;import teammates.common.datatransfer.attributes.FeedbackQuestionAttributes;
+<i class="no-highlight">6</i>&nbsp;import teammates.common.datatransfer.attributes.FeedbackResponseAttributes;
+<i class="no-highlight">7</i>&nbsp;import teammates.common.datatransfer.attributes.FeedbackResponseCommentAttributes;
+<i class="no-highlight">8</i>&nbsp;import teammates.common.datatransfer.attributes.FeedbackSessionAttributes;
+<i class="no-highlight">9</i>&nbsp;import teammates.common.datatransfer.attributes.InstructorAttributes;
+<i class="no-highlight">10</i>&nbsp;import teammates.common.datatransfer.attributes.StudentAttributes;
+<i class="no-highlight">11</i>&nbsp;import teammates.common.exception.InvalidParametersException;
+<i class="no-highlight">12</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">13</i>&nbsp;import teammates.common.util.StringHelper;
+<i class="no-highlight">14</i>&nbsp;import teammates.ui.output.FeedbackResponseCommentData;
+<i class="no-highlight">15</i>&nbsp;import teammates.ui.request.Intent;
+<i class="no-highlight">16</i>&nbsp;
+<i class="no-highlight">17</i>&nbsp;/**
+<i class="no-highlight">18</i>&nbsp; * Get all the comments given by the user for a response.
+<i class="no-highlight">19</i>&nbsp; */
+<b class="fc"><i class="no-highlight">20</i>&nbsp;class GetFeedbackResponseCommentAction extends BasicCommentSubmissionAction {</b>
+<i class="no-highlight">21</i>&nbsp;
+<i class="no-highlight">22</i>&nbsp;    @Override
+<i class="no-highlight">23</i>&nbsp;    AuthType getMinAuthLevel() {
+<b class="fc"><i class="no-highlight">24</i>&nbsp;        return AuthType.PUBLIC;</b>
+<i class="no-highlight">25</i>&nbsp;    }
+<i class="no-highlight">26</i>&nbsp;
+<i class="no-highlight">27</i>&nbsp;    @Override
+<i class="no-highlight">28</i>&nbsp;    void checkSpecificAccessControl() throws UnauthorizedAccessException {
+<i class="no-highlight">29</i>&nbsp;        String feedbackResponseId;
+<i class="no-highlight">30</i>&nbsp;        try {
+<b class="fc"><i class="no-highlight">31</i>&nbsp;            feedbackResponseId = StringHelper.decrypt(</b>
+<b class="fc"><i class="no-highlight">32</i>&nbsp;                    getNonNullRequestParamValue(Const.ParamsNames.FEEDBACK_RESPONSE_ID));</b>
+<b class="nc"><i class="no-highlight">33</i>&nbsp;        } catch (InvalidParametersException ipe) {</b>
+<b class="nc"><i class="no-highlight">34</i>&nbsp;            throw new InvalidHttpParameterException(ipe);</b>
+<b class="fc"><i class="no-highlight">35</i>&nbsp;        }</b>
+<b class="fc"><i class="no-highlight">36</i>&nbsp;        FeedbackResponseAttributes feedbackResponseAttributes = logic.getFeedbackResponse(feedbackResponseId);</b>
+<i class="no-highlight">37</i>&nbsp;
+<b class="fc"><i class="no-highlight">38</i>&nbsp;        if (feedbackResponseAttributes == null) {</b>
+<b class="fc"><i class="no-highlight">39</i>&nbsp;            throw new EntityNotFoundException(&quot;The feedback response does not exist.&quot;);</b>
+<i class="no-highlight">40</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">41</i>&nbsp;        String courseId = feedbackResponseAttributes.getCourseId();</b>
+<b class="fc"><i class="no-highlight">42</i>&nbsp;        FeedbackSessionAttributes feedbackSession =</b>
+<b class="fc"><i class="no-highlight">43</i>&nbsp;                getNonNullFeedbackSession(feedbackResponseAttributes.getFeedbackSessionName(),</b>
+<b class="fc"><i class="no-highlight">44</i>&nbsp;                        feedbackResponseAttributes.getCourseId());</b>
+<b class="fc"><i class="no-highlight">45</i>&nbsp;        FeedbackQuestionAttributes feedbackQuestion =</b>
+<b class="fc"><i class="no-highlight">46</i>&nbsp;                logic.getFeedbackQuestion(feedbackResponseAttributes.getFeedbackQuestionId());</b>
+<i class="no-highlight">47</i>&nbsp;
+<b class="fc"><i class="no-highlight">48</i>&nbsp;        verifyInstructorCanSeeQuestionIfInModeration(feedbackQuestion);</b>
+<b class="fc"><i class="no-highlight">49</i>&nbsp;        verifyNotPreview();</b>
+<i class="no-highlight">50</i>&nbsp;
+<b class="fc"><i class="no-highlight">51</i>&nbsp;        Intent intent = Intent.valueOf(getNonNullRequestParamValue(Const.ParamsNames.INTENT));</b>
+<b class="fc"><i class="no-highlight">52</i>&nbsp;        switch (intent) {</b>
+<i class="no-highlight">53</i>&nbsp;        case STUDENT_SUBMISSION:
+<b class="fc"><i class="no-highlight">54</i>&nbsp;            gateKeeper.verifyAnswerableForStudent(feedbackQuestion);</b>
+<b class="fc"><i class="no-highlight">55</i>&nbsp;            StudentAttributes student = getStudentOfCourseFromRequest(courseId);</b>
+<b class="fc"><i class="no-highlight">56</i>&nbsp;            checkAccessControlForStudentFeedbackSubmission(student, feedbackSession);</b>
+<b class="fc"><i class="no-highlight">57</i>&nbsp;            break;</b>
+<i class="no-highlight">58</i>&nbsp;        case INSTRUCTOR_SUBMISSION:
+<b class="fc"><i class="no-highlight">59</i>&nbsp;            gateKeeper.verifyAnswerableForInstructor(feedbackQuestion);</b>
+<b class="fc"><i class="no-highlight">60</i>&nbsp;            InstructorAttributes instructor = getInstructorOfCourseFromRequest(courseId);</b>
+<b class="fc"><i class="no-highlight">61</i>&nbsp;            checkAccessControlForInstructorFeedbackSubmission(instructor, feedbackSession);</b>
+<b class="fc"><i class="no-highlight">62</i>&nbsp;            break;</b>
+<i class="no-highlight">63</i>&nbsp;        default:
+<b class="fc"><i class="no-highlight">64</i>&nbsp;            throw new InvalidHttpParameterException(&quot;Unknown intent &quot; + intent);</b>
+<i class="no-highlight">65</i>&nbsp;        }
+<i class="no-highlight">66</i>&nbsp;    }
+<i class="no-highlight">67</i>&nbsp;
+<i class="no-highlight">68</i>&nbsp;    @Override
+<i class="no-highlight">69</i>&nbsp;    public JsonResult execute() {
+<i class="no-highlight">70</i>&nbsp;        String feedbackResponseId;
+<i class="no-highlight">71</i>&nbsp;        try {
+<b class="fc"><i class="no-highlight">72</i>&nbsp;            feedbackResponseId = StringHelper.decrypt(</b>
+<b class="fc"><i class="no-highlight">73</i>&nbsp;                    getNonNullRequestParamValue(Const.ParamsNames.FEEDBACK_RESPONSE_ID));</b>
+<b class="fc"><i class="no-highlight">74</i>&nbsp;        } catch (InvalidParametersException ipe) {</b>
+<b class="fc"><i class="no-highlight">75</i>&nbsp;            throw new InvalidHttpParameterException(ipe);</b>
+<b class="fc"><i class="no-highlight">76</i>&nbsp;        }</b>
+<b class="fc"><i class="no-highlight">77</i>&nbsp;        Intent intent = Intent.valueOf(getNonNullRequestParamValue(Const.ParamsNames.INTENT));</b>
+<i class="no-highlight">78</i>&nbsp;
+<b class="fc"><i class="no-highlight">79</i>&nbsp;        switch (intent) {</b>
+<i class="no-highlight">80</i>&nbsp;        case STUDENT_SUBMISSION:
+<i class="no-highlight">81</i>&nbsp;        case INSTRUCTOR_SUBMISSION:
+<b class="fc"><i class="no-highlight">82</i>&nbsp;            FeedbackResponseCommentAttributes comment =</b>
+<b class="fc"><i class="no-highlight">83</i>&nbsp;                    logic.getFeedbackResponseCommentForResponseFromParticipant(feedbackResponseId);</b>
+<b class="fc"><i class="no-highlight">84</i>&nbsp;            if (comment == null) {</b>
+<b class="fc"><i class="no-highlight">85</i>&nbsp;                FeedbackResponseAttributes fr = logic.getFeedbackResponse(feedbackResponseId);</b>
+<b class="fc"><i class="no-highlight">86</i>&nbsp;                if (fr == null) {</b>
+<b class="fc"><i class="no-highlight">87</i>&nbsp;                    throw new EntityNotFoundException(&quot;The feedback response does not exist.&quot;);</b>
+<i class="no-highlight">88</i>&nbsp;                }
+<b class="fc"><i class="no-highlight">89</i>&nbsp;                return new JsonResult(&quot;Comment not found&quot;, HttpStatus.SC_NO_CONTENT);</b>
+<i class="no-highlight">90</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">91</i>&nbsp;            return new JsonResult(new FeedbackResponseCommentData(comment));</b>
+<i class="no-highlight">92</i>&nbsp;        default:
+<b class="fc"><i class="no-highlight">93</i>&nbsp;            throw new InvalidHttpParameterException(&quot;Unknown intent &quot; + intent);</b>
+<i class="no-highlight">94</i>&nbsp;        }
+<i class="no-highlight">95</i>&nbsp;    }
+<i class="no-highlight">96</i>&nbsp;
+<i class="no-highlight">97</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:52</div>
+</div>
+</body>
+</html>

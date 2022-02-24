@@ -1,0 +1,733 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > FeedbackResponseCommentAttributes</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.common.datatransfer.attributes</a>
+</div>
+
+<h1>Coverage Summary for Class: FeedbackResponseCommentAttributes (teammates.common.datatransfer.attributes)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FeedbackResponseCommentAttributes</td>
+<td class="coverageStat">
+  <span class="percent">
+    97.7%
+  </span>
+  <span class="absValue">
+    (43/44)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    97.3%
+  </span>
+  <span class="absValue">
+    (107/110)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">FeedbackResponseCommentAttributes$BasicBuilder</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (21/21)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">FeedbackResponseCommentAttributes$Builder</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (25/25)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">FeedbackResponseCommentAttributes$UpdateOptions</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (12/12)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">FeedbackResponseCommentAttributes$UpdateOptions$Builder</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    98.6%
+  </span>
+  <span class="absValue">
+    (69/70)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    98.3%
+  </span>
+  <span class="absValue">
+    (175/178)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.common.datatransfer.attributes;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.time.Instant;
+<i class="no-highlight">4</i>&nbsp;import java.util.ArrayList;
+<i class="no-highlight">5</i>&nbsp;import java.util.List;
+<i class="no-highlight">6</i>&nbsp;import java.util.Objects;
+<i class="no-highlight">7</i>&nbsp;
+<i class="no-highlight">8</i>&nbsp;import teammates.common.datatransfer.FeedbackParticipantType;
+<i class="no-highlight">9</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">10</i>&nbsp;import teammates.common.util.FieldValidator;
+<i class="no-highlight">11</i>&nbsp;import teammates.common.util.SanitizationHelper;
+<i class="no-highlight">12</i>&nbsp;import teammates.storage.entity.FeedbackResponseComment;
+<i class="no-highlight">13</i>&nbsp;
+<i class="no-highlight">14</i>&nbsp;/**
+<i class="no-highlight">15</i>&nbsp; * The data transfer object for {@link FeedbackResponseComment} entities.
+<i class="no-highlight">16</i>&nbsp; */
+<i class="no-highlight">17</i>&nbsp;public class FeedbackResponseCommentAttributes extends EntityAttributes&lt;FeedbackResponseComment&gt; {
+<i class="no-highlight">18</i>&nbsp;
+<i class="no-highlight">19</i>&nbsp;    private Long feedbackResponseCommentId;
+<i class="no-highlight">20</i>&nbsp;    private String courseId;
+<i class="no-highlight">21</i>&nbsp;    private String feedbackSessionName;
+<i class="no-highlight">22</i>&nbsp;    /**
+<i class="no-highlight">23</i>&nbsp;     * Contains the email of student/instructor if comment giver is student/instructor
+<i class="no-highlight">24</i>&nbsp;     * and name of team if comment giver is a team.
+<i class="no-highlight">25</i>&nbsp;     */
+<i class="no-highlight">26</i>&nbsp;    private String commentGiver;
+<i class="no-highlight">27</i>&nbsp;    private String commentText;
+<i class="no-highlight">28</i>&nbsp;    private String feedbackResponseId;
+<i class="no-highlight">29</i>&nbsp;    private String feedbackQuestionId;
+<i class="no-highlight">30</i>&nbsp;    private List&lt;FeedbackParticipantType&gt; showCommentTo;
+<i class="no-highlight">31</i>&nbsp;    private List&lt;FeedbackParticipantType&gt; showGiverNameTo;
+<i class="no-highlight">32</i>&nbsp;    private boolean isVisibilityFollowingFeedbackQuestion;
+<i class="no-highlight">33</i>&nbsp;    private Instant createdAt;
+<i class="no-highlight">34</i>&nbsp;    private String lastEditorEmail;
+<i class="no-highlight">35</i>&nbsp;    private Instant lastEditedAt;
+<i class="no-highlight">36</i>&nbsp;    private String giverSection;
+<i class="no-highlight">37</i>&nbsp;    private String receiverSection;
+<i class="no-highlight">38</i>&nbsp;    // Determines the type of comment giver- instructor, student, or team
+<i class="no-highlight">39</i>&nbsp;    private FeedbackParticipantType commentGiverType;
+<i class="no-highlight">40</i>&nbsp;    // true if comment is given by response giver
+<i class="no-highlight">41</i>&nbsp;    private boolean isCommentFromFeedbackParticipant;
+<i class="no-highlight">42</i>&nbsp;
+<b class="fc"><i class="no-highlight">43</i>&nbsp;    private FeedbackResponseCommentAttributes() {</b>
+<b class="fc"><i class="no-highlight">44</i>&nbsp;        giverSection = Const.DEFAULT_SECTION;</b>
+<b class="fc"><i class="no-highlight">45</i>&nbsp;        receiverSection = Const.DEFAULT_SECTION;</b>
+<b class="fc"><i class="no-highlight">46</i>&nbsp;        showCommentTo = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">47</i>&nbsp;        showGiverNameTo = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">48</i>&nbsp;        isVisibilityFollowingFeedbackQuestion = true;</b>
+<b class="fc"><i class="no-highlight">49</i>&nbsp;        createdAt = Instant.now();</b>
+<b class="fc"><i class="no-highlight">50</i>&nbsp;        commentGiverType = FeedbackParticipantType.INSTRUCTORS;</b>
+<b class="fc"><i class="no-highlight">51</i>&nbsp;        isCommentFromFeedbackParticipant = false;</b>
+<i class="no-highlight">52</i>&nbsp;    }
+<i class="no-highlight">53</i>&nbsp;
+<i class="no-highlight">54</i>&nbsp;    /**
+<i class="no-highlight">55</i>&nbsp;     * Gets the {@link FeedbackResponseCommentAttributes} instance of the given {@link FeedbackResponseComment}.
+<i class="no-highlight">56</i>&nbsp;     */
+<i class="no-highlight">57</i>&nbsp;    public static FeedbackResponseCommentAttributes valueOf(FeedbackResponseComment comment) {
+<b class="fc"><i class="no-highlight">58</i>&nbsp;        FeedbackResponseCommentAttributes frca = new FeedbackResponseCommentAttributes();</b>
+<b class="fc"><i class="no-highlight">59</i>&nbsp;        frca.courseId = comment.getCourseId();</b>
+<b class="fc"><i class="no-highlight">60</i>&nbsp;        frca.feedbackSessionName = comment.getFeedbackSessionName();</b>
+<b class="fc"><i class="no-highlight">61</i>&nbsp;        frca.commentGiver = comment.getGiverEmail();</b>
+<b class="fc"><i class="no-highlight">62</i>&nbsp;        frca.commentText = comment.getCommentText();</b>
+<b class="fc"><i class="no-highlight">63</i>&nbsp;        frca.feedbackResponseId = comment.getFeedbackResponseId();</b>
+<b class="fc"><i class="no-highlight">64</i>&nbsp;        frca.feedbackQuestionId = comment.getFeedbackQuestionId();</b>
+<b class="fc"><i class="no-highlight">65</i>&nbsp;        if (comment.getShowCommentTo() != null) {</b>
+<b class="fc"><i class="no-highlight">66</i>&nbsp;            frca.showCommentTo = new ArrayList&lt;&gt;(comment.getShowCommentTo());</b>
+<i class="no-highlight">67</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">68</i>&nbsp;        if (comment.getShowGiverNameTo() != null) {</b>
+<b class="fc"><i class="no-highlight">69</i>&nbsp;            frca.showGiverNameTo = new ArrayList&lt;&gt;(comment.getShowGiverNameTo());</b>
+<i class="no-highlight">70</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">71</i>&nbsp;        frca.isVisibilityFollowingFeedbackQuestion = comment.getIsVisibilityFollowingFeedbackQuestion();</b>
+<b class="fc"><i class="no-highlight">72</i>&nbsp;        if (comment.getCreatedAt() != null) {</b>
+<b class="fc"><i class="no-highlight">73</i>&nbsp;            frca.createdAt = comment.getCreatedAt();</b>
+<i class="no-highlight">74</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">75</i>&nbsp;        if (comment.getLastEditorEmail() == null) {</b>
+<b class="fc"><i class="no-highlight">76</i>&nbsp;            frca.lastEditorEmail = frca.getCommentGiver();</b>
+<i class="no-highlight">77</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">78</i>&nbsp;            frca.lastEditorEmail = comment.getLastEditorEmail();</b>
+<i class="no-highlight">79</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">80</i>&nbsp;        if (comment.getLastEditedAt() == null) {</b>
+<b class="fc"><i class="no-highlight">81</i>&nbsp;            frca.lastEditedAt = frca.getCreatedAt();</b>
+<i class="no-highlight">82</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">83</i>&nbsp;            frca.lastEditedAt = comment.getLastEditedAt();</b>
+<i class="no-highlight">84</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">85</i>&nbsp;        frca.feedbackResponseCommentId = comment.getFeedbackResponseCommentId();</b>
+<b class="fc"><i class="no-highlight">86</i>&nbsp;        if (comment.getGiverSection() != null) {</b>
+<b class="fc"><i class="no-highlight">87</i>&nbsp;            frca.giverSection = comment.getGiverSection();</b>
+<i class="no-highlight">88</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">89</i>&nbsp;        if (comment.getReceiverSection() != null) {</b>
+<b class="fc"><i class="no-highlight">90</i>&nbsp;            frca.receiverSection = comment.getReceiverSection();</b>
+<i class="no-highlight">91</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">92</i>&nbsp;        frca.commentGiverType = comment.getCommentGiverType();</b>
+<b class="fc"><i class="no-highlight">93</i>&nbsp;        frca.isCommentFromFeedbackParticipant = comment.getIsCommentFromFeedbackParticipant();</b>
+<i class="no-highlight">94</i>&nbsp;
+<b class="fc"><i class="no-highlight">95</i>&nbsp;        return frca;</b>
+<i class="no-highlight">96</i>&nbsp;    }
+<i class="no-highlight">97</i>&nbsp;
+<i class="no-highlight">98</i>&nbsp;    /**
+<i class="no-highlight">99</i>&nbsp;     * Returns a builder for {@link FeedbackResponseCommentAttributes}.
+<i class="no-highlight">100</i>&nbsp;     */
+<i class="no-highlight">101</i>&nbsp;    public static Builder builder() {
+<b class="fc"><i class="no-highlight">102</i>&nbsp;        return new Builder();</b>
+<i class="no-highlight">103</i>&nbsp;    }
+<i class="no-highlight">104</i>&nbsp;
+<i class="no-highlight">105</i>&nbsp;    /**
+<i class="no-highlight">106</i>&nbsp;     * Returns true if the response comment is visible to the given participant type.
+<i class="no-highlight">107</i>&nbsp;     */
+<i class="no-highlight">108</i>&nbsp;    public boolean isVisibleTo(FeedbackParticipantType viewerType) {
+<b class="fc"><i class="no-highlight">109</i>&nbsp;        return showCommentTo.contains(viewerType);</b>
+<i class="no-highlight">110</i>&nbsp;    }
+<i class="no-highlight">111</i>&nbsp;
+<i class="no-highlight">112</i>&nbsp;    public Long getId() {
+<b class="fc"><i class="no-highlight">113</i>&nbsp;        return feedbackResponseCommentId;</b>
+<i class="no-highlight">114</i>&nbsp;    }
+<i class="no-highlight">115</i>&nbsp;
+<i class="no-highlight">116</i>&nbsp;    public String getCourseId() {
+<b class="fc"><i class="no-highlight">117</i>&nbsp;        return courseId;</b>
+<i class="no-highlight">118</i>&nbsp;    }
+<i class="no-highlight">119</i>&nbsp;
+<i class="no-highlight">120</i>&nbsp;    public void setCourseId(String courseId) {
+<b class="fc"><i class="no-highlight">121</i>&nbsp;        this.courseId = courseId;</b>
+<i class="no-highlight">122</i>&nbsp;    }
+<i class="no-highlight">123</i>&nbsp;
+<i class="no-highlight">124</i>&nbsp;    public String getFeedbackSessionName() {
+<b class="fc"><i class="no-highlight">125</i>&nbsp;        return feedbackSessionName;</b>
+<i class="no-highlight">126</i>&nbsp;    }
+<i class="no-highlight">127</i>&nbsp;
+<i class="no-highlight">128</i>&nbsp;    public void setFeedbackSessionName(String feedbackSessionName) {
+<b class="fc"><i class="no-highlight">129</i>&nbsp;        this.feedbackSessionName = feedbackSessionName;</b>
+<i class="no-highlight">130</i>&nbsp;    }
+<i class="no-highlight">131</i>&nbsp;
+<i class="no-highlight">132</i>&nbsp;    public String getCommentGiver() {
+<b class="fc"><i class="no-highlight">133</i>&nbsp;        return commentGiver;</b>
+<i class="no-highlight">134</i>&nbsp;    }
+<i class="no-highlight">135</i>&nbsp;
+<i class="no-highlight">136</i>&nbsp;    public void setCommentGiver(String commentGiver) {
+<b class="fc"><i class="no-highlight">137</i>&nbsp;        this.commentGiver = commentGiver;</b>
+<i class="no-highlight">138</i>&nbsp;    }
+<i class="no-highlight">139</i>&nbsp;
+<i class="no-highlight">140</i>&nbsp;    public String getCommentText() {
+<b class="fc"><i class="no-highlight">141</i>&nbsp;        return commentText;</b>
+<i class="no-highlight">142</i>&nbsp;    }
+<i class="no-highlight">143</i>&nbsp;
+<i class="no-highlight">144</i>&nbsp;    public void setCommentText(String commentText) {
+<b class="fc"><i class="no-highlight">145</i>&nbsp;        this.commentText = commentText;</b>
+<i class="no-highlight">146</i>&nbsp;    }
+<i class="no-highlight">147</i>&nbsp;
+<i class="no-highlight">148</i>&nbsp;    public String getFeedbackResponseId() {
+<b class="fc"><i class="no-highlight">149</i>&nbsp;        return feedbackResponseId;</b>
+<i class="no-highlight">150</i>&nbsp;    }
+<i class="no-highlight">151</i>&nbsp;
+<i class="no-highlight">152</i>&nbsp;    public void setFeedbackResponseId(String feedbackResponseId) {
+<b class="fc"><i class="no-highlight">153</i>&nbsp;        this.feedbackResponseId = feedbackResponseId;</b>
+<i class="no-highlight">154</i>&nbsp;    }
+<i class="no-highlight">155</i>&nbsp;
+<i class="no-highlight">156</i>&nbsp;    public String getFeedbackQuestionId() {
+<b class="fc"><i class="no-highlight">157</i>&nbsp;        return feedbackQuestionId;</b>
+<i class="no-highlight">158</i>&nbsp;    }
+<i class="no-highlight">159</i>&nbsp;
+<i class="no-highlight">160</i>&nbsp;    public void setFeedbackQuestionId(String feedbackQuestionId) {
+<b class="fc"><i class="no-highlight">161</i>&nbsp;        this.feedbackQuestionId = feedbackQuestionId;</b>
+<i class="no-highlight">162</i>&nbsp;    }
+<i class="no-highlight">163</i>&nbsp;
+<i class="no-highlight">164</i>&nbsp;    public void setShowCommentTo(List&lt;FeedbackParticipantType&gt; showCommentTo) {
+<b class="nc"><i class="no-highlight">165</i>&nbsp;        this.showCommentTo = showCommentTo;</b>
+<i class="no-highlight">166</i>&nbsp;    }
+<i class="no-highlight">167</i>&nbsp;
+<i class="no-highlight">168</i>&nbsp;    public List&lt;FeedbackParticipantType&gt; getShowCommentTo() {
+<b class="fc"><i class="no-highlight">169</i>&nbsp;        return showCommentTo;</b>
+<i class="no-highlight">170</i>&nbsp;    }
+<i class="no-highlight">171</i>&nbsp;
+<i class="no-highlight">172</i>&nbsp;    public void setShowGiverNameTo(List&lt;FeedbackParticipantType&gt; showGiverNameTo) {
+<b class="fc"><i class="no-highlight">173</i>&nbsp;        this.showGiverNameTo = showGiverNameTo;</b>
+<i class="no-highlight">174</i>&nbsp;    }
+<i class="no-highlight">175</i>&nbsp;
+<i class="no-highlight">176</i>&nbsp;    public List&lt;FeedbackParticipantType&gt; getShowGiverNameTo() {
+<b class="fc"><i class="no-highlight">177</i>&nbsp;        return showGiverNameTo;</b>
+<i class="no-highlight">178</i>&nbsp;    }
+<i class="no-highlight">179</i>&nbsp;
+<i class="no-highlight">180</i>&nbsp;    public boolean isVisibilityFollowingFeedbackQuestion() {
+<b class="fc"><i class="no-highlight">181</i>&nbsp;        return isVisibilityFollowingFeedbackQuestion;</b>
+<i class="no-highlight">182</i>&nbsp;    }
+<i class="no-highlight">183</i>&nbsp;
+<i class="no-highlight">184</i>&nbsp;    public void setVisibilityFollowingFeedbackQuestion(boolean visibilityFollowingFeedbackQuestion) {
+<b class="fc"><i class="no-highlight">185</i>&nbsp;        isVisibilityFollowingFeedbackQuestion = visibilityFollowingFeedbackQuestion;</b>
+<i class="no-highlight">186</i>&nbsp;    }
+<i class="no-highlight">187</i>&nbsp;
+<i class="no-highlight">188</i>&nbsp;    public Instant getCreatedAt() {
+<b class="fc"><i class="no-highlight">189</i>&nbsp;        return createdAt;</b>
+<i class="no-highlight">190</i>&nbsp;    }
+<i class="no-highlight">191</i>&nbsp;
+<i class="no-highlight">192</i>&nbsp;    public void setCreatedAt(Instant createdAt) {
+<b class="fc"><i class="no-highlight">193</i>&nbsp;        this.createdAt = createdAt;</b>
+<i class="no-highlight">194</i>&nbsp;    }
+<i class="no-highlight">195</i>&nbsp;
+<i class="no-highlight">196</i>&nbsp;    public String getLastEditorEmail() {
+<b class="fc"><i class="no-highlight">197</i>&nbsp;        return lastEditorEmail;</b>
+<i class="no-highlight">198</i>&nbsp;    }
+<i class="no-highlight">199</i>&nbsp;
+<i class="no-highlight">200</i>&nbsp;    public void setLastEditorEmail(String lastEditorEmail) {
+<b class="fc"><i class="no-highlight">201</i>&nbsp;        this.lastEditorEmail = lastEditorEmail;</b>
+<i class="no-highlight">202</i>&nbsp;    }
+<i class="no-highlight">203</i>&nbsp;
+<i class="no-highlight">204</i>&nbsp;    public Instant getLastEditedAt() {
+<b class="fc"><i class="no-highlight">205</i>&nbsp;        return lastEditedAt;</b>
+<i class="no-highlight">206</i>&nbsp;    }
+<i class="no-highlight">207</i>&nbsp;
+<i class="no-highlight">208</i>&nbsp;    public void setLastEditedAt(Instant lastEditedAt) {
+<b class="fc"><i class="no-highlight">209</i>&nbsp;        this.lastEditedAt = lastEditedAt;</b>
+<i class="no-highlight">210</i>&nbsp;    }
+<i class="no-highlight">211</i>&nbsp;
+<i class="no-highlight">212</i>&nbsp;    public String getGiverSection() {
+<b class="fc"><i class="no-highlight">213</i>&nbsp;        return giverSection;</b>
+<i class="no-highlight">214</i>&nbsp;    }
+<i class="no-highlight">215</i>&nbsp;
+<i class="no-highlight">216</i>&nbsp;    public String getReceiverSection() {
+<b class="fc"><i class="no-highlight">217</i>&nbsp;        return receiverSection;</b>
+<i class="no-highlight">218</i>&nbsp;    }
+<i class="no-highlight">219</i>&nbsp;
+<i class="no-highlight">220</i>&nbsp;    public FeedbackParticipantType getCommentGiverType() {
+<b class="fc"><i class="no-highlight">221</i>&nbsp;        return commentGiverType;</b>
+<i class="no-highlight">222</i>&nbsp;    }
+<i class="no-highlight">223</i>&nbsp;
+<i class="no-highlight">224</i>&nbsp;    public void setCommentGiverType(FeedbackParticipantType commentGiverType) {
+<b class="fc"><i class="no-highlight">225</i>&nbsp;        this.commentGiverType = commentGiverType;</b>
+<i class="no-highlight">226</i>&nbsp;    }
+<i class="no-highlight">227</i>&nbsp;
+<i class="no-highlight">228</i>&nbsp;    public boolean isCommentFromFeedbackParticipant() {
+<b class="fc"><i class="no-highlight">229</i>&nbsp;        return isCommentFromFeedbackParticipant;</b>
+<i class="no-highlight">230</i>&nbsp;    }
+<i class="no-highlight">231</i>&nbsp;
+<i class="no-highlight">232</i>&nbsp;    public void setCommentFromFeedbackParticipant(boolean commentFromFeedbackParticipant) {
+<b class="fc"><i class="no-highlight">233</i>&nbsp;        isCommentFromFeedbackParticipant = commentFromFeedbackParticipant;</b>
+<i class="no-highlight">234</i>&nbsp;    }
+<i class="no-highlight">235</i>&nbsp;
+<i class="no-highlight">236</i>&nbsp;    /**
+<i class="no-highlight">237</i>&nbsp;     * Use only to match existing and known Comment.
+<i class="no-highlight">238</i>&nbsp;     */
+<i class="no-highlight">239</i>&nbsp;    public void setId(Long id) {
+<b class="fc"><i class="no-highlight">240</i>&nbsp;        this.feedbackResponseCommentId = id;</b>
+<i class="no-highlight">241</i>&nbsp;    }
+<i class="no-highlight">242</i>&nbsp;
+<i class="no-highlight">243</i>&nbsp;    @Override
+<i class="no-highlight">244</i>&nbsp;    public List&lt;String&gt; getInvalidityInfo() {
+<b class="fc"><i class="no-highlight">245</i>&nbsp;        List&lt;String&gt; errors = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">246</i>&nbsp;
+<b class="fc"><i class="no-highlight">247</i>&nbsp;        addNonEmptyError(FieldValidator.getInvalidityInfoForCourseId(courseId), errors);</b>
+<i class="no-highlight">248</i>&nbsp;
+<b class="fc"><i class="no-highlight">249</i>&nbsp;        addNonEmptyError(FieldValidator.getInvalidityInfoForFeedbackSessionName(feedbackSessionName), errors);</b>
+<i class="no-highlight">250</i>&nbsp;
+<b class="fc"><i class="no-highlight">251</i>&nbsp;        addNonEmptyError(FieldValidator.getInvalidityInfoForCommentGiverType(commentGiverType), errors);</b>
+<i class="no-highlight">252</i>&nbsp;
+<b class="fc"><i class="no-highlight">253</i>&nbsp;        addNonEmptyError(FieldValidator.getInvalidityInfoForVisibilityOfFeedbackParticipantComments(</b>
+<i class="no-highlight">254</i>&nbsp;                isCommentFromFeedbackParticipant, isVisibilityFollowingFeedbackQuestion), errors);
+<i class="no-highlight">255</i>&nbsp;
+<i class="no-highlight">256</i>&nbsp;        //TODO: handle the new attributes showCommentTo and showGiverNameTo
+<i class="no-highlight">257</i>&nbsp;
+<b class="fc"><i class="no-highlight">258</i>&nbsp;        return errors;</b>
+<i class="no-highlight">259</i>&nbsp;    }
+<i class="no-highlight">260</i>&nbsp;
+<i class="no-highlight">261</i>&nbsp;    @Override
+<i class="no-highlight">262</i>&nbsp;    public FeedbackResponseComment toEntity() {
+<b class="fc"><i class="no-highlight">263</i>&nbsp;        return new FeedbackResponseComment(courseId, feedbackSessionName, feedbackQuestionId, commentGiver,</b>
+<i class="no-highlight">264</i>&nbsp;                commentGiverType, feedbackResponseId, createdAt, commentText, giverSection, receiverSection,
+<i class="no-highlight">265</i>&nbsp;                showCommentTo, showGiverNameTo, lastEditorEmail, lastEditedAt, isCommentFromFeedbackParticipant,
+<i class="no-highlight">266</i>&nbsp;                isVisibilityFollowingFeedbackQuestion);
+<i class="no-highlight">267</i>&nbsp;    }
+<i class="no-highlight">268</i>&nbsp;
+<i class="no-highlight">269</i>&nbsp;    @Override
+<i class="no-highlight">270</i>&nbsp;    public void sanitizeForSaving() {
+<b class="fc"><i class="no-highlight">271</i>&nbsp;        this.commentText = SanitizationHelper.sanitizeForRichText(this.commentText);</b>
+<i class="no-highlight">272</i>&nbsp;    }
+<i class="no-highlight">273</i>&nbsp;
+<i class="no-highlight">274</i>&nbsp;    @Override
+<i class="no-highlight">275</i>&nbsp;    public String toString() {
+<b class="fc"><i class="no-highlight">276</i>&nbsp;        return &quot;FeedbackResponseCommentAttributes [&quot;</b>
+<i class="no-highlight">277</i>&nbsp;                + &quot;feedbackResponseCommentId = &quot; + feedbackResponseCommentId
+<i class="no-highlight">278</i>&nbsp;                + &quot;, courseId = &quot; + courseId
+<i class="no-highlight">279</i>&nbsp;                + &quot;, feedbackSessionName = &quot; + feedbackSessionName
+<i class="no-highlight">280</i>&nbsp;                + &quot;, feedbackQuestionId = &quot; + feedbackQuestionId
+<i class="no-highlight">281</i>&nbsp;                + &quot;, commentGiver = &quot; + commentGiver
+<i class="no-highlight">282</i>&nbsp;                + &quot;, feedbackResponseId = &quot; + feedbackResponseId
+<i class="no-highlight">283</i>&nbsp;                + &quot;, commentText = &quot; + commentText
+<i class="no-highlight">284</i>&nbsp;                + &quot;, createdAt = &quot; + createdAt
+<i class="no-highlight">285</i>&nbsp;                + &quot;, lastEditorEmail = &quot; + lastEditorEmail
+<i class="no-highlight">286</i>&nbsp;                + &quot;, lastEditedAt = &quot; + lastEditedAt
+<i class="no-highlight">287</i>&nbsp;                + &quot;, giverSection = &quot; + giverSection
+<i class="no-highlight">288</i>&nbsp;                + &quot;, receiverSection = &quot; + receiverSection
+<i class="no-highlight">289</i>&nbsp;                + &quot;, showCommentTo = &quot; + showCommentTo
+<i class="no-highlight">290</i>&nbsp;                + &quot;, showGiverNameTo = &quot; + showGiverNameTo
+<i class="no-highlight">291</i>&nbsp;                + &quot;, commentGiverType = &quot; + commentGiverType
+<i class="no-highlight">292</i>&nbsp;                + &quot;, isVisibilityFollowingFeedbackQuestion = &quot; + isVisibilityFollowingFeedbackQuestion
+<i class="no-highlight">293</i>&nbsp;                + &quot;, isCommentFromFeedbackParticipant = &quot; + isCommentFromFeedbackParticipant
+<i class="no-highlight">294</i>&nbsp;                + &quot;]&quot;;
+<i class="no-highlight">295</i>&nbsp;    }
+<i class="no-highlight">296</i>&nbsp;
+<i class="no-highlight">297</i>&nbsp;    @Override
+<i class="no-highlight">298</i>&nbsp;    public int hashCode() {
+<b class="fc"><i class="no-highlight">299</i>&nbsp;        StringBuilder stringBuilder = new StringBuilder();</b>
+<b class="fc"><i class="no-highlight">300</i>&nbsp;        stringBuilder.append(this.feedbackSessionName).append(this.feedbackQuestionId)</b>
+<b class="fc"><i class="no-highlight">301</i>&nbsp;                .append(this.feedbackResponseId).append(this.courseId)</b>
+<b class="fc"><i class="no-highlight">302</i>&nbsp;                .append(this.commentGiver).append(this.commentText)</b>
+<b class="fc"><i class="no-highlight">303</i>&nbsp;                .append(this.giverSection).append(this.receiverSection);</b>
+<b class="fc"><i class="no-highlight">304</i>&nbsp;        return stringBuilder.toString().hashCode();</b>
+<i class="no-highlight">305</i>&nbsp;    }
+<i class="no-highlight">306</i>&nbsp;
+<i class="no-highlight">307</i>&nbsp;    @Override
+<i class="no-highlight">308</i>&nbsp;    public boolean equals(Object other) {
+<b class="fc"><i class="no-highlight">309</i>&nbsp;        if (other == null) {</b>
+<b class="nc"><i class="no-highlight">310</i>&nbsp;            return false;</b>
+<b class="fc"><i class="no-highlight">311</i>&nbsp;        } else if (this == other) {</b>
+<b class="nc"><i class="no-highlight">312</i>&nbsp;            return true;</b>
+<b class="fc"><i class="no-highlight">313</i>&nbsp;        } else if (this.getClass() == other.getClass()) {</b>
+<b class="fc"><i class="no-highlight">314</i>&nbsp;            FeedbackResponseCommentAttributes otherCommentAttributes =</b>
+<i class="no-highlight">315</i>&nbsp;                    (FeedbackResponseCommentAttributes) other;
+<b class="fc"><i class="no-highlight">316</i>&nbsp;            return Objects.equals(this.feedbackSessionName, otherCommentAttributes.feedbackSessionName)</b>
+<b class="fc"><i class="no-highlight">317</i>&nbsp;                    &amp;&amp; Objects.equals(this.feedbackResponseId, otherCommentAttributes.feedbackResponseId)</b>
+<b class="fc"><i class="no-highlight">318</i>&nbsp;                    &amp;&amp; Objects.equals(this.feedbackQuestionId, otherCommentAttributes.feedbackQuestionId)</b>
+<b class="fc"><i class="no-highlight">319</i>&nbsp;                    &amp;&amp; Objects.equals(this.courseId, otherCommentAttributes.courseId)</b>
+<b class="fc"><i class="no-highlight">320</i>&nbsp;                    &amp;&amp; Objects.equals(this.commentGiver, otherCommentAttributes.commentGiver)</b>
+<b class="fc"><i class="no-highlight">321</i>&nbsp;                    &amp;&amp; Objects.equals(this.commentText, otherCommentAttributes.commentText)</b>
+<b class="fc"><i class="no-highlight">322</i>&nbsp;                    &amp;&amp; Objects.equals(this.giverSection, otherCommentAttributes.giverSection)</b>
+<b class="fc"><i class="no-highlight">323</i>&nbsp;                    &amp;&amp; Objects.equals(this.receiverSection, otherCommentAttributes.receiverSection);</b>
+<i class="no-highlight">324</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">325</i>&nbsp;            return false;</b>
+<i class="no-highlight">326</i>&nbsp;        }
+<i class="no-highlight">327</i>&nbsp;    }
+<i class="no-highlight">328</i>&nbsp;
+<i class="no-highlight">329</i>&nbsp;    /**
+<i class="no-highlight">330</i>&nbsp;     * Updates with {@link UpdateOptions}.
+<i class="no-highlight">331</i>&nbsp;     */
+<i class="no-highlight">332</i>&nbsp;    public void update(UpdateOptions updateOptions) {
+<b class="fc"><i class="no-highlight">333</i>&nbsp;        updateOptions.feedbackResponseIdOption.ifPresent(s -&gt; feedbackResponseId = s);</b>
+<b class="fc"><i class="no-highlight">334</i>&nbsp;        updateOptions.commentTextOption.ifPresent(s -&gt; commentText = s);</b>
+<b class="fc"><i class="no-highlight">335</i>&nbsp;        updateOptions.showCommentToOption.ifPresent(s -&gt; showCommentTo = s);</b>
+<b class="fc"><i class="no-highlight">336</i>&nbsp;        updateOptions.showGiverNameToOption.ifPresent(s -&gt; showGiverNameTo = s);</b>
+<b class="fc"><i class="no-highlight">337</i>&nbsp;        updateOptions.lastEditorEmailOption.ifPresent(s -&gt; lastEditorEmail = s);</b>
+<b class="fc"><i class="no-highlight">338</i>&nbsp;        updateOptions.lastEditedAtOption.ifPresent(s -&gt; lastEditedAt = s);</b>
+<b class="fc"><i class="no-highlight">339</i>&nbsp;        updateOptions.giverSectionOption.ifPresent(s -&gt; giverSection = s);</b>
+<b class="fc"><i class="no-highlight">340</i>&nbsp;        updateOptions.receiverSectionOption.ifPresent(s -&gt; receiverSection = s);</b>
+<i class="no-highlight">341</i>&nbsp;    }
+<i class="no-highlight">342</i>&nbsp;
+<i class="no-highlight">343</i>&nbsp;    /**
+<i class="no-highlight">344</i>&nbsp;     * Returns a {@link UpdateOptions.Builder} to build {@link UpdateOptions} for a comment.
+<i class="no-highlight">345</i>&nbsp;     */
+<i class="no-highlight">346</i>&nbsp;    public static UpdateOptions.Builder updateOptionsBuilder(long feedbackResponseCommentId) {
+<b class="fc"><i class="no-highlight">347</i>&nbsp;        return new UpdateOptions.Builder(feedbackResponseCommentId);</b>
+<i class="no-highlight">348</i>&nbsp;    }
+<i class="no-highlight">349</i>&nbsp;
+<i class="no-highlight">350</i>&nbsp;    /**
+<i class="no-highlight">351</i>&nbsp;     * A builder for {@link FeedbackResponseCommentAttributes}.
+<i class="no-highlight">352</i>&nbsp;     */
+<b class="fc"><i class="no-highlight">353</i>&nbsp;    public static class Builder extends BasicBuilder&lt;FeedbackResponseCommentAttributes, Builder&gt; {</b>
+<i class="no-highlight">354</i>&nbsp;        private final FeedbackResponseCommentAttributes frca;
+<i class="no-highlight">355</i>&nbsp;
+<i class="no-highlight">356</i>&nbsp;        private Builder() {
+<b class="fc"><i class="no-highlight">357</i>&nbsp;            super(new UpdateOptions(0L));</b>
+<b class="fc"><i class="no-highlight">358</i>&nbsp;            thisBuilder = this;</b>
+<i class="no-highlight">359</i>&nbsp;
+<b class="fc"><i class="no-highlight">360</i>&nbsp;            frca = new FeedbackResponseCommentAttributes();</b>
+<i class="no-highlight">361</i>&nbsp;        }
+<i class="no-highlight">362</i>&nbsp;
+<i class="no-highlight">363</i>&nbsp;        public Builder withCourseId(String courseId) {
+<b class="fc"><i class="no-highlight">364</i>&nbsp;            assert courseId != null;</b>
+<b class="fc"><i class="no-highlight">365</i>&nbsp;            frca.courseId = courseId;</b>
+<i class="no-highlight">366</i>&nbsp;
+<b class="fc"><i class="no-highlight">367</i>&nbsp;            return this;</b>
+<i class="no-highlight">368</i>&nbsp;        }
+<i class="no-highlight">369</i>&nbsp;
+<i class="no-highlight">370</i>&nbsp;        public Builder withFeedbackSessionName(String feedbackSessionName) {
+<b class="fc"><i class="no-highlight">371</i>&nbsp;            assert feedbackSessionName != null;</b>
+<b class="fc"><i class="no-highlight">372</i>&nbsp;            frca.feedbackSessionName = feedbackSessionName;</b>
+<i class="no-highlight">373</i>&nbsp;
+<b class="fc"><i class="no-highlight">374</i>&nbsp;            return this;</b>
+<i class="no-highlight">375</i>&nbsp;        }
+<i class="no-highlight">376</i>&nbsp;
+<i class="no-highlight">377</i>&nbsp;        public Builder withCommentGiver(String commentGiver) {
+<b class="fc"><i class="no-highlight">378</i>&nbsp;            assert commentGiver != null;</b>
+<b class="fc"><i class="no-highlight">379</i>&nbsp;            frca.commentGiver = commentGiver;</b>
+<i class="no-highlight">380</i>&nbsp;
+<b class="fc"><i class="no-highlight">381</i>&nbsp;            return this;</b>
+<i class="no-highlight">382</i>&nbsp;        }
+<i class="no-highlight">383</i>&nbsp;
+<i class="no-highlight">384</i>&nbsp;        public Builder withFeedbackQuestionId(String feedbackQuestionId) {
+<b class="fc"><i class="no-highlight">385</i>&nbsp;            assert feedbackQuestionId != null;</b>
+<b class="fc"><i class="no-highlight">386</i>&nbsp;            frca.feedbackQuestionId = feedbackQuestionId;</b>
+<i class="no-highlight">387</i>&nbsp;
+<b class="fc"><i class="no-highlight">388</i>&nbsp;            return this;</b>
+<i class="no-highlight">389</i>&nbsp;        }
+<i class="no-highlight">390</i>&nbsp;
+<i class="no-highlight">391</i>&nbsp;        public Builder withVisibilityFollowingFeedbackQuestion(boolean visibilityFollowingFeedbackQuestion) {
+<b class="fc"><i class="no-highlight">392</i>&nbsp;            frca.isVisibilityFollowingFeedbackQuestion = visibilityFollowingFeedbackQuestion;</b>
+<b class="fc"><i class="no-highlight">393</i>&nbsp;            return this;</b>
+<i class="no-highlight">394</i>&nbsp;        }
+<i class="no-highlight">395</i>&nbsp;
+<i class="no-highlight">396</i>&nbsp;        public Builder withCommentGiverType(FeedbackParticipantType commentGiverType) {
+<b class="fc"><i class="no-highlight">397</i>&nbsp;            assert commentGiverType != null;</b>
+<i class="no-highlight">398</i>&nbsp;
+<b class="fc"><i class="no-highlight">399</i>&nbsp;            frca.commentGiverType = commentGiverType;</b>
+<b class="fc"><i class="no-highlight">400</i>&nbsp;            return this;</b>
+<i class="no-highlight">401</i>&nbsp;        }
+<i class="no-highlight">402</i>&nbsp;
+<i class="no-highlight">403</i>&nbsp;        public Builder withCommentFromFeedbackParticipant(boolean isCommentFromFeedbackParticipant) {
+<b class="fc"><i class="no-highlight">404</i>&nbsp;            frca.isCommentFromFeedbackParticipant = isCommentFromFeedbackParticipant;</b>
+<b class="fc"><i class="no-highlight">405</i>&nbsp;            return this;</b>
+<i class="no-highlight">406</i>&nbsp;        }
+<i class="no-highlight">407</i>&nbsp;
+<i class="no-highlight">408</i>&nbsp;        @Override
+<i class="no-highlight">409</i>&nbsp;        public FeedbackResponseCommentAttributes build() {
+<b class="fc"><i class="no-highlight">410</i>&nbsp;            frca.update(updateOptions);</b>
+<i class="no-highlight">411</i>&nbsp;
+<b class="fc"><i class="no-highlight">412</i>&nbsp;            return frca;</b>
+<i class="no-highlight">413</i>&nbsp;        }
+<i class="no-highlight">414</i>&nbsp;    }
+<i class="no-highlight">415</i>&nbsp;
+<i class="no-highlight">416</i>&nbsp;    /**
+<i class="no-highlight">417</i>&nbsp;     * Helper class to specific the fields to update in {@link FeedbackResponseCommentAttributes}.
+<i class="no-highlight">418</i>&nbsp;     */
+<i class="no-highlight">419</i>&nbsp;    public static class UpdateOptions {
+<i class="no-highlight">420</i>&nbsp;        private long feedbackResponseCommentId;
+<i class="no-highlight">421</i>&nbsp;
+<b class="fc"><i class="no-highlight">422</i>&nbsp;        private UpdateOption&lt;String&gt; feedbackResponseIdOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">423</i>&nbsp;        private UpdateOption&lt;String&gt; commentTextOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">424</i>&nbsp;        private UpdateOption&lt;List&lt;FeedbackParticipantType&gt;&gt; showCommentToOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">425</i>&nbsp;        private UpdateOption&lt;List&lt;FeedbackParticipantType&gt;&gt; showGiverNameToOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">426</i>&nbsp;        private UpdateOption&lt;String&gt; lastEditorEmailOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">427</i>&nbsp;        private UpdateOption&lt;Instant&gt; lastEditedAtOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">428</i>&nbsp;        private UpdateOption&lt;String&gt; giverSectionOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">429</i>&nbsp;        private UpdateOption&lt;String&gt; receiverSectionOption = UpdateOption.empty();</b>
+<i class="no-highlight">430</i>&nbsp;
+<b class="fc"><i class="no-highlight">431</i>&nbsp;        private UpdateOptions(long feedbackResponseCommentId) {</b>
+<b class="fc"><i class="no-highlight">432</i>&nbsp;            this.feedbackResponseCommentId = feedbackResponseCommentId;</b>
+<i class="no-highlight">433</i>&nbsp;        }
+<i class="no-highlight">434</i>&nbsp;
+<i class="no-highlight">435</i>&nbsp;        public long getFeedbackResponseCommentId() {
+<b class="fc"><i class="no-highlight">436</i>&nbsp;            return feedbackResponseCommentId;</b>
+<i class="no-highlight">437</i>&nbsp;        }
+<i class="no-highlight">438</i>&nbsp;
+<i class="no-highlight">439</i>&nbsp;        @Override
+<i class="no-highlight">440</i>&nbsp;        public String toString() {
+<b class="fc"><i class="no-highlight">441</i>&nbsp;            return &quot;FeedbackResponseCommentAttributes.UpdateOptions [&quot;</b>
+<i class="no-highlight">442</i>&nbsp;                    + &quot;feedbackResponseCommentId = &quot; + feedbackResponseCommentId
+<i class="no-highlight">443</i>&nbsp;                    + &quot;, commentText = &quot; + commentTextOption
+<i class="no-highlight">444</i>&nbsp;                    + &quot;, showCommentTo = &quot; + showCommentToOption
+<i class="no-highlight">445</i>&nbsp;                    + &quot;, showGiverNameTo = &quot; + showGiverNameToOption
+<i class="no-highlight">446</i>&nbsp;                    + &quot;, lastEditorEmail = &quot; + lastEditorEmailOption
+<i class="no-highlight">447</i>&nbsp;                    + &quot;, giverSection = &quot; + giverSectionOption
+<i class="no-highlight">448</i>&nbsp;                    + &quot;, receiverSection = &quot; + receiverSectionOption
+<i class="no-highlight">449</i>&nbsp;                    + &quot;]&quot;;
+<i class="no-highlight">450</i>&nbsp;        }
+<i class="no-highlight">451</i>&nbsp;
+<i class="no-highlight">452</i>&nbsp;        /**
+<i class="no-highlight">453</i>&nbsp;         * Builder class to build {@link UpdateOptions}.
+<i class="no-highlight">454</i>&nbsp;         */
+<b class="fc"><i class="no-highlight">455</i>&nbsp;        public static class Builder extends BasicBuilder&lt;UpdateOptions, Builder&gt; {</b>
+<i class="no-highlight">456</i>&nbsp;
+<i class="no-highlight">457</i>&nbsp;            private Builder(Long feedbackResponseCommentId) {
+<b class="fc"><i class="no-highlight">458</i>&nbsp;                super(new UpdateOptions(feedbackResponseCommentId));</b>
+<b class="fc"><i class="no-highlight">459</i>&nbsp;                thisBuilder = this;</b>
+<i class="no-highlight">460</i>&nbsp;            }
+<i class="no-highlight">461</i>&nbsp;
+<i class="no-highlight">462</i>&nbsp;            public Builder withLastEditorEmail(String lastEditorEmail) {
+<b class="fc"><i class="no-highlight">463</i>&nbsp;                assert lastEditorEmail != null;</b>
+<i class="no-highlight">464</i>&nbsp;
+<b class="fc"><i class="no-highlight">465</i>&nbsp;                updateOptions.lastEditorEmailOption = UpdateOption.of(lastEditorEmail);</b>
+<b class="fc"><i class="no-highlight">466</i>&nbsp;                return this;</b>
+<i class="no-highlight">467</i>&nbsp;            }
+<i class="no-highlight">468</i>&nbsp;
+<i class="no-highlight">469</i>&nbsp;            public Builder withLastEditorAt(Instant lastEditedAt) {
+<b class="fc"><i class="no-highlight">470</i>&nbsp;                assert lastEditedAt != null;</b>
+<i class="no-highlight">471</i>&nbsp;
+<b class="fc"><i class="no-highlight">472</i>&nbsp;                updateOptions.lastEditedAtOption = UpdateOption.of(lastEditedAt);</b>
+<b class="fc"><i class="no-highlight">473</i>&nbsp;                return this;</b>
+<i class="no-highlight">474</i>&nbsp;            }
+<i class="no-highlight">475</i>&nbsp;
+<i class="no-highlight">476</i>&nbsp;            @Override
+<i class="no-highlight">477</i>&nbsp;            public UpdateOptions build() {
+<b class="fc"><i class="no-highlight">478</i>&nbsp;                return updateOptions;</b>
+<i class="no-highlight">479</i>&nbsp;            }
+<i class="no-highlight">480</i>&nbsp;
+<i class="no-highlight">481</i>&nbsp;        }
+<i class="no-highlight">482</i>&nbsp;
+<i class="no-highlight">483</i>&nbsp;    }
+<i class="no-highlight">484</i>&nbsp;
+<i class="no-highlight">485</i>&nbsp;    /**
+<i class="no-highlight">486</i>&nbsp;     * Basic builder to build {@link FeedbackResponseCommentAttributes} related classes.
+<i class="no-highlight">487</i>&nbsp;     *
+<i class="no-highlight">488</i>&nbsp;     * @param &lt;T&gt; type to be built
+<i class="no-highlight">489</i>&nbsp;     * @param &lt;B&gt; type of the builder
+<i class="no-highlight">490</i>&nbsp;     */
+<b class="fc"><i class="no-highlight">491</i>&nbsp;    private abstract static class BasicBuilder&lt;T, B extends BasicBuilder&lt;T, B&gt;&gt; {</b>
+<i class="no-highlight">492</i>&nbsp;
+<i class="no-highlight">493</i>&nbsp;        UpdateOptions updateOptions;
+<i class="no-highlight">494</i>&nbsp;        B thisBuilder;
+<i class="no-highlight">495</i>&nbsp;
+<b class="fc"><i class="no-highlight">496</i>&nbsp;        BasicBuilder(UpdateOptions updateOptions) {</b>
+<b class="fc"><i class="no-highlight">497</i>&nbsp;            this.updateOptions = updateOptions;</b>
+<i class="no-highlight">498</i>&nbsp;        }
+<i class="no-highlight">499</i>&nbsp;
+<i class="no-highlight">500</i>&nbsp;        public B withFeedbackResponseId(String feedbackResponseId) {
+<b class="fc"><i class="no-highlight">501</i>&nbsp;            assert feedbackResponseId != null;</b>
+<i class="no-highlight">502</i>&nbsp;
+<b class="fc"><i class="no-highlight">503</i>&nbsp;            updateOptions.feedbackResponseIdOption = UpdateOption.of(feedbackResponseId);</b>
+<b class="fc"><i class="no-highlight">504</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">505</i>&nbsp;        }
+<i class="no-highlight">506</i>&nbsp;
+<i class="no-highlight">507</i>&nbsp;        public B withCommentText(String commentText) {
+<b class="fc"><i class="no-highlight">508</i>&nbsp;            assert commentText != null;</b>
+<i class="no-highlight">509</i>&nbsp;
+<b class="fc"><i class="no-highlight">510</i>&nbsp;            updateOptions.commentTextOption = UpdateOption.of(commentText);</b>
+<b class="fc"><i class="no-highlight">511</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">512</i>&nbsp;        }
+<i class="no-highlight">513</i>&nbsp;
+<i class="no-highlight">514</i>&nbsp;        public B withShowCommentTo(List&lt;FeedbackParticipantType&gt; showCommentTo) {
+<b class="fc"><i class="no-highlight">515</i>&nbsp;            assert showCommentTo != null;</b>
+<i class="no-highlight">516</i>&nbsp;
+<b class="fc"><i class="no-highlight">517</i>&nbsp;            updateOptions.showCommentToOption = UpdateOption.of(showCommentTo);</b>
+<b class="fc"><i class="no-highlight">518</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">519</i>&nbsp;        }
+<i class="no-highlight">520</i>&nbsp;
+<i class="no-highlight">521</i>&nbsp;        public B withShowGiverNameTo(List&lt;FeedbackParticipantType&gt; showGiverNameTo) {
+<b class="fc"><i class="no-highlight">522</i>&nbsp;            assert showGiverNameTo != null;</b>
+<i class="no-highlight">523</i>&nbsp;
+<b class="fc"><i class="no-highlight">524</i>&nbsp;            updateOptions.showGiverNameToOption = UpdateOption.of(showGiverNameTo);</b>
+<b class="fc"><i class="no-highlight">525</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">526</i>&nbsp;        }
+<i class="no-highlight">527</i>&nbsp;
+<i class="no-highlight">528</i>&nbsp;        public B withGiverSection(String giverSection) {
+<b class="fc"><i class="no-highlight">529</i>&nbsp;            assert giverSection != null;</b>
+<i class="no-highlight">530</i>&nbsp;
+<b class="fc"><i class="no-highlight">531</i>&nbsp;            updateOptions.giverSectionOption = UpdateOption.of(giverSection);</b>
+<b class="fc"><i class="no-highlight">532</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">533</i>&nbsp;        }
+<i class="no-highlight">534</i>&nbsp;
+<i class="no-highlight">535</i>&nbsp;        public B withReceiverSection(String receiverSection) {
+<b class="fc"><i class="no-highlight">536</i>&nbsp;            assert receiverSection != null;</b>
+<i class="no-highlight">537</i>&nbsp;
+<b class="fc"><i class="no-highlight">538</i>&nbsp;            updateOptions.receiverSectionOption = UpdateOption.of(receiverSection);</b>
+<b class="fc"><i class="no-highlight">539</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">540</i>&nbsp;        }
+<i class="no-highlight">541</i>&nbsp;
+<i class="no-highlight">542</i>&nbsp;        public abstract T build();
+<i class="no-highlight">543</i>&nbsp;
+<i class="no-highlight">544</i>&nbsp;    }
+<i class="no-highlight">545</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:52</div>
+</div>
+</body>
+</html>

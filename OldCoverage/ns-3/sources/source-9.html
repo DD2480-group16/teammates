@@ -1,0 +1,884 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > InstructorAttributes</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.common.datatransfer.attributes</a>
+</div>
+
+<h1>Coverage Summary for Class: InstructorAttributes (teammates.common.datatransfer.attributes)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InstructorAttributes</td>
+<td class="coverageStat">
+  <span class="percent">
+    95.8%
+  </span>
+  <span class="absValue">
+    (46/48)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    95.7%
+  </span>
+  <span class="absValue">
+    (135/141)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">InstructorAttributes$BasicBuilder</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (19/19)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">InstructorAttributes$Builder</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/11)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">InstructorAttributes$UpdateOptions</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/8)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">InstructorAttributes$UpdateOptionsWithEmail</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/11)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">InstructorAttributes$UpdateOptionsWithEmail$Builder</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">InstructorAttributes$UpdateOptionsWithGoogleId</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/11)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">InstructorAttributes$UpdateOptionsWithGoogleId$Builder</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/8)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    97.5%
+  </span>
+  <span class="absValue">
+    (77/79)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    97.2%
+  </span>
+  <span class="absValue">
+    (209/215)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.common.datatransfer.attributes;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.time.Instant;
+<i class="no-highlight">4</i>&nbsp;import java.util.ArrayList;
+<i class="no-highlight">5</i>&nbsp;import java.util.Comparator;
+<i class="no-highlight">6</i>&nbsp;import java.util.List;
+<i class="no-highlight">7</i>&nbsp;import java.util.Objects;
+<i class="no-highlight">8</i>&nbsp;
+<i class="no-highlight">9</i>&nbsp;import teammates.common.datatransfer.InstructorPrivileges;
+<i class="no-highlight">10</i>&nbsp;import teammates.common.datatransfer.InstructorPrivilegesLegacy;
+<i class="no-highlight">11</i>&nbsp;import teammates.common.util.Config;
+<i class="no-highlight">12</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">13</i>&nbsp;import teammates.common.util.FieldValidator;
+<i class="no-highlight">14</i>&nbsp;import teammates.common.util.JsonUtils;
+<i class="no-highlight">15</i>&nbsp;import teammates.common.util.SanitizationHelper;
+<i class="no-highlight">16</i>&nbsp;import teammates.storage.entity.Instructor;
+<i class="no-highlight">17</i>&nbsp;
+<i class="no-highlight">18</i>&nbsp;/**
+<i class="no-highlight">19</i>&nbsp; * The data transfer class for Instructor entities.
+<i class="no-highlight">20</i>&nbsp; */
+<i class="no-highlight">21</i>&nbsp;public class InstructorAttributes extends EntityAttributes&lt;Instructor&gt; {
+<i class="no-highlight">22</i>&nbsp;
+<i class="no-highlight">23</i>&nbsp;    private String courseId;
+<i class="no-highlight">24</i>&nbsp;    private String email;
+<i class="no-highlight">25</i>&nbsp;    private String name;
+<i class="no-highlight">26</i>&nbsp;    private String googleId;
+<i class="no-highlight">27</i>&nbsp;    private String role;
+<i class="no-highlight">28</i>&nbsp;    private String displayedName;
+<i class="no-highlight">29</i>&nbsp;    private boolean isArchived;
+<i class="no-highlight">30</i>&nbsp;    private boolean isDisplayedToStudents;
+<i class="no-highlight">31</i>&nbsp;    private InstructorPrivileges privileges;
+<i class="no-highlight">32</i>&nbsp;    private transient String key;
+<i class="no-highlight">33</i>&nbsp;    private transient Instant createdAt;
+<i class="no-highlight">34</i>&nbsp;    private transient Instant updatedAt;
+<i class="no-highlight">35</i>&nbsp;
+<b class="fc"><i class="no-highlight">36</i>&nbsp;    private InstructorAttributes(String courseId, String email) {</b>
+<b class="fc"><i class="no-highlight">37</i>&nbsp;        this.courseId = courseId;</b>
+<b class="fc"><i class="no-highlight">38</i>&nbsp;        this.email = email;</b>
+<i class="no-highlight">39</i>&nbsp;
+<b class="fc"><i class="no-highlight">40</i>&nbsp;        this.role = Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_COOWNER;</b>
+<b class="fc"><i class="no-highlight">41</i>&nbsp;        this.displayedName = Const.DEFAULT_DISPLAY_NAME_FOR_INSTRUCTOR;</b>
+<b class="fc"><i class="no-highlight">42</i>&nbsp;        this.isArchived = false;</b>
+<b class="fc"><i class="no-highlight">43</i>&nbsp;        this.isDisplayedToStudents = true;</b>
+<b class="fc"><i class="no-highlight">44</i>&nbsp;        this.privileges = new InstructorPrivileges(Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_COOWNER);</b>
+<i class="no-highlight">45</i>&nbsp;
+<b class="fc"><i class="no-highlight">46</i>&nbsp;        this.createdAt = Const.TIME_REPRESENTS_DEFAULT_TIMESTAMP;</b>
+<b class="fc"><i class="no-highlight">47</i>&nbsp;        this.updatedAt = Const.TIME_REPRESENTS_DEFAULT_TIMESTAMP;</b>
+<i class="no-highlight">48</i>&nbsp;    }
+<i class="no-highlight">49</i>&nbsp;
+<i class="no-highlight">50</i>&nbsp;    /**
+<i class="no-highlight">51</i>&nbsp;     * Return a builder for {@link InstructorAttributes}.
+<i class="no-highlight">52</i>&nbsp;     */
+<i class="no-highlight">53</i>&nbsp;    public static Builder builder(String courseId, String email) {
+<b class="fc"><i class="no-highlight">54</i>&nbsp;        return new Builder(courseId, email);</b>
+<i class="no-highlight">55</i>&nbsp;    }
+<i class="no-highlight">56</i>&nbsp;
+<i class="no-highlight">57</i>&nbsp;    /**
+<i class="no-highlight">58</i>&nbsp;     * Gets the {@link InstructorAttributes} instance of the given {@link Instructor}.
+<i class="no-highlight">59</i>&nbsp;     */
+<i class="no-highlight">60</i>&nbsp;    public static InstructorAttributes valueOf(Instructor instructor) {
+<b class="fc"><i class="no-highlight">61</i>&nbsp;        InstructorAttributes instructorAttributes =</b>
+<b class="fc"><i class="no-highlight">62</i>&nbsp;                new InstructorAttributes(instructor.getCourseId(), instructor.getEmail());</b>
+<i class="no-highlight">63</i>&nbsp;
+<b class="fc"><i class="no-highlight">64</i>&nbsp;        instructorAttributes.name = instructor.getName();</b>
+<b class="fc"><i class="no-highlight">65</i>&nbsp;        instructorAttributes.googleId = instructor.getGoogleId();</b>
+<b class="fc"><i class="no-highlight">66</i>&nbsp;        instructorAttributes.key = instructor.getRegistrationKey();</b>
+<b class="fc"><i class="no-highlight">67</i>&nbsp;        if (instructor.getRole() != null) {</b>
+<b class="fc"><i class="no-highlight">68</i>&nbsp;            instructorAttributes.role = instructor.getRole();</b>
+<i class="no-highlight">69</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">70</i>&nbsp;        if (instructor.getDisplayedName() != null) {</b>
+<b class="fc"><i class="no-highlight">71</i>&nbsp;            instructorAttributes.displayedName = instructor.getDisplayedName();</b>
+<i class="no-highlight">72</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">73</i>&nbsp;        instructorAttributes.isArchived = instructor.getIsArchived();</b>
+<b class="fc"><i class="no-highlight">74</i>&nbsp;        instructorAttributes.isDisplayedToStudents = instructor.isDisplayedToStudents();</b>
+<i class="no-highlight">75</i>&nbsp;
+<b class="fc"><i class="no-highlight">76</i>&nbsp;        if (instructor.getInstructorPrivilegesAsText() == null) {</b>
+<b class="fc"><i class="no-highlight">77</i>&nbsp;            instructorAttributes.privileges =</b>
+<i class="no-highlight">78</i>&nbsp;                    new InstructorPrivileges(instructorAttributes.role);
+<i class="no-highlight">79</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">80</i>&nbsp;            InstructorPrivilegesLegacy privilegesLegacy =</b>
+<b class="fc"><i class="no-highlight">81</i>&nbsp;                    JsonUtils.fromJson(instructor.getInstructorPrivilegesAsText(), InstructorPrivilegesLegacy.class);</b>
+<b class="fc"><i class="no-highlight">82</i>&nbsp;            instructorAttributes.privileges = new InstructorPrivileges(privilegesLegacy);</b>
+<i class="no-highlight">83</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">84</i>&nbsp;        if (instructor.getCreatedAt() != null) {</b>
+<b class="fc"><i class="no-highlight">85</i>&nbsp;            instructorAttributes.createdAt = instructor.getCreatedAt();</b>
+<i class="no-highlight">86</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">87</i>&nbsp;        if (instructor.getUpdatedAt() != null) {</b>
+<b class="fc"><i class="no-highlight">88</i>&nbsp;            instructorAttributes.updatedAt = instructor.getUpdatedAt();</b>
+<i class="no-highlight">89</i>&nbsp;        }
+<i class="no-highlight">90</i>&nbsp;
+<b class="fc"><i class="no-highlight">91</i>&nbsp;        return instructorAttributes;</b>
+<i class="no-highlight">92</i>&nbsp;    }
+<i class="no-highlight">93</i>&nbsp;
+<i class="no-highlight">94</i>&nbsp;    /**
+<i class="no-highlight">95</i>&nbsp;     * Gets a deep copy of this object.
+<i class="no-highlight">96</i>&nbsp;     */
+<i class="no-highlight">97</i>&nbsp;    public InstructorAttributes getCopy() {
+<b class="fc"><i class="no-highlight">98</i>&nbsp;        InstructorAttributes instructorAttributes = new InstructorAttributes(courseId, email);</b>
+<b class="fc"><i class="no-highlight">99</i>&nbsp;        instructorAttributes.name = name;</b>
+<b class="fc"><i class="no-highlight">100</i>&nbsp;        instructorAttributes.googleId = googleId;</b>
+<b class="fc"><i class="no-highlight">101</i>&nbsp;        instructorAttributes.key = key;</b>
+<b class="fc"><i class="no-highlight">102</i>&nbsp;        instructorAttributes.role = role;</b>
+<b class="fc"><i class="no-highlight">103</i>&nbsp;        instructorAttributes.displayedName = displayedName;</b>
+<b class="fc"><i class="no-highlight">104</i>&nbsp;        instructorAttributes.isArchived = isArchived;</b>
+<b class="fc"><i class="no-highlight">105</i>&nbsp;        instructorAttributes.isDisplayedToStudents = isDisplayedToStudents;</b>
+<b class="fc"><i class="no-highlight">106</i>&nbsp;        instructorAttributes.privileges = privileges;</b>
+<b class="fc"><i class="no-highlight">107</i>&nbsp;        instructorAttributes.createdAt = createdAt;</b>
+<b class="fc"><i class="no-highlight">108</i>&nbsp;        instructorAttributes.updatedAt = updatedAt;</b>
+<i class="no-highlight">109</i>&nbsp;
+<b class="fc"><i class="no-highlight">110</i>&nbsp;        return instructorAttributes;</b>
+<i class="no-highlight">111</i>&nbsp;    }
+<i class="no-highlight">112</i>&nbsp;
+<i class="no-highlight">113</i>&nbsp;    public String getInstructorPrivilegesAsText() {
+<b class="fc"><i class="no-highlight">114</i>&nbsp;        return JsonUtils.toJson(privileges.toLegacyFormat(), InstructorPrivilegesLegacy.class);</b>
+<i class="no-highlight">115</i>&nbsp;    }
+<i class="no-highlight">116</i>&nbsp;
+<i class="no-highlight">117</i>&nbsp;    public String getName() {
+<b class="fc"><i class="no-highlight">118</i>&nbsp;        return name;</b>
+<i class="no-highlight">119</i>&nbsp;    }
+<i class="no-highlight">120</i>&nbsp;
+<i class="no-highlight">121</i>&nbsp;    public void setName(String name) {
+<b class="fc"><i class="no-highlight">122</i>&nbsp;        this.name = name;</b>
+<i class="no-highlight">123</i>&nbsp;    }
+<i class="no-highlight">124</i>&nbsp;
+<i class="no-highlight">125</i>&nbsp;    public String getKey() {
+<b class="fc"><i class="no-highlight">126</i>&nbsp;        return key;</b>
+<i class="no-highlight">127</i>&nbsp;    }
+<i class="no-highlight">128</i>&nbsp;
+<i class="no-highlight">129</i>&nbsp;    public void setKey(String key) {
+<b class="fc"><i class="no-highlight">130</i>&nbsp;        this.key = key;</b>
+<i class="no-highlight">131</i>&nbsp;    }
+<i class="no-highlight">132</i>&nbsp;
+<i class="no-highlight">133</i>&nbsp;    public boolean isArchived() {
+<b class="fc"><i class="no-highlight">134</i>&nbsp;        return isArchived;</b>
+<i class="no-highlight">135</i>&nbsp;    }
+<i class="no-highlight">136</i>&nbsp;
+<i class="no-highlight">137</i>&nbsp;    public void setArchived(boolean archived) {
+<b class="fc"><i class="no-highlight">138</i>&nbsp;        isArchived = archived;</b>
+<i class="no-highlight">139</i>&nbsp;    }
+<i class="no-highlight">140</i>&nbsp;
+<i class="no-highlight">141</i>&nbsp;    public InstructorPrivileges getPrivileges() {
+<b class="fc"><i class="no-highlight">142</i>&nbsp;        return privileges;</b>
+<i class="no-highlight">143</i>&nbsp;    }
+<i class="no-highlight">144</i>&nbsp;
+<i class="no-highlight">145</i>&nbsp;    public void setPrivileges(InstructorPrivileges privileges) {
+<b class="fc"><i class="no-highlight">146</i>&nbsp;        this.privileges = privileges;</b>
+<i class="no-highlight">147</i>&nbsp;    }
+<i class="no-highlight">148</i>&nbsp;
+<i class="no-highlight">149</i>&nbsp;    public String getDisplayedName() {
+<b class="fc"><i class="no-highlight">150</i>&nbsp;        return displayedName;</b>
+<i class="no-highlight">151</i>&nbsp;    }
+<i class="no-highlight">152</i>&nbsp;
+<i class="no-highlight">153</i>&nbsp;    public void setDisplayedName(String displayedName) {
+<b class="fc"><i class="no-highlight">154</i>&nbsp;        this.displayedName = displayedName;</b>
+<i class="no-highlight">155</i>&nbsp;    }
+<i class="no-highlight">156</i>&nbsp;
+<i class="no-highlight">157</i>&nbsp;    public String getEmail() {
+<b class="fc"><i class="no-highlight">158</i>&nbsp;        return email;</b>
+<i class="no-highlight">159</i>&nbsp;    }
+<i class="no-highlight">160</i>&nbsp;
+<i class="no-highlight">161</i>&nbsp;    public void setEmail(String email) {
+<b class="fc"><i class="no-highlight">162</i>&nbsp;        this.email = email;</b>
+<i class="no-highlight">163</i>&nbsp;    }
+<i class="no-highlight">164</i>&nbsp;
+<i class="no-highlight">165</i>&nbsp;    public boolean isDisplayedToStudents() {
+<b class="fc"><i class="no-highlight">166</i>&nbsp;        return isDisplayedToStudents;</b>
+<i class="no-highlight">167</i>&nbsp;    }
+<i class="no-highlight">168</i>&nbsp;
+<i class="no-highlight">169</i>&nbsp;    public void setDisplayedToStudents(boolean displayedToStudents) {
+<b class="fc"><i class="no-highlight">170</i>&nbsp;        isDisplayedToStudents = displayedToStudents;</b>
+<i class="no-highlight">171</i>&nbsp;    }
+<i class="no-highlight">172</i>&nbsp;
+<i class="no-highlight">173</i>&nbsp;    public boolean isRegistered() {
+<b class="fc"><i class="no-highlight">174</i>&nbsp;        return googleId != null &amp;&amp; !googleId.trim().isEmpty();</b>
+<i class="no-highlight">175</i>&nbsp;    }
+<i class="no-highlight">176</i>&nbsp;
+<i class="no-highlight">177</i>&nbsp;    public String getRegistrationUrl() {
+<b class="fc"><i class="no-highlight">178</i>&nbsp;        return Config.getFrontEndAppUrl(Const.WebPageURIs.JOIN_PAGE)</b>
+<b class="fc"><i class="no-highlight">179</i>&nbsp;                .withRegistrationKey(key)</b>
+<b class="fc"><i class="no-highlight">180</i>&nbsp;                .withEntityType(Const.EntityType.INSTRUCTOR)</b>
+<b class="fc"><i class="no-highlight">181</i>&nbsp;                .toString();</b>
+<i class="no-highlight">182</i>&nbsp;    }
+<i class="no-highlight">183</i>&nbsp;
+<i class="no-highlight">184</i>&nbsp;    @Override
+<i class="no-highlight">185</i>&nbsp;    public Instructor toEntity() {
+<b class="fc"><i class="no-highlight">186</i>&nbsp;        return new Instructor(googleId, courseId, isArchived, name, email, role,</b>
+<b class="fc"><i class="no-highlight">187</i>&nbsp;                              isDisplayedToStudents, displayedName, getInstructorPrivilegesAsText());</b>
+<i class="no-highlight">188</i>&nbsp;    }
+<i class="no-highlight">189</i>&nbsp;
+<i class="no-highlight">190</i>&nbsp;    @Override
+<i class="no-highlight">191</i>&nbsp;    public List&lt;String&gt; getInvalidityInfo() {
+<b class="fc"><i class="no-highlight">192</i>&nbsp;        List&lt;String&gt; errors = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">193</i>&nbsp;
+<b class="fc"><i class="no-highlight">194</i>&nbsp;        if (googleId != null) {</b>
+<b class="fc"><i class="no-highlight">195</i>&nbsp;            addNonEmptyError(FieldValidator.getInvalidityInfoForGoogleId(googleId), errors);</b>
+<i class="no-highlight">196</i>&nbsp;        }
+<i class="no-highlight">197</i>&nbsp;
+<b class="fc"><i class="no-highlight">198</i>&nbsp;        addNonEmptyError(FieldValidator.getInvalidityInfoForCourseId(courseId), errors);</b>
+<i class="no-highlight">199</i>&nbsp;
+<b class="fc"><i class="no-highlight">200</i>&nbsp;        addNonEmptyError(FieldValidator.getInvalidityInfoForPersonName(name), errors);</b>
+<i class="no-highlight">201</i>&nbsp;
+<b class="fc"><i class="no-highlight">202</i>&nbsp;        addNonEmptyError(FieldValidator.getInvalidityInfoForEmail(email), errors);</b>
+<i class="no-highlight">203</i>&nbsp;
+<b class="fc"><i class="no-highlight">204</i>&nbsp;        addNonEmptyError(FieldValidator.getInvalidityInfoForPersonName(displayedName), errors);</b>
+<i class="no-highlight">205</i>&nbsp;
+<b class="fc"><i class="no-highlight">206</i>&nbsp;        addNonEmptyError(FieldValidator.getInvalidityInfoForRole(role), errors);</b>
+<i class="no-highlight">207</i>&nbsp;
+<b class="fc"><i class="no-highlight">208</i>&nbsp;        return errors;</b>
+<i class="no-highlight">209</i>&nbsp;    }
+<i class="no-highlight">210</i>&nbsp;
+<i class="no-highlight">211</i>&nbsp;    /**
+<i class="no-highlight">212</i>&nbsp;     * Sorts the instructors list alphabetically by name.
+<i class="no-highlight">213</i>&nbsp;     */
+<i class="no-highlight">214</i>&nbsp;    public static void sortByName(List&lt;InstructorAttributes&gt; instructors) {
+<b class="fc"><i class="no-highlight">215</i>&nbsp;        instructors.sort(Comparator.comparing(instructor -&gt; instructor.name.toLowerCase()));</b>
+<i class="no-highlight">216</i>&nbsp;    }
+<i class="no-highlight">217</i>&nbsp;
+<i class="no-highlight">218</i>&nbsp;    @Override
+<i class="no-highlight">219</i>&nbsp;    public String toString() {
+<b class="fc"><i class="no-highlight">220</i>&nbsp;        return JsonUtils.toJson(this, InstructorAttributes.class);</b>
+<i class="no-highlight">221</i>&nbsp;    }
+<i class="no-highlight">222</i>&nbsp;
+<i class="no-highlight">223</i>&nbsp;    @Override
+<i class="no-highlight">224</i>&nbsp;    public int hashCode() {
+<b class="fc"><i class="no-highlight">225</i>&nbsp;        StringBuilder stringBuilder = new StringBuilder();</b>
+<b class="fc"><i class="no-highlight">226</i>&nbsp;        stringBuilder.append(this.email).append(this.name).append(this.courseId)</b>
+<b class="fc"><i class="no-highlight">227</i>&nbsp;                .append(this.googleId).append(this.displayedName).append(this.role);</b>
+<b class="fc"><i class="no-highlight">228</i>&nbsp;        return stringBuilder.toString().hashCode();</b>
+<i class="no-highlight">229</i>&nbsp;    }
+<i class="no-highlight">230</i>&nbsp;
+<i class="no-highlight">231</i>&nbsp;    @Override
+<i class="no-highlight">232</i>&nbsp;    public boolean equals(Object other) {
+<b class="fc"><i class="no-highlight">233</i>&nbsp;        if (other == null) {</b>
+<b class="nc"><i class="no-highlight">234</i>&nbsp;            return false;</b>
+<b class="fc"><i class="no-highlight">235</i>&nbsp;        } else if (this == other) {</b>
+<b class="nc"><i class="no-highlight">236</i>&nbsp;            return true;</b>
+<b class="fc"><i class="no-highlight">237</i>&nbsp;        } else if (this.getClass() == other.getClass()) {</b>
+<b class="fc"><i class="no-highlight">238</i>&nbsp;            InstructorAttributes otherInstructor = (InstructorAttributes) other;</b>
+<b class="fc"><i class="no-highlight">239</i>&nbsp;            return Objects.equals(this.email, otherInstructor.email)</b>
+<b class="fc"><i class="no-highlight">240</i>&nbsp;                    &amp;&amp; Objects.equals(this.name, otherInstructor.name)</b>
+<b class="fc"><i class="no-highlight">241</i>&nbsp;                    &amp;&amp; Objects.equals(this.courseId, otherInstructor.courseId)</b>
+<b class="fc"><i class="no-highlight">242</i>&nbsp;                    &amp;&amp; Objects.equals(this.googleId, otherInstructor.googleId)</b>
+<b class="fc"><i class="no-highlight">243</i>&nbsp;                    &amp;&amp; Objects.equals(this.displayedName, otherInstructor.displayedName)</b>
+<b class="fc"><i class="no-highlight">244</i>&nbsp;                    &amp;&amp; Objects.equals(this.role, otherInstructor.role);</b>
+<i class="no-highlight">245</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">246</i>&nbsp;            return false;</b>
+<i class="no-highlight">247</i>&nbsp;        }
+<i class="no-highlight">248</i>&nbsp;    }
+<i class="no-highlight">249</i>&nbsp;
+<i class="no-highlight">250</i>&nbsp;    @Override
+<i class="no-highlight">251</i>&nbsp;    public void sanitizeForSaving() {
+<b class="fc"><i class="no-highlight">252</i>&nbsp;        googleId = SanitizationHelper.sanitizeGoogleId(googleId);</b>
+<b class="fc"><i class="no-highlight">253</i>&nbsp;        name = SanitizationHelper.sanitizeName(name);</b>
+<b class="fc"><i class="no-highlight">254</i>&nbsp;        email = SanitizationHelper.sanitizeEmail(email);</b>
+<b class="fc"><i class="no-highlight">255</i>&nbsp;        courseId = SanitizationHelper.sanitizeTitle(courseId);</b>
+<i class="no-highlight">256</i>&nbsp;
+<b class="fc"><i class="no-highlight">257</i>&nbsp;        if (role == null) {</b>
+<b class="fc"><i class="no-highlight">258</i>&nbsp;            role = Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_COOWNER;</b>
+<i class="no-highlight">259</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">260</i>&nbsp;            role = SanitizationHelper.sanitizeName(role);</b>
+<i class="no-highlight">261</i>&nbsp;        }
+<i class="no-highlight">262</i>&nbsp;
+<b class="fc"><i class="no-highlight">263</i>&nbsp;        if (displayedName == null) {</b>
+<b class="fc"><i class="no-highlight">264</i>&nbsp;            displayedName = Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_COOWNER;</b>
+<i class="no-highlight">265</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">266</i>&nbsp;            displayedName = SanitizationHelper.sanitizeName(displayedName);</b>
+<i class="no-highlight">267</i>&nbsp;        }
+<i class="no-highlight">268</i>&nbsp;
+<b class="fc"><i class="no-highlight">269</i>&nbsp;        if (privileges == null) {</b>
+<b class="fc"><i class="no-highlight">270</i>&nbsp;            privileges = new InstructorPrivileges(Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_COOWNER);</b>
+<i class="no-highlight">271</i>&nbsp;        }
+<i class="no-highlight">272</i>&nbsp;    }
+<i class="no-highlight">273</i>&nbsp;
+<i class="no-highlight">274</i>&nbsp;    /**
+<i class="no-highlight">275</i>&nbsp;     * Returns true if the instructor has the given privilege in the course.
+<i class="no-highlight">276</i>&nbsp;     */
+<i class="no-highlight">277</i>&nbsp;    public boolean isAllowedForPrivilege(String privilegeName) {
+<b class="fc"><i class="no-highlight">278</i>&nbsp;        if (privileges == null) {</b>
+<b class="fc"><i class="no-highlight">279</i>&nbsp;            privileges = new InstructorPrivileges(Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_COOWNER);</b>
+<i class="no-highlight">280</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">281</i>&nbsp;        return privileges.isAllowedForPrivilege(privilegeName);</b>
+<i class="no-highlight">282</i>&nbsp;    }
+<i class="no-highlight">283</i>&nbsp;
+<i class="no-highlight">284</i>&nbsp;    /**
+<i class="no-highlight">285</i>&nbsp;     * Returns true if the instructor has the given privilege in the given section.
+<i class="no-highlight">286</i>&nbsp;     */
+<i class="no-highlight">287</i>&nbsp;    public boolean isAllowedForPrivilege(String sectionName, String privilegeName) {
+<b class="fc"><i class="no-highlight">288</i>&nbsp;        if (privileges == null) {</b>
+<b class="nc"><i class="no-highlight">289</i>&nbsp;            privileges = new InstructorPrivileges(Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_COOWNER);</b>
+<i class="no-highlight">290</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">291</i>&nbsp;        return privileges.isAllowedForPrivilege(sectionName, privilegeName);</b>
+<i class="no-highlight">292</i>&nbsp;    }
+<i class="no-highlight">293</i>&nbsp;
+<i class="no-highlight">294</i>&nbsp;    /**
+<i class="no-highlight">295</i>&nbsp;     * Returns true if the instructor has the given privilege in the given section for the given feedback session.
+<i class="no-highlight">296</i>&nbsp;     */
+<i class="no-highlight">297</i>&nbsp;    public boolean isAllowedForPrivilege(String sectionName, String sessionName, String privilegeName) {
+<b class="fc"><i class="no-highlight">298</i>&nbsp;        if (privileges == null) {</b>
+<b class="fc"><i class="no-highlight">299</i>&nbsp;            privileges = new InstructorPrivileges(Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_COOWNER);</b>
+<i class="no-highlight">300</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">301</i>&nbsp;        return privileges.isAllowedForPrivilege(sectionName, sessionName, privilegeName);</b>
+<i class="no-highlight">302</i>&nbsp;    }
+<i class="no-highlight">303</i>&nbsp;
+<i class="no-highlight">304</i>&nbsp;    /**
+<i class="no-highlight">305</i>&nbsp;     * Returns true if privilege for session is present for any section.
+<i class="no-highlight">306</i>&nbsp;     */
+<i class="no-highlight">307</i>&nbsp;    public boolean isAllowedForPrivilegeAnySection(String sessionName, String privilegeName) {
+<b class="fc"><i class="no-highlight">308</i>&nbsp;        if (privileges == null) {</b>
+<b class="nc"><i class="no-highlight">309</i>&nbsp;            privileges = new InstructorPrivileges(Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_COOWNER);</b>
+<i class="no-highlight">310</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">311</i>&nbsp;        return privileges.isAllowedForPrivilegeAnySection(sessionName, privilegeName);</b>
+<i class="no-highlight">312</i>&nbsp;    }
+<i class="no-highlight">313</i>&nbsp;
+<i class="no-highlight">314</i>&nbsp;    /**
+<i class="no-highlight">315</i>&nbsp;     * Returns true if the instructor has co-owner privilege.
+<i class="no-highlight">316</i>&nbsp;     */
+<i class="no-highlight">317</i>&nbsp;    public boolean hasCoownerPrivileges() {
+<b class="fc"><i class="no-highlight">318</i>&nbsp;        return privileges.hasCoownerPrivileges();</b>
+<i class="no-highlight">319</i>&nbsp;    }
+<i class="no-highlight">320</i>&nbsp;
+<i class="no-highlight">321</i>&nbsp;    public String getCourseId() {
+<b class="fc"><i class="no-highlight">322</i>&nbsp;        return courseId;</b>
+<i class="no-highlight">323</i>&nbsp;    }
+<i class="no-highlight">324</i>&nbsp;
+<i class="no-highlight">325</i>&nbsp;    public void setCourseId(String courseId) {
+<b class="fc"><i class="no-highlight">326</i>&nbsp;        this.courseId = courseId;</b>
+<i class="no-highlight">327</i>&nbsp;    }
+<i class="no-highlight">328</i>&nbsp;
+<i class="no-highlight">329</i>&nbsp;    public String getGoogleId() {
+<b class="fc"><i class="no-highlight">330</i>&nbsp;        return googleId;</b>
+<i class="no-highlight">331</i>&nbsp;    }
+<i class="no-highlight">332</i>&nbsp;
+<i class="no-highlight">333</i>&nbsp;    public void setGoogleId(String googleId) {
+<b class="fc"><i class="no-highlight">334</i>&nbsp;        this.googleId = googleId;</b>
+<i class="no-highlight">335</i>&nbsp;    }
+<i class="no-highlight">336</i>&nbsp;
+<i class="no-highlight">337</i>&nbsp;    public String getRole() {
+<b class="fc"><i class="no-highlight">338</i>&nbsp;        return role;</b>
+<i class="no-highlight">339</i>&nbsp;    }
+<i class="no-highlight">340</i>&nbsp;
+<i class="no-highlight">341</i>&nbsp;    public void setRole(String role) {
+<b class="fc"><i class="no-highlight">342</i>&nbsp;        this.role = role;</b>
+<i class="no-highlight">343</i>&nbsp;    }
+<i class="no-highlight">344</i>&nbsp;
+<i class="no-highlight">345</i>&nbsp;    public Instant getCreatedAt() {
+<b class="fc"><i class="no-highlight">346</i>&nbsp;        return createdAt;</b>
+<i class="no-highlight">347</i>&nbsp;    }
+<i class="no-highlight">348</i>&nbsp;
+<i class="no-highlight">349</i>&nbsp;    public Instant getUpdatedAt() {
+<b class="fc"><i class="no-highlight">350</i>&nbsp;        return updatedAt;</b>
+<i class="no-highlight">351</i>&nbsp;    }
+<i class="no-highlight">352</i>&nbsp;
+<i class="no-highlight">353</i>&nbsp;    public void setCreatedAt(Instant createdAt) {
+<b class="nc"><i class="no-highlight">354</i>&nbsp;        this.createdAt = createdAt;</b>
+<i class="no-highlight">355</i>&nbsp;    }
+<i class="no-highlight">356</i>&nbsp;
+<i class="no-highlight">357</i>&nbsp;    public void setUpdatedAt(Instant updatedAt) {
+<b class="nc"><i class="no-highlight">358</i>&nbsp;        this.updatedAt = updatedAt;</b>
+<i class="no-highlight">359</i>&nbsp;    }
+<i class="no-highlight">360</i>&nbsp;
+<i class="no-highlight">361</i>&nbsp;    /**
+<i class="no-highlight">362</i>&nbsp;     * Updates with {@link UpdateOptionsWithEmail}.
+<i class="no-highlight">363</i>&nbsp;     */
+<i class="no-highlight">364</i>&nbsp;    public void update(UpdateOptionsWithEmail updateOptions) {
+<b class="fc"><i class="no-highlight">365</i>&nbsp;        updateOptions.googleIdOption.ifPresent(s -&gt; googleId = s);</b>
+<b class="fc"><i class="no-highlight">366</i>&nbsp;        updateBasic(updateOptions);</b>
+<i class="no-highlight">367</i>&nbsp;    }
+<i class="no-highlight">368</i>&nbsp;
+<i class="no-highlight">369</i>&nbsp;    /**
+<i class="no-highlight">370</i>&nbsp;     * Updates with {@link UpdateOptionsWithGoogleId}.
+<i class="no-highlight">371</i>&nbsp;     */
+<i class="no-highlight">372</i>&nbsp;    public void update(UpdateOptionsWithGoogleId updateOptions) {
+<b class="fc"><i class="no-highlight">373</i>&nbsp;        updateOptions.emailOption.ifPresent(s -&gt; email = s);</b>
+<b class="fc"><i class="no-highlight">374</i>&nbsp;        updateBasic(updateOptions);</b>
+<i class="no-highlight">375</i>&nbsp;    }
+<i class="no-highlight">376</i>&nbsp;
+<i class="no-highlight">377</i>&nbsp;    private void updateBasic(UpdateOptions updateOptions) {
+<b class="fc"><i class="no-highlight">378</i>&nbsp;        updateOptions.nameOption.ifPresent(s -&gt; name = s);</b>
+<b class="fc"><i class="no-highlight">379</i>&nbsp;        updateOptions.isArchivedOption.ifPresent(s -&gt; isArchived = s);</b>
+<b class="fc"><i class="no-highlight">380</i>&nbsp;        updateOptions.roleOption.ifPresent(s -&gt; role = s);</b>
+<b class="fc"><i class="no-highlight">381</i>&nbsp;        updateOptions.isDisplayedToStudentsOption.ifPresent(s -&gt; isDisplayedToStudents = s);</b>
+<b class="fc"><i class="no-highlight">382</i>&nbsp;        updateOptions.instructorPrivilegesOption.ifPresent(s -&gt; privileges = s);</b>
+<b class="fc"><i class="no-highlight">383</i>&nbsp;        updateOptions.displayedNameOption.ifPresent(s -&gt; displayedName = s);</b>
+<i class="no-highlight">384</i>&nbsp;    }
+<i class="no-highlight">385</i>&nbsp;
+<i class="no-highlight">386</i>&nbsp;    /**
+<i class="no-highlight">387</i>&nbsp;     * Returns a {@link UpdateOptionsWithEmail.Builder} to build {@link UpdateOptions}
+<i class="no-highlight">388</i>&nbsp;     * for an instructor with {@code courseId} and {@code email}.
+<i class="no-highlight">389</i>&nbsp;     */
+<i class="no-highlight">390</i>&nbsp;    public static UpdateOptionsWithEmail.Builder updateOptionsWithEmailBuilder(String courseId, String email) {
+<b class="fc"><i class="no-highlight">391</i>&nbsp;        return new UpdateOptionsWithEmail.Builder(courseId, email);</b>
+<i class="no-highlight">392</i>&nbsp;    }
+<i class="no-highlight">393</i>&nbsp;
+<i class="no-highlight">394</i>&nbsp;    /**
+<i class="no-highlight">395</i>&nbsp;     * Returns a {@link UpdateOptionsWithGoogleId.Builder} to build {@link UpdateOptions}
+<i class="no-highlight">396</i>&nbsp;     * for an instructor with {@code courseId} and {@code googleId}.
+<i class="no-highlight">397</i>&nbsp;     */
+<i class="no-highlight">398</i>&nbsp;    public static UpdateOptionsWithGoogleId.Builder updateOptionsWithGoogleIdBuilder(String courseId, String googleId) {
+<b class="fc"><i class="no-highlight">399</i>&nbsp;        return new UpdateOptionsWithGoogleId.Builder(courseId, googleId);</b>
+<i class="no-highlight">400</i>&nbsp;    }
+<i class="no-highlight">401</i>&nbsp;
+<i class="no-highlight">402</i>&nbsp;    /**
+<i class="no-highlight">403</i>&nbsp;     * A builder class for {@link InstructorAttributes}.
+<i class="no-highlight">404</i>&nbsp;     */
+<b class="fc"><i class="no-highlight">405</i>&nbsp;    public static class Builder extends BasicBuilder&lt;InstructorAttributes, Builder&gt; {</b>
+<i class="no-highlight">406</i>&nbsp;        private final InstructorAttributes instructorAttributes;
+<i class="no-highlight">407</i>&nbsp;
+<i class="no-highlight">408</i>&nbsp;        private Builder(String courseId, String email) {
+<b class="fc"><i class="no-highlight">409</i>&nbsp;            super(new UpdateOptions());</b>
+<b class="fc"><i class="no-highlight">410</i>&nbsp;            thisBuilder = this;</b>
+<i class="no-highlight">411</i>&nbsp;
+<b class="fc"><i class="no-highlight">412</i>&nbsp;            assert courseId != null;</b>
+<b class="fc"><i class="no-highlight">413</i>&nbsp;            assert email != null;</b>
+<i class="no-highlight">414</i>&nbsp;
+<b class="fc"><i class="no-highlight">415</i>&nbsp;            instructorAttributes = new InstructorAttributes(courseId, email);</b>
+<i class="no-highlight">416</i>&nbsp;        }
+<i class="no-highlight">417</i>&nbsp;
+<i class="no-highlight">418</i>&nbsp;        public Builder withGoogleId(String googleId) {
+<b class="fc"><i class="no-highlight">419</i>&nbsp;            assert googleId != null;</b>
+<b class="fc"><i class="no-highlight">420</i>&nbsp;            instructorAttributes.googleId = googleId;</b>
+<i class="no-highlight">421</i>&nbsp;
+<b class="fc"><i class="no-highlight">422</i>&nbsp;            return this;</b>
+<i class="no-highlight">423</i>&nbsp;        }
+<i class="no-highlight">424</i>&nbsp;
+<i class="no-highlight">425</i>&nbsp;        @Override
+<i class="no-highlight">426</i>&nbsp;        public InstructorAttributes build() {
+<b class="fc"><i class="no-highlight">427</i>&nbsp;            instructorAttributes.updateBasic(updateOptions);</b>
+<i class="no-highlight">428</i>&nbsp;
+<b class="fc"><i class="no-highlight">429</i>&nbsp;            return instructorAttributes;</b>
+<i class="no-highlight">430</i>&nbsp;        }
+<i class="no-highlight">431</i>&nbsp;    }
+<i class="no-highlight">432</i>&nbsp;
+<i class="no-highlight">433</i>&nbsp;    /**
+<i class="no-highlight">434</i>&nbsp;     * Helper class to specific the fields to update in {@link StudentAttributes}.
+<i class="no-highlight">435</i>&nbsp;     *
+<i class="no-highlight">436</i>&nbsp;     * &lt;p&gt;{@code courseId} and {@code email} is used to identify the instructor.
+<i class="no-highlight">437</i>&nbsp;     */
+<b class="fc"><i class="no-highlight">438</i>&nbsp;    public static class UpdateOptionsWithEmail extends UpdateOptions {</b>
+<i class="no-highlight">439</i>&nbsp;        private String courseId;
+<i class="no-highlight">440</i>&nbsp;        private String email;
+<i class="no-highlight">441</i>&nbsp;
+<b class="fc"><i class="no-highlight">442</i>&nbsp;        private UpdateOption&lt;String&gt; googleIdOption = UpdateOption.empty();</b>
+<i class="no-highlight">443</i>&nbsp;
+<i class="no-highlight">444</i>&nbsp;        private UpdateOptionsWithEmail(String courseId, String email) {
+<b class="fc"><i class="no-highlight">445</i>&nbsp;            super();</b>
+<b class="fc"><i class="no-highlight">446</i>&nbsp;            assert courseId != null;</b>
+<b class="fc"><i class="no-highlight">447</i>&nbsp;            assert email != null;</b>
+<i class="no-highlight">448</i>&nbsp;
+<b class="fc"><i class="no-highlight">449</i>&nbsp;            this.courseId = courseId;</b>
+<b class="fc"><i class="no-highlight">450</i>&nbsp;            this.email = email;</b>
+<i class="no-highlight">451</i>&nbsp;        }
+<i class="no-highlight">452</i>&nbsp;
+<i class="no-highlight">453</i>&nbsp;        public String getCourseId() {
+<b class="fc"><i class="no-highlight">454</i>&nbsp;            return courseId;</b>
+<i class="no-highlight">455</i>&nbsp;        }
+<i class="no-highlight">456</i>&nbsp;
+<i class="no-highlight">457</i>&nbsp;        public String getEmail() {
+<b class="fc"><i class="no-highlight">458</i>&nbsp;            return email;</b>
+<i class="no-highlight">459</i>&nbsp;        }
+<i class="no-highlight">460</i>&nbsp;
+<i class="no-highlight">461</i>&nbsp;        @Override
+<i class="no-highlight">462</i>&nbsp;        public String toString() {
+<b class="fc"><i class="no-highlight">463</i>&nbsp;            return super.toString()</b>
+<b class="fc"><i class="no-highlight">464</i>&nbsp;                    + &quot;]&quot; + String.format(&quot;(courseId = %s/googleId = %s)&quot;, courseId, email);</b>
+<i class="no-highlight">465</i>&nbsp;        }
+<i class="no-highlight">466</i>&nbsp;
+<i class="no-highlight">467</i>&nbsp;        /**
+<i class="no-highlight">468</i>&nbsp;         * Builder class for {@link UpdateOptionsWithEmail}.
+<i class="no-highlight">469</i>&nbsp;         */
+<i class="no-highlight">470</i>&nbsp;        public static class Builder extends BasicBuilder&lt;UpdateOptionsWithEmail, UpdateOptionsWithEmail.Builder&gt; {
+<i class="no-highlight">471</i>&nbsp;
+<i class="no-highlight">472</i>&nbsp;            private UpdateOptionsWithEmail updateOptionsWithEmail;
+<i class="no-highlight">473</i>&nbsp;
+<i class="no-highlight">474</i>&nbsp;            private Builder(String courseId, String email) {
+<b class="fc"><i class="no-highlight">475</i>&nbsp;                super(new UpdateOptionsWithEmail(courseId, email));</b>
+<b class="fc"><i class="no-highlight">476</i>&nbsp;                thisBuilder = this;</b>
+<i class="no-highlight">477</i>&nbsp;
+<b class="fc"><i class="no-highlight">478</i>&nbsp;                updateOptionsWithEmail = (UpdateOptionsWithEmail) updateOptions;</b>
+<i class="no-highlight">479</i>&nbsp;            }
+<i class="no-highlight">480</i>&nbsp;
+<i class="no-highlight">481</i>&nbsp;            public Builder withGoogleId(String googleId) {
+<b class="fc"><i class="no-highlight">482</i>&nbsp;                updateOptionsWithEmail.googleIdOption = UpdateOption.of(googleId);</b>
+<i class="no-highlight">483</i>&nbsp;
+<b class="fc"><i class="no-highlight">484</i>&nbsp;                return this;</b>
+<i class="no-highlight">485</i>&nbsp;            }
+<i class="no-highlight">486</i>&nbsp;
+<i class="no-highlight">487</i>&nbsp;            @Override
+<i class="no-highlight">488</i>&nbsp;            public UpdateOptionsWithEmail build() {
+<b class="fc"><i class="no-highlight">489</i>&nbsp;                return updateOptionsWithEmail;</b>
+<i class="no-highlight">490</i>&nbsp;            }
+<i class="no-highlight">491</i>&nbsp;        }
+<i class="no-highlight">492</i>&nbsp;    }
+<i class="no-highlight">493</i>&nbsp;
+<i class="no-highlight">494</i>&nbsp;    /**
+<i class="no-highlight">495</i>&nbsp;     * Helper class to specific the fields to update in {@link StudentAttributes}
+<i class="no-highlight">496</i>&nbsp;     *
+<i class="no-highlight">497</i>&nbsp;     * &lt;p&gt;{@code courseId} and {@code googleId} is used to identify the instructor.
+<i class="no-highlight">498</i>&nbsp;     */
+<b class="fc"><i class="no-highlight">499</i>&nbsp;    public static class UpdateOptionsWithGoogleId extends UpdateOptions {</b>
+<i class="no-highlight">500</i>&nbsp;        private String courseId;
+<i class="no-highlight">501</i>&nbsp;        private String googleId;
+<i class="no-highlight">502</i>&nbsp;
+<b class="fc"><i class="no-highlight">503</i>&nbsp;        private UpdateOption&lt;String&gt; emailOption = UpdateOption.empty();</b>
+<i class="no-highlight">504</i>&nbsp;
+<i class="no-highlight">505</i>&nbsp;        private UpdateOptionsWithGoogleId(String courseId, String googleId) {
+<b class="fc"><i class="no-highlight">506</i>&nbsp;            super();</b>
+<b class="fc"><i class="no-highlight">507</i>&nbsp;            assert courseId != null;</b>
+<b class="fc"><i class="no-highlight">508</i>&nbsp;            assert googleId != null;</b>
+<i class="no-highlight">509</i>&nbsp;
+<b class="fc"><i class="no-highlight">510</i>&nbsp;            this.courseId = courseId;</b>
+<b class="fc"><i class="no-highlight">511</i>&nbsp;            this.googleId = googleId;</b>
+<i class="no-highlight">512</i>&nbsp;        }
+<i class="no-highlight">513</i>&nbsp;
+<i class="no-highlight">514</i>&nbsp;        public String getCourseId() {
+<b class="fc"><i class="no-highlight">515</i>&nbsp;            return courseId;</b>
+<i class="no-highlight">516</i>&nbsp;        }
+<i class="no-highlight">517</i>&nbsp;
+<i class="no-highlight">518</i>&nbsp;        public String getGoogleId() {
+<b class="fc"><i class="no-highlight">519</i>&nbsp;            return googleId;</b>
+<i class="no-highlight">520</i>&nbsp;        }
+<i class="no-highlight">521</i>&nbsp;
+<i class="no-highlight">522</i>&nbsp;        @Override
+<i class="no-highlight">523</i>&nbsp;        public String toString() {
+<b class="fc"><i class="no-highlight">524</i>&nbsp;            return super.toString()</b>
+<i class="no-highlight">525</i>&nbsp;                    + &quot;, email = &quot; + emailOption
+<b class="fc"><i class="no-highlight">526</i>&nbsp;                    + &quot;]&quot; + String.format(&quot;(courseId = %s/googleId = %s)&quot;, courseId, googleId);</b>
+<i class="no-highlight">527</i>&nbsp;        }
+<i class="no-highlight">528</i>&nbsp;
+<i class="no-highlight">529</i>&nbsp;        /**
+<i class="no-highlight">530</i>&nbsp;         * Builder class for {@link UpdateOptionsWithGoogleId}.
+<i class="no-highlight">531</i>&nbsp;         */
+<b class="fc"><i class="no-highlight">532</i>&nbsp;        public static class Builder</b>
+<i class="no-highlight">533</i>&nbsp;                extends BasicBuilder&lt;UpdateOptionsWithGoogleId, UpdateOptionsWithGoogleId.Builder&gt; {
+<i class="no-highlight">534</i>&nbsp;
+<i class="no-highlight">535</i>&nbsp;            private UpdateOptionsWithGoogleId updateOptionsWithGoogleId;
+<i class="no-highlight">536</i>&nbsp;
+<i class="no-highlight">537</i>&nbsp;            private Builder(String courseId, String email) {
+<b class="fc"><i class="no-highlight">538</i>&nbsp;                super(new UpdateOptionsWithGoogleId(courseId, email));</b>
+<b class="fc"><i class="no-highlight">539</i>&nbsp;                thisBuilder = this;</b>
+<i class="no-highlight">540</i>&nbsp;
+<b class="fc"><i class="no-highlight">541</i>&nbsp;                updateOptionsWithGoogleId = (UpdateOptionsWithGoogleId) updateOptions;</b>
+<i class="no-highlight">542</i>&nbsp;            }
+<i class="no-highlight">543</i>&nbsp;
+<i class="no-highlight">544</i>&nbsp;            public Builder withEmail(String email) {
+<b class="fc"><i class="no-highlight">545</i>&nbsp;                assert email != null;</b>
+<i class="no-highlight">546</i>&nbsp;
+<b class="fc"><i class="no-highlight">547</i>&nbsp;                updateOptionsWithGoogleId.emailOption = UpdateOption.of(email);</b>
+<b class="fc"><i class="no-highlight">548</i>&nbsp;                return this;</b>
+<i class="no-highlight">549</i>&nbsp;            }
+<i class="no-highlight">550</i>&nbsp;
+<i class="no-highlight">551</i>&nbsp;            @Override
+<i class="no-highlight">552</i>&nbsp;            public UpdateOptionsWithGoogleId build() {
+<b class="fc"><i class="no-highlight">553</i>&nbsp;                return updateOptionsWithGoogleId;</b>
+<i class="no-highlight">554</i>&nbsp;            }
+<i class="no-highlight">555</i>&nbsp;        }
+<i class="no-highlight">556</i>&nbsp;    }
+<i class="no-highlight">557</i>&nbsp;
+<i class="no-highlight">558</i>&nbsp;    /**
+<i class="no-highlight">559</i>&nbsp;     * Helper class to specific the fields to update in {@link InstructorAttributes}.
+<i class="no-highlight">560</i>&nbsp;     */
+<b class="fc"><i class="no-highlight">561</i>&nbsp;    private static class UpdateOptions {</b>
+<i class="no-highlight">562</i>&nbsp;
+<b class="fc"><i class="no-highlight">563</i>&nbsp;        UpdateOption&lt;String&gt; nameOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">564</i>&nbsp;        UpdateOption&lt;Boolean&gt; isArchivedOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">565</i>&nbsp;        UpdateOption&lt;String&gt; roleOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">566</i>&nbsp;        UpdateOption&lt;Boolean&gt; isDisplayedToStudentsOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">567</i>&nbsp;        UpdateOption&lt;String&gt; displayedNameOption = UpdateOption.empty();</b>
+<b class="fc"><i class="no-highlight">568</i>&nbsp;        UpdateOption&lt;InstructorPrivileges&gt; instructorPrivilegesOption = UpdateOption.empty();</b>
+<i class="no-highlight">569</i>&nbsp;
+<i class="no-highlight">570</i>&nbsp;        @Override
+<i class="no-highlight">571</i>&nbsp;        public String toString() {
+<b class="fc"><i class="no-highlight">572</i>&nbsp;            return &quot;InstructorAttributes.UpdateOptions [&quot;</b>
+<i class="no-highlight">573</i>&nbsp;                    + &quot;name = &quot; + nameOption
+<i class="no-highlight">574</i>&nbsp;                    + &quot;, isAchieved = &quot; + isArchivedOption
+<i class="no-highlight">575</i>&nbsp;                    + &quot;, roleOption = &quot; + roleOption
+<i class="no-highlight">576</i>&nbsp;                    + &quot;, isDisplayedToStudents = &quot; + isDisplayedToStudentsOption
+<i class="no-highlight">577</i>&nbsp;                    + &quot;, displayedName = &quot; + displayedNameOption
+<i class="no-highlight">578</i>&nbsp;                    + &quot;, instructorPrivilegeAsText = &quot; + instructorPrivilegesOption;
+<i class="no-highlight">579</i>&nbsp;        }
+<i class="no-highlight">580</i>&nbsp;
+<i class="no-highlight">581</i>&nbsp;    }
+<i class="no-highlight">582</i>&nbsp;
+<i class="no-highlight">583</i>&nbsp;    /**
+<i class="no-highlight">584</i>&nbsp;     * Basic builder to build {@link InstructorAttributes} related classes.
+<i class="no-highlight">585</i>&nbsp;     *
+<i class="no-highlight">586</i>&nbsp;     * @param &lt;T&gt; type to be built
+<i class="no-highlight">587</i>&nbsp;     * @param &lt;B&gt; type of the builder
+<i class="no-highlight">588</i>&nbsp;     */
+<b class="fc"><i class="no-highlight">589</i>&nbsp;    private abstract static class BasicBuilder&lt;T, B extends BasicBuilder&lt;T, B&gt;&gt; {</b>
+<i class="no-highlight">590</i>&nbsp;
+<i class="no-highlight">591</i>&nbsp;        UpdateOptions updateOptions;
+<i class="no-highlight">592</i>&nbsp;        B thisBuilder;
+<i class="no-highlight">593</i>&nbsp;
+<b class="fc"><i class="no-highlight">594</i>&nbsp;        BasicBuilder(UpdateOptions updateOptions) {</b>
+<b class="fc"><i class="no-highlight">595</i>&nbsp;            this.updateOptions = updateOptions;</b>
+<i class="no-highlight">596</i>&nbsp;        }
+<i class="no-highlight">597</i>&nbsp;
+<i class="no-highlight">598</i>&nbsp;        public B withName(String name) {
+<b class="fc"><i class="no-highlight">599</i>&nbsp;            assert name != null;</b>
+<i class="no-highlight">600</i>&nbsp;
+<b class="fc"><i class="no-highlight">601</i>&nbsp;            updateOptions.nameOption = UpdateOption.of(name);</b>
+<b class="fc"><i class="no-highlight">602</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">603</i>&nbsp;        }
+<i class="no-highlight">604</i>&nbsp;
+<i class="no-highlight">605</i>&nbsp;        public B withRole(String role) {
+<b class="fc"><i class="no-highlight">606</i>&nbsp;            assert role != null;</b>
+<i class="no-highlight">607</i>&nbsp;
+<b class="fc"><i class="no-highlight">608</i>&nbsp;            updateOptions.roleOption = UpdateOption.of(role);</b>
+<b class="fc"><i class="no-highlight">609</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">610</i>&nbsp;        }
+<i class="no-highlight">611</i>&nbsp;
+<i class="no-highlight">612</i>&nbsp;        public B withDisplayedName(String displayedName) {
+<b class="fc"><i class="no-highlight">613</i>&nbsp;            assert displayedName != null;</b>
+<i class="no-highlight">614</i>&nbsp;
+<b class="fc"><i class="no-highlight">615</i>&nbsp;            updateOptions.displayedNameOption = UpdateOption.of(displayedName);</b>
+<b class="fc"><i class="no-highlight">616</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">617</i>&nbsp;        }
+<i class="no-highlight">618</i>&nbsp;
+<i class="no-highlight">619</i>&nbsp;        public B withPrivileges(InstructorPrivileges instructorPrivileges) {
+<b class="fc"><i class="no-highlight">620</i>&nbsp;            assert instructorPrivileges != null;</b>
+<i class="no-highlight">621</i>&nbsp;
+<b class="fc"><i class="no-highlight">622</i>&nbsp;            updateOptions.instructorPrivilegesOption = UpdateOption.of(instructorPrivileges);</b>
+<b class="fc"><i class="no-highlight">623</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">624</i>&nbsp;        }
+<i class="no-highlight">625</i>&nbsp;
+<i class="no-highlight">626</i>&nbsp;        public B withIsDisplayedToStudents(boolean isDisplayedToStudents) {
+<b class="fc"><i class="no-highlight">627</i>&nbsp;            updateOptions.isDisplayedToStudentsOption = UpdateOption.of(isDisplayedToStudents);</b>
+<b class="fc"><i class="no-highlight">628</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">629</i>&nbsp;        }
+<i class="no-highlight">630</i>&nbsp;
+<i class="no-highlight">631</i>&nbsp;        public B withIsArchived(boolean isAchieved) {
+<b class="fc"><i class="no-highlight">632</i>&nbsp;            updateOptions.isArchivedOption = UpdateOption.of(isAchieved);</b>
+<b class="fc"><i class="no-highlight">633</i>&nbsp;            return thisBuilder;</b>
+<i class="no-highlight">634</i>&nbsp;        }
+<i class="no-highlight">635</i>&nbsp;
+<i class="no-highlight">636</i>&nbsp;        public abstract T build();
+<i class="no-highlight">637</i>&nbsp;
+<i class="no-highlight">638</i>&nbsp;    }
+<i class="no-highlight">639</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:52</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,507 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Logger</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.common.util</a>
+</div>
+
+<h1>Coverage Summary for Class: Logger (teammates.common.util)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Logger</td>
+<td class="coverageStat">
+  <span class="percent">
+    68.2%
+  </span>
+  <span class="absValue">
+    (15/22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    45.3%
+  </span>
+  <span class="absValue">
+    (68/150)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Logger$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Logger$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Logger$3</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (15/25)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    44.4%
+  </span>
+  <span class="absValue">
+    (68/153)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.common.util;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.io.PrintWriter;
+<i class="no-highlight">4</i>&nbsp;import java.io.StringWriter;
+<i class="no-highlight">5</i>&nbsp;import java.util.ArrayList;
+<i class="no-highlight">6</i>&nbsp;import java.util.Arrays;
+<i class="no-highlight">7</i>&nbsp;import java.util.HashMap;
+<i class="no-highlight">8</i>&nbsp;import java.util.List;
+<i class="no-highlight">9</i>&nbsp;import java.util.Map;
+<i class="no-highlight">10</i>&nbsp;
+<i class="no-highlight">11</i>&nbsp;import javax.servlet.http.HttpServletRequest;
+<i class="no-highlight">12</i>&nbsp;
+<i class="no-highlight">13</i>&nbsp;import com.google.common.reflect.TypeToken;
+<i class="no-highlight">14</i>&nbsp;
+<i class="no-highlight">15</i>&nbsp;import teammates.common.datatransfer.logs.ExceptionLogDetails;
+<i class="no-highlight">16</i>&nbsp;import teammates.common.datatransfer.logs.InstanceLogDetails;
+<i class="no-highlight">17</i>&nbsp;import teammates.common.datatransfer.logs.LogDetails;
+<i class="no-highlight">18</i>&nbsp;import teammates.common.datatransfer.logs.LogSeverity;
+<i class="no-highlight">19</i>&nbsp;import teammates.common.datatransfer.logs.RequestLogDetails;
+<i class="no-highlight">20</i>&nbsp;import teammates.common.datatransfer.logs.RequestLogUser;
+<i class="no-highlight">21</i>&nbsp;import teammates.common.datatransfer.logs.SourceLocation;
+<i class="no-highlight">22</i>&nbsp;
+<i class="no-highlight">23</i>&nbsp;/**
+<i class="no-highlight">24</i>&nbsp; * Allows any component of the application to log messages at appropriate levels.
+<i class="no-highlight">25</i>&nbsp; */
+<i class="no-highlight">26</i>&nbsp;@SuppressWarnings(&quot;PMD.MoreThanOneLogger&quot;) // class is designed as a facade for two different loggers
+<i class="no-highlight">27</i>&nbsp;public final class Logger {
+<i class="no-highlight">28</i>&nbsp;
+<i class="no-highlight">29</i>&nbsp;    private final java.util.logging.Logger standardLog;
+<i class="no-highlight">30</i>&nbsp;    private final java.util.logging.Logger errorLog;
+<i class="no-highlight">31</i>&nbsp;
+<b class="fc"><i class="no-highlight">32</i>&nbsp;    private Logger() {</b>
+<b class="fc"><i class="no-highlight">33</i>&nbsp;        StackTraceElement logRequester = getLoggerSource();</b>
+<b class="fc"><i class="no-highlight">34</i>&nbsp;        String loggerName = logRequester == null ? &quot;null&quot; : logRequester.getClassName();</b>
+<b class="fc"><i class="no-highlight">35</i>&nbsp;        this.standardLog = java.util.logging.Logger.getLogger(loggerName + &quot;-out&quot;);</b>
+<b class="fc"><i class="no-highlight">36</i>&nbsp;        this.standardLog.setUseParentHandlers(false);</b>
+<b class="fc"><i class="no-highlight">37</i>&nbsp;        this.standardLog.addHandler(new StdOutConsoleHandler());</b>
+<i class="no-highlight">38</i>&nbsp;
+<b class="fc"><i class="no-highlight">39</i>&nbsp;        this.errorLog = java.util.logging.Logger.getLogger(loggerName + &quot;-err&quot;);</b>
+<i class="no-highlight">40</i>&nbsp;    }
+<i class="no-highlight">41</i>&nbsp;
+<i class="no-highlight">42</i>&nbsp;    public static Logger getLogger() {
+<b class="fc"><i class="no-highlight">43</i>&nbsp;        return new Logger();</b>
+<i class="no-highlight">44</i>&nbsp;    }
+<i class="no-highlight">45</i>&nbsp;
+<i class="no-highlight">46</i>&nbsp;    /**
+<i class="no-highlight">47</i>&nbsp;     * Logs a message at FINE level.
+<i class="no-highlight">48</i>&nbsp;     */
+<i class="no-highlight">49</i>&nbsp;    public void fine(String message) {
+<b class="fc"><i class="no-highlight">50</i>&nbsp;        standardLog.fine(formatLogMessage(message, LogSeverity.DEBUG));</b>
+<i class="no-highlight">51</i>&nbsp;    }
+<i class="no-highlight">52</i>&nbsp;
+<i class="no-highlight">53</i>&nbsp;    /**
+<i class="no-highlight">54</i>&nbsp;     * Logs a message at INFO level.
+<i class="no-highlight">55</i>&nbsp;     */
+<i class="no-highlight">56</i>&nbsp;    public void info(String message) {
+<b class="fc"><i class="no-highlight">57</i>&nbsp;        standardLog.info(formatLogMessage(message, LogSeverity.INFO));</b>
+<i class="no-highlight">58</i>&nbsp;    }
+<i class="no-highlight">59</i>&nbsp;
+<i class="no-highlight">60</i>&nbsp;    /**
+<i class="no-highlight">61</i>&nbsp;     * Logs an instance startup event.
+<i class="no-highlight">62</i>&nbsp;     */
+<i class="no-highlight">63</i>&nbsp;    public void startup() {
+<b class="nc"><i class="no-highlight">64</i>&nbsp;        instance(&quot;STARTUP&quot;);</b>
+<i class="no-highlight">65</i>&nbsp;    }
+<i class="no-highlight">66</i>&nbsp;
+<i class="no-highlight">67</i>&nbsp;    /**
+<i class="no-highlight">68</i>&nbsp;     * Logs an instance shutdown event.
+<i class="no-highlight">69</i>&nbsp;     */
+<i class="no-highlight">70</i>&nbsp;    public void shutdown() {
+<b class="nc"><i class="no-highlight">71</i>&nbsp;        instance(&quot;SHUTDOWN&quot;);</b>
+<i class="no-highlight">72</i>&nbsp;    }
+<i class="no-highlight">73</i>&nbsp;
+<i class="no-highlight">74</i>&nbsp;    @SuppressWarnings(&quot;PMD.SystemPrintln&quot;)
+<i class="no-highlight">75</i>&nbsp;    private void instance(String instanceEvent) {
+<b class="nc"><i class="no-highlight">76</i>&nbsp;        String instanceId = Config.getInstanceId();</b>
+<b class="nc"><i class="no-highlight">77</i>&nbsp;        String shortenedInstanceId = instanceId;</b>
+<b class="nc"><i class="no-highlight">78</i>&nbsp;        if (shortenedInstanceId.length() &gt; 32) {</b>
+<b class="nc"><i class="no-highlight">79</i>&nbsp;            shortenedInstanceId = shortenedInstanceId.substring(0, 32);</b>
+<i class="no-highlight">80</i>&nbsp;        }
+<i class="no-highlight">81</i>&nbsp;
+<b class="nc"><i class="no-highlight">82</i>&nbsp;        InstanceLogDetails details = new InstanceLogDetails();</b>
+<b class="nc"><i class="no-highlight">83</i>&nbsp;        details.setInstanceId(instanceId);</b>
+<b class="nc"><i class="no-highlight">84</i>&nbsp;        details.setInstanceEvent(instanceEvent);</b>
+<i class="no-highlight">85</i>&nbsp;
+<b class="nc"><i class="no-highlight">86</i>&nbsp;        String message = &quot;Instance &quot; + instanceEvent.toLowerCase() + &quot;: &quot; + shortenedInstanceId;</b>
+<i class="no-highlight">87</i>&nbsp;
+<b class="nc"><i class="no-highlight">88</i>&nbsp;        Map&lt;String, Object&gt; payload = new HashMap&lt;&gt;();</b>
+<b class="nc"><i class="no-highlight">89</i>&nbsp;        payload.put(&quot;message&quot;, message);</b>
+<b class="nc"><i class="no-highlight">90</i>&nbsp;        payload.put(&quot;severity&quot;, LogSeverity.INFO);</b>
+<i class="no-highlight">91</i>&nbsp;
+<b class="nc"><i class="no-highlight">92</i>&nbsp;        Map&lt;String, Object&gt; detailsSpecificPayload =</b>
+<b class="nc"><i class="no-highlight">93</i>&nbsp;                JsonUtils.fromJson(JsonUtils.toCompactJson(details), new TypeToken&lt;Map&lt;String, Object&gt;&gt;(){}.getType());</b>
+<b class="nc"><i class="no-highlight">94</i>&nbsp;        payload.putAll(detailsSpecificPayload);</b>
+<i class="no-highlight">95</i>&nbsp;
+<i class="no-highlight">96</i>&nbsp;        // Need to use println as the logger is disabled when the instance is shutting down
+<b class="nc"><i class="no-highlight">97</i>&nbsp;        System.out.println(JsonUtils.toCompactJson(payload));</b>
+<i class="no-highlight">98</i>&nbsp;    }
+<i class="no-highlight">99</i>&nbsp;
+<i class="no-highlight">100</i>&nbsp;    /**
+<i class="no-highlight">101</i>&nbsp;     * Logs an HTTP request.
+<i class="no-highlight">102</i>&nbsp;     */
+<i class="no-highlight">103</i>&nbsp;    public void request(HttpServletRequest request, int statusCode, String message) {
+<b class="fc"><i class="no-highlight">104</i>&nbsp;        request(request, statusCode, message, new RequestLogUser(), null, null);</b>
+<i class="no-highlight">105</i>&nbsp;    }
+<i class="no-highlight">106</i>&nbsp;
+<i class="no-highlight">107</i>&nbsp;    /**
+<i class="no-highlight">108</i>&nbsp;     * Logs an HTTP request.
+<i class="no-highlight">109</i>&nbsp;     */
+<i class="no-highlight">110</i>&nbsp;    public void request(HttpServletRequest request, int statusCode, String message,
+<i class="no-highlight">111</i>&nbsp;                        RequestLogUser userInfo, String requestBody, String actionClass) {
+<b class="fc"><i class="no-highlight">112</i>&nbsp;        long timeElapsed = RequestTracer.getTimeElapsedMillis();</b>
+<b class="fc"><i class="no-highlight">113</i>&nbsp;        String method = request.getMethod();</b>
+<b class="fc"><i class="no-highlight">114</i>&nbsp;        String requestUrl = request.getRequestURI();</b>
+<b class="fc"><i class="no-highlight">115</i>&nbsp;        RequestLogDetails details = new RequestLogDetails();</b>
+<b class="fc"><i class="no-highlight">116</i>&nbsp;        details.setResponseStatus(statusCode);</b>
+<b class="fc"><i class="no-highlight">117</i>&nbsp;        details.setResponseTime(timeElapsed);</b>
+<b class="fc"><i class="no-highlight">118</i>&nbsp;        details.setRequestMethod(method);</b>
+<b class="fc"><i class="no-highlight">119</i>&nbsp;        details.setRequestUrl(requestUrl);</b>
+<b class="fc"><i class="no-highlight">120</i>&nbsp;        details.setUserAgent(request.getHeader(&quot;User-Agent&quot;));</b>
+<b class="fc"><i class="no-highlight">121</i>&nbsp;        details.setWebVersion(request.getHeader(Const.HeaderNames.WEB_VERSION));</b>
+<b class="fc"><i class="no-highlight">122</i>&nbsp;        details.setReferrer(request.getHeader(&quot;referer&quot;));</b>
+<b class="fc"><i class="no-highlight">123</i>&nbsp;        details.setInstanceId(Config.getInstanceId());</b>
+<b class="fc"><i class="no-highlight">124</i>&nbsp;        details.setRequestParams(HttpRequestHelper.getRequestParameters(request));</b>
+<b class="fc"><i class="no-highlight">125</i>&nbsp;        details.setRequestHeaders(HttpRequestHelper.getRequestHeaders(request));</b>
+<i class="no-highlight">126</i>&nbsp;
+<b class="fc"><i class="no-highlight">127</i>&nbsp;        if (request.getParameter(Const.ParamsNames.REGKEY) != null &amp;&amp; userInfo.getRegkey() == null) {</b>
+<b class="fc"><i class="no-highlight">128</i>&nbsp;            userInfo.setRegkey(request.getParameter(Const.ParamsNames.REGKEY));</b>
+<i class="no-highlight">129</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">130</i>&nbsp;        details.setUserInfo(userInfo);</b>
+<b class="fc"><i class="no-highlight">131</i>&nbsp;        details.setRequestBody(requestBody);</b>
+<b class="fc"><i class="no-highlight">132</i>&nbsp;        details.setActionClass(actionClass);</b>
+<i class="no-highlight">133</i>&nbsp;
+<b class="fc"><i class="no-highlight">134</i>&nbsp;        String logMessage = String.format(&quot;[%s] [%sms] [%s %s] %s&quot;,</b>
+<b class="fc"><i class="no-highlight">135</i>&nbsp;                statusCode, timeElapsed, method, requestUrl, message);</b>
+<i class="no-highlight">136</i>&nbsp;
+<b class="fc"><i class="no-highlight">137</i>&nbsp;        event(logMessage, details);</b>
+<i class="no-highlight">138</i>&nbsp;    }
+<i class="no-highlight">139</i>&nbsp;
+<i class="no-highlight">140</i>&nbsp;    /**
+<i class="no-highlight">141</i>&nbsp;     * Logs a particular event at INFO level.
+<i class="no-highlight">142</i>&nbsp;     */
+<i class="no-highlight">143</i>&nbsp;    public void event(String message, LogDetails details) {
+<i class="no-highlight">144</i>&nbsp;        String logMessage;
+<b class="fc"><i class="no-highlight">145</i>&nbsp;        if (Config.isDevServer()) {</b>
+<b class="fc"><i class="no-highlight">146</i>&nbsp;            logMessage = formatLogMessageForHumanDisplay(message) + &quot; extra_info: &quot;</b>
+<b class="fc"><i class="no-highlight">147</i>&nbsp;                    + JsonUtils.toCompactJson(details);</b>
+<i class="no-highlight">148</i>&nbsp;        } else {
+<b class="nc"><i class="no-highlight">149</i>&nbsp;            Map&lt;String, Object&gt; payload = getBaseCloudLoggingPayload(message, LogSeverity.INFO);</b>
+<b class="nc"><i class="no-highlight">150</i>&nbsp;            Map&lt;String, Object&gt; detailsSpecificPayload =</b>
+<b class="nc"><i class="no-highlight">151</i>&nbsp;                    JsonUtils.fromJson(JsonUtils.toCompactJson(details), new TypeToken&lt;Map&lt;String, Object&gt;&gt;(){}.getType());</b>
+<b class="nc"><i class="no-highlight">152</i>&nbsp;            payload.putAll(detailsSpecificPayload);</b>
+<i class="no-highlight">153</i>&nbsp;
+<b class="nc"><i class="no-highlight">154</i>&nbsp;            logMessage = JsonUtils.toCompactJson(payload);</b>
+<i class="no-highlight">155</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">156</i>&nbsp;        standardLog.info(logMessage);</b>
+<i class="no-highlight">157</i>&nbsp;    }
+<i class="no-highlight">158</i>&nbsp;
+<i class="no-highlight">159</i>&nbsp;    /**
+<i class="no-highlight">160</i>&nbsp;     * Logs a message at WARNING level.
+<i class="no-highlight">161</i>&nbsp;     */
+<i class="no-highlight">162</i>&nbsp;    public void warning(String message) {
+<b class="fc"><i class="no-highlight">163</i>&nbsp;        standardLog.warning(formatLogMessage(message, LogSeverity.WARNING));</b>
+<i class="no-highlight">164</i>&nbsp;    }
+<i class="no-highlight">165</i>&nbsp;
+<i class="no-highlight">166</i>&nbsp;    /**
+<i class="no-highlight">167</i>&nbsp;     * Logs a message at WARNING level.
+<i class="no-highlight">168</i>&nbsp;     */
+<i class="no-highlight">169</i>&nbsp;    public void warning(String message, Throwable t) {
+<b class="fc"><i class="no-highlight">170</i>&nbsp;        String logMessage = getLogMessageWithStackTrace(message, t, LogSeverity.WARNING);</b>
+<b class="fc"><i class="no-highlight">171</i>&nbsp;        standardLog.warning(logMessage);</b>
+<i class="no-highlight">172</i>&nbsp;    }
+<i class="no-highlight">173</i>&nbsp;
+<i class="no-highlight">174</i>&nbsp;    /**
+<i class="no-highlight">175</i>&nbsp;     * Logs a message at SEVERE level.
+<i class="no-highlight">176</i>&nbsp;     */
+<i class="no-highlight">177</i>&nbsp;    public void severe(String message) {
+<b class="fc"><i class="no-highlight">178</i>&nbsp;        errorLog.severe(formatLogMessage(message, LogSeverity.ERROR));</b>
+<i class="no-highlight">179</i>&nbsp;    }
+<i class="no-highlight">180</i>&nbsp;
+<i class="no-highlight">181</i>&nbsp;    /**
+<i class="no-highlight">182</i>&nbsp;     * Logs a message at SEVERE level.
+<i class="no-highlight">183</i>&nbsp;     */
+<i class="no-highlight">184</i>&nbsp;    public void severe(String message, Throwable t) {
+<b class="fc"><i class="no-highlight">185</i>&nbsp;        String logMessage = getLogMessageWithStackTrace(message, t, LogSeverity.ERROR);</b>
+<b class="fc"><i class="no-highlight">186</i>&nbsp;        errorLog.severe(logMessage);</b>
+<i class="no-highlight">187</i>&nbsp;    }
+<i class="no-highlight">188</i>&nbsp;
+<i class="no-highlight">189</i>&nbsp;    private String getLogMessageWithStackTrace(String message, Throwable t, LogSeverity severity) {
+<b class="fc"><i class="no-highlight">190</i>&nbsp;        if (Config.isDevServer()) {</b>
+<b class="fc"><i class="no-highlight">191</i>&nbsp;            StringWriter sw = new StringWriter();</b>
+<b class="fc"><i class="no-highlight">192</i>&nbsp;            try (PrintWriter pw = new PrintWriter(sw)) {</b>
+<b class="fc"><i class="no-highlight">193</i>&nbsp;                t.printStackTrace(pw);</b>
+<b class="fc"><i class="no-highlight">194</i>&nbsp;            }</b>
+<i class="no-highlight">195</i>&nbsp;
+<b class="fc"><i class="no-highlight">196</i>&nbsp;            return formatLogMessageForHumanDisplay(message) + &quot; stack_trace: &quot;</b>
+<b class="fc"><i class="no-highlight">197</i>&nbsp;                    + System.lineSeparator() + sw.toString();</b>
+<i class="no-highlight">198</i>&nbsp;        }
+<i class="no-highlight">199</i>&nbsp;
+<b class="nc"><i class="no-highlight">200</i>&nbsp;        Map&lt;String, Object&gt; payload = getBaseCloudLoggingPayload(message, severity);</b>
+<i class="no-highlight">201</i>&nbsp;
+<b class="nc"><i class="no-highlight">202</i>&nbsp;        List&lt;String&gt; exceptionClasses = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i class="no-highlight">203</i>&nbsp;        List&lt;List&lt;String&gt;&gt; exceptionStackTraces = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i class="no-highlight">204</i>&nbsp;        List&lt;String&gt; exceptionMessages = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">205</i>&nbsp;
+<b class="nc"><i class="no-highlight">206</i>&nbsp;        Throwable currentT = t;</b>
+<b class="nc"><i class="no-highlight">207</i>&nbsp;        while (currentT != null) {</b>
+<b class="nc"><i class="no-highlight">208</i>&nbsp;            exceptionClasses.add(currentT.getClass().getName());</b>
+<b class="nc"><i class="no-highlight">209</i>&nbsp;            exceptionStackTraces.add(getStackTraceToDisplay(currentT));</b>
+<b class="nc"><i class="no-highlight">210</i>&nbsp;            exceptionMessages.add(currentT.getMessage());</b>
+<i class="no-highlight">211</i>&nbsp;
+<b class="nc"><i class="no-highlight">212</i>&nbsp;            currentT = currentT.getCause();</b>
+<i class="no-highlight">213</i>&nbsp;        }
+<i class="no-highlight">214</i>&nbsp;
+<b class="nc"><i class="no-highlight">215</i>&nbsp;        ExceptionLogDetails details = new ExceptionLogDetails();</b>
+<b class="nc"><i class="no-highlight">216</i>&nbsp;        details.setExceptionClass(t.getClass().getSimpleName());</b>
+<b class="nc"><i class="no-highlight">217</i>&nbsp;        details.setExceptionClasses(exceptionClasses);</b>
+<b class="nc"><i class="no-highlight">218</i>&nbsp;        details.setExceptionStackTraces(exceptionStackTraces);</b>
+<b class="nc"><i class="no-highlight">219</i>&nbsp;        details.setExceptionMessages(exceptionMessages);</b>
+<i class="no-highlight">220</i>&nbsp;
+<b class="nc"><i class="no-highlight">221</i>&nbsp;        StackTraceElement tSource = getFirstInternalStackTrace(t);</b>
+<b class="nc"><i class="no-highlight">222</i>&nbsp;        if (tSource != null) {</b>
+<b class="nc"><i class="no-highlight">223</i>&nbsp;            SourceLocation tSourceLocation = new SourceLocation(</b>
+<b class="nc"><i class="no-highlight">224</i>&nbsp;                    tSource.getClassName(), (long) tSource.getLineNumber(), tSource.getMethodName());</b>
+<i class="no-highlight">225</i>&nbsp;
+<i class="no-highlight">226</i>&nbsp;            // Replace the source location with the Throwable&#39;s source location instead
+<b class="nc"><i class="no-highlight">227</i>&nbsp;            SourceLocation loggerSourceLocation = (SourceLocation) payload.get(&quot;logging.googleapis.com/sourceLocation&quot;);</b>
+<b class="nc"><i class="no-highlight">228</i>&nbsp;            payload.put(&quot;logging.googleapis.com/sourceLocation&quot;, tSourceLocation);</b>
+<i class="no-highlight">229</i>&nbsp;
+<b class="nc"><i class="no-highlight">230</i>&nbsp;            details.setLoggerSourceLocation(loggerSourceLocation);</b>
+<i class="no-highlight">231</i>&nbsp;        }
+<i class="no-highlight">232</i>&nbsp;
+<b class="nc"><i class="no-highlight">233</i>&nbsp;        Map&lt;String, Object&gt; detailsSpecificPayload =</b>
+<b class="nc"><i class="no-highlight">234</i>&nbsp;                JsonUtils.fromJson(JsonUtils.toCompactJson(details), new TypeToken&lt;Map&lt;String, Object&gt;&gt;(){}.getType());</b>
+<b class="nc"><i class="no-highlight">235</i>&nbsp;        payload.putAll(detailsSpecificPayload);</b>
+<i class="no-highlight">236</i>&nbsp;
+<b class="nc"><i class="no-highlight">237</i>&nbsp;        return JsonUtils.toCompactJson(payload);</b>
+<i class="no-highlight">238</i>&nbsp;    }
+<i class="no-highlight">239</i>&nbsp;
+<i class="no-highlight">240</i>&nbsp;    /**
+<i class="no-highlight">241</i>&nbsp;     * Returns the first stack trace for the throwable that originates from an internal class
+<i class="no-highlight">242</i>&nbsp;     * (i.e. package name starting with teammates).
+<i class="no-highlight">243</i>&nbsp;     * If no such stack trace is found, return the first element of the stack trace list.
+<i class="no-highlight">244</i>&nbsp;     */
+<i class="no-highlight">245</i>&nbsp;    private StackTraceElement getFirstInternalStackTrace(Throwable t) {
+<b class="nc"><i class="no-highlight">246</i>&nbsp;        StackTraceElement[] stackTraces = t.getStackTrace();</b>
+<b class="nc"><i class="no-highlight">247</i>&nbsp;        if (stackTraces.length == 0) {</b>
+<b class="nc"><i class="no-highlight">248</i>&nbsp;            return null;</b>
+<i class="no-highlight">249</i>&nbsp;        }
+<b class="nc"><i class="no-highlight">250</i>&nbsp;        return Arrays.stream(stackTraces)</b>
+<b class="nc"><i class="no-highlight">251</i>&nbsp;                .filter(ste -&gt; ste.getClassName().startsWith(&quot;teammates&quot;))</b>
+<b class="nc"><i class="no-highlight">252</i>&nbsp;                .findFirst()</b>
+<b class="nc"><i class="no-highlight">253</i>&nbsp;                .orElse(stackTraces[0]);</b>
+<i class="no-highlight">254</i>&nbsp;    }
+<i class="no-highlight">255</i>&nbsp;
+<i class="no-highlight">256</i>&nbsp;    private List&lt;String&gt; getStackTraceToDisplay(Throwable t) {
+<b class="nc"><i class="no-highlight">257</i>&nbsp;        List&lt;String&gt; stackTraceToDisplay = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i class="no-highlight">258</i>&nbsp;        for (StackTraceElement ste : t.getStackTrace()) {</b>
+<b class="nc"><i class="no-highlight">259</i>&nbsp;            String stClass = ste.getClassName();</b>
+<b class="nc"><i class="no-highlight">260</i>&nbsp;            if (stClass.startsWith(&quot;org.eclipse.jetty.servlet&quot;)) {</b>
+<i class="no-highlight">261</i>&nbsp;                // Everything past this line is the internal workings of Jetty
+<i class="no-highlight">262</i>&nbsp;                // and does not provide anything useful for debugging
+<b class="nc"><i class="no-highlight">263</i>&nbsp;                stackTraceToDisplay.add(&quot;...&quot;);</b>
+<b class="nc"><i class="no-highlight">264</i>&nbsp;                break;</b>
+<i class="no-highlight">265</i>&nbsp;            }
+<b class="nc"><i class="no-highlight">266</i>&nbsp;            stackTraceToDisplay.add(String.format(&quot;%s.%s(%s:%s)&quot;,</b>
+<b class="nc"><i class="no-highlight">267</i>&nbsp;                    ste.getClassName(), ste.getMethodName(), ste.getFileName(), ste.getLineNumber()));</b>
+<i class="no-highlight">268</i>&nbsp;        }
+<b class="nc"><i class="no-highlight">269</i>&nbsp;        return stackTraceToDisplay;</b>
+<i class="no-highlight">270</i>&nbsp;    }
+<i class="no-highlight">271</i>&nbsp;
+<i class="no-highlight">272</i>&nbsp;    private String formatLogMessage(String message, LogSeverity severity) {
+<b class="fc"><i class="no-highlight">273</i>&nbsp;        if (Config.isDevServer()) {</b>
+<b class="fc"><i class="no-highlight">274</i>&nbsp;            return formatLogMessageForHumanDisplay(message);</b>
+<i class="no-highlight">275</i>&nbsp;        }
+<b class="nc"><i class="no-highlight">276</i>&nbsp;        return formatLogMessageForCloudLogging(message, severity);</b>
+<i class="no-highlight">277</i>&nbsp;    }
+<i class="no-highlight">278</i>&nbsp;
+<i class="no-highlight">279</i>&nbsp;    private String formatLogMessageForHumanDisplay(String message) {
+<b class="fc"><i class="no-highlight">280</i>&nbsp;        StringBuilder prefix = new StringBuilder();</b>
+<i class="no-highlight">281</i>&nbsp;
+<b class="fc"><i class="no-highlight">282</i>&nbsp;        StackTraceElement source = getLoggerSource();</b>
+<b class="fc"><i class="no-highlight">283</i>&nbsp;        if (source != null) {</b>
+<b class="fc"><i class="no-highlight">284</i>&nbsp;            prefix.append(source.getClassName()).append(&#39;:&#39;)</b>
+<b class="fc"><i class="no-highlight">285</i>&nbsp;                    .append(source.getMethodName()).append(&#39;:&#39;)</b>
+<b class="fc"><i class="no-highlight">286</i>&nbsp;                    .append(source.getLineNumber()).append(&#39;:&#39;);</b>
+<i class="no-highlight">287</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">288</i>&nbsp;        prefix.append(&#39; &#39;);</b>
+<i class="no-highlight">289</i>&nbsp;
+<b class="fc"><i class="no-highlight">290</i>&nbsp;        if (RequestTracer.getTraceId() == null) {</b>
+<b class="fc"><i class="no-highlight">291</i>&nbsp;            return prefix.toString() + message;</b>
+<i class="no-highlight">292</i>&nbsp;        }
+<b class="nc"><i class="no-highlight">293</i>&nbsp;        return prefix.toString() + &quot;[&quot; + RequestTracer.getTraceId() + &quot;] &quot; + message;</b>
+<i class="no-highlight">294</i>&nbsp;    }
+<i class="no-highlight">295</i>&nbsp;
+<i class="no-highlight">296</i>&nbsp;    private String formatLogMessageForCloudLogging(String message, LogSeverity severity) {
+<b class="nc"><i class="no-highlight">297</i>&nbsp;        return JsonUtils.toCompactJson(getBaseCloudLoggingPayload(message, severity));</b>
+<i class="no-highlight">298</i>&nbsp;    }
+<i class="no-highlight">299</i>&nbsp;
+<i class="no-highlight">300</i>&nbsp;    private Map&lt;String, Object&gt; getBaseCloudLoggingPayload(String message, LogSeverity severity) {
+<b class="nc"><i class="no-highlight">301</i>&nbsp;        Map&lt;String, Object&gt; payload = new HashMap&lt;&gt;();</b>
+<b class="nc"><i class="no-highlight">302</i>&nbsp;        payload.put(&quot;message&quot;, message);</b>
+<b class="nc"><i class="no-highlight">303</i>&nbsp;        payload.put(&quot;severity&quot;, severity);</b>
+<i class="no-highlight">304</i>&nbsp;
+<b class="nc"><i class="no-highlight">305</i>&nbsp;        StackTraceElement source = getLoggerSource();</b>
+<b class="nc"><i class="no-highlight">306</i>&nbsp;        if (source != null) {</b>
+<b class="nc"><i class="no-highlight">307</i>&nbsp;            SourceLocation sourceLocation = new SourceLocation(</b>
+<b class="nc"><i class="no-highlight">308</i>&nbsp;                    source.getClassName(), (long) source.getLineNumber(), source.getMethodName());</b>
+<b class="nc"><i class="no-highlight">309</i>&nbsp;            payload.put(&quot;logging.googleapis.com/sourceLocation&quot;, sourceLocation);</b>
+<i class="no-highlight">310</i>&nbsp;        }
+<i class="no-highlight">311</i>&nbsp;
+<b class="nc"><i class="no-highlight">312</i>&nbsp;        if (RequestTracer.getTraceId() != null) {</b>
+<b class="nc"><i class="no-highlight">313</i>&nbsp;            payload.put(&quot;logging.googleapis.com/trace&quot;,</b>
+<b class="nc"><i class="no-highlight">314</i>&nbsp;                    &quot;projects/&quot; + Config.APP_ID + &quot;/traces/&quot; + RequestTracer.getTraceId());</b>
+<i class="no-highlight">315</i>&nbsp;        }
+<i class="no-highlight">316</i>&nbsp;
+<b class="nc"><i class="no-highlight">317</i>&nbsp;        if (RequestTracer.getSpanId() != null) {</b>
+<b class="nc"><i class="no-highlight">318</i>&nbsp;            payload.put(&quot;logging.googleapis.com/spanId&quot;, RequestTracer.getSpanId());</b>
+<i class="no-highlight">319</i>&nbsp;        }
+<i class="no-highlight">320</i>&nbsp;
+<b class="nc"><i class="no-highlight">321</i>&nbsp;        return payload;</b>
+<i class="no-highlight">322</i>&nbsp;    }
+<i class="no-highlight">323</i>&nbsp;
+<i class="no-highlight">324</i>&nbsp;    private StackTraceElement getLoggerSource() {
+<b class="fc"><i class="no-highlight">325</i>&nbsp;        StackTraceElement[] stes = Thread.currentThread().getStackTrace();</b>
+<b class="fc"><i class="no-highlight">326</i>&nbsp;        for (int i = 0; i &lt; stes.length; i++) {</b>
+<b class="fc"><i class="no-highlight">327</i>&nbsp;            StackTraceElement ste = stes[i];</b>
+<b class="fc"><i class="no-highlight">328</i>&nbsp;            if (ste.getClassName().equals(Logger.class.getName()) &amp;&amp; i + 1 &lt; stes.length) {</b>
+<b class="fc"><i class="no-highlight">329</i>&nbsp;                StackTraceElement nextSte = stes[i + 1];</b>
+<b class="fc"><i class="no-highlight">330</i>&nbsp;                if (!nextSte.getClassName().equals(Logger.class.getName())) {</b>
+<b class="fc"><i class="no-highlight">331</i>&nbsp;                    return nextSte;</b>
+<i class="no-highlight">332</i>&nbsp;                }
+<i class="no-highlight">333</i>&nbsp;            }
+<i class="no-highlight">334</i>&nbsp;        }
+<b class="nc"><i class="no-highlight">335</i>&nbsp;        return null;</b>
+<i class="no-highlight">336</i>&nbsp;    }
+<i class="no-highlight">337</i>&nbsp;
+<i class="no-highlight">338</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:53</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,162 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > SearchManagerFactory</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.storage.search</a>
+</div>
+
+<h1>Coverage Summary for Class: SearchManagerFactory (teammates.storage.search)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SearchManagerFactory</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/9)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.storage.search;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;/**
+<i class="no-highlight">4</i>&nbsp; * Factory that returns search manager implementation.
+<i class="no-highlight">5</i>&nbsp; */
+<i class="no-highlight">6</i>&nbsp;public final class SearchManagerFactory {
+<i class="no-highlight">7</i>&nbsp;
+<i class="no-highlight">8</i>&nbsp;    private static InstructorSearchManager instructorInstance;
+<i class="no-highlight">9</i>&nbsp;    private static StudentSearchManager studentInstance;
+<i class="no-highlight">10</i>&nbsp;    private static AccountRequestSearchManager accountRequestInstance;
+<i class="no-highlight">11</i>&nbsp;
+<i class="no-highlight">12</i>&nbsp;    private SearchManagerFactory() {
+<i class="no-highlight">13</i>&nbsp;        // prevents initialization
+<i class="no-highlight">14</i>&nbsp;    }
+<i class="no-highlight">15</i>&nbsp;
+<i class="no-highlight">16</i>&nbsp;    public static InstructorSearchManager getInstructorSearchManager() {
+<b class="fc"><i class="no-highlight">17</i>&nbsp;        return instructorInstance;</b>
+<i class="no-highlight">18</i>&nbsp;    }
+<i class="no-highlight">19</i>&nbsp;
+<i class="no-highlight">20</i>&nbsp;    /**
+<i class="no-highlight">21</i>&nbsp;     * Registers the instructor search service into the factory.
+<i class="no-highlight">22</i>&nbsp;     */
+<i class="no-highlight">23</i>&nbsp;    @SuppressWarnings(&quot;PMD.NonThreadSafeSingleton&quot;) // ok to ignore as method is only invoked at application startup
+<i class="no-highlight">24</i>&nbsp;    public static void registerInstructorSearchManager(InstructorSearchManager instructorSearchManager) {
+<b class="fc"><i class="no-highlight">25</i>&nbsp;        if (instructorInstance == null) {</b>
+<b class="fc"><i class="no-highlight">26</i>&nbsp;            instructorInstance = instructorSearchManager;</b>
+<i class="no-highlight">27</i>&nbsp;        }
+<i class="no-highlight">28</i>&nbsp;    }
+<i class="no-highlight">29</i>&nbsp;
+<i class="no-highlight">30</i>&nbsp;    public static StudentSearchManager getStudentSearchManager() {
+<b class="fc"><i class="no-highlight">31</i>&nbsp;        return studentInstance;</b>
+<i class="no-highlight">32</i>&nbsp;    }
+<i class="no-highlight">33</i>&nbsp;
+<i class="no-highlight">34</i>&nbsp;    /**
+<i class="no-highlight">35</i>&nbsp;     * Registers the student search service into the factory.
+<i class="no-highlight">36</i>&nbsp;     */
+<i class="no-highlight">37</i>&nbsp;    @SuppressWarnings(&quot;PMD.NonThreadSafeSingleton&quot;) // ok to ignore as method is only invoked at application startup
+<i class="no-highlight">38</i>&nbsp;    public static void registerStudentSearchManager(StudentSearchManager studentSearchManager) {
+<b class="fc"><i class="no-highlight">39</i>&nbsp;        if (studentInstance == null) {</b>
+<b class="fc"><i class="no-highlight">40</i>&nbsp;            studentInstance = studentSearchManager;</b>
+<i class="no-highlight">41</i>&nbsp;        }
+<i class="no-highlight">42</i>&nbsp;    }
+<i class="no-highlight">43</i>&nbsp;
+<i class="no-highlight">44</i>&nbsp;    public static AccountRequestSearchManager getAccountRequestSearchManager() {
+<b class="fc"><i class="no-highlight">45</i>&nbsp;        return accountRequestInstance;</b>
+<i class="no-highlight">46</i>&nbsp;    }
+<i class="no-highlight">47</i>&nbsp;
+<i class="no-highlight">48</i>&nbsp;    /**
+<i class="no-highlight">49</i>&nbsp;     * Registers the account request search service into the factory.
+<i class="no-highlight">50</i>&nbsp;     */
+<i class="no-highlight">51</i>&nbsp;    @SuppressWarnings(&quot;PMD.NonThreadSafeSingleton&quot;) // ok to ignore as method is only invoked at application startup
+<i class="no-highlight">52</i>&nbsp;    public static void registerAccountRequestSearchManager(AccountRequestSearchManager accountRequestSearchManager) {
+<b class="fc"><i class="no-highlight">53</i>&nbsp;        if (accountRequestInstance == null) {</b>
+<b class="fc"><i class="no-highlight">54</i>&nbsp;            accountRequestInstance = accountRequestSearchManager;</b>
+<i class="no-highlight">55</i>&nbsp;        }
+<i class="no-highlight">56</i>&nbsp;    }
+<i class="no-highlight">57</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:53</div>
+</div>
+</body>
+</html>

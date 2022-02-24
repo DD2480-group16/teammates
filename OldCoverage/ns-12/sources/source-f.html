@@ -1,0 +1,371 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > CreateAccountAction</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.ui.webapi</a>
+</div>
+
+<h1>Coverage Summary for Class: CreateAccountAction (teammates.ui.webapi)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CreateAccountAction</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    88%
+  </span>
+  <span class="absValue">
+    (73/83)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.ui.webapi;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.time.Instant;
+<i class="no-highlight">4</i>&nbsp;import java.time.ZoneId;
+<i class="no-highlight">5</i>&nbsp;import java.time.ZonedDateTime;
+<i class="no-highlight">6</i>&nbsp;import java.util.List;
+<i class="no-highlight">7</i>&nbsp;import java.util.regex.Pattern;
+<i class="no-highlight">8</i>&nbsp;
+<i class="no-highlight">9</i>&nbsp;import org.apache.http.HttpStatus;
+<i class="no-highlight">10</i>&nbsp;
+<i class="no-highlight">11</i>&nbsp;import teammates.common.datatransfer.DataBundle;
+<i class="no-highlight">12</i>&nbsp;import teammates.common.datatransfer.attributes.AccountRequestAttributes;
+<i class="no-highlight">13</i>&nbsp;import teammates.common.datatransfer.attributes.InstructorAttributes;
+<i class="no-highlight">14</i>&nbsp;import teammates.common.datatransfer.attributes.StudentAttributes;
+<i class="no-highlight">15</i>&nbsp;import teammates.common.exception.EntityAlreadyExistsException;
+<i class="no-highlight">16</i>&nbsp;import teammates.common.exception.EntityDoesNotExistException;
+<i class="no-highlight">17</i>&nbsp;import teammates.common.exception.InvalidParametersException;
+<i class="no-highlight">18</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">19</i>&nbsp;import teammates.common.util.FieldValidator;
+<i class="no-highlight">20</i>&nbsp;import teammates.common.util.JsonUtils;
+<i class="no-highlight">21</i>&nbsp;import teammates.common.util.Logger;
+<i class="no-highlight">22</i>&nbsp;import teammates.common.util.StringHelper;
+<i class="no-highlight">23</i>&nbsp;import teammates.common.util.Templates;
+<i class="no-highlight">24</i>&nbsp;import teammates.common.util.TimeHelper;
+<i class="no-highlight">25</i>&nbsp;import teammates.ui.request.InvalidHttpRequestBodyException;
+<i class="no-highlight">26</i>&nbsp;
+<i class="no-highlight">27</i>&nbsp;/**
+<i class="no-highlight">28</i>&nbsp; * Creates a new instructor account with sample courses.
+<i class="no-highlight">29</i>&nbsp; */
+<b class="fc"><i class="no-highlight">30</i>&nbsp;class CreateAccountAction extends Action {</b>
+<i class="no-highlight">31</i>&nbsp;
+<b class="fc"><i class="no-highlight">32</i>&nbsp;    private static final Logger log = Logger.getLogger();</b>
+<i class="no-highlight">33</i>&nbsp;
+<i class="no-highlight">34</i>&nbsp;    @Override
+<i class="no-highlight">35</i>&nbsp;    AuthType getMinAuthLevel() {
+<b class="fc"><i class="no-highlight">36</i>&nbsp;        return AuthType.LOGGED_IN;</b>
+<i class="no-highlight">37</i>&nbsp;    }
+<i class="no-highlight">38</i>&nbsp;
+<i class="no-highlight">39</i>&nbsp;    @Override
+<i class="no-highlight">40</i>&nbsp;    void checkSpecificAccessControl() {
+<i class="no-highlight">41</i>&nbsp;        // Any user can create instructor account as long as the registration key is valid.
+<i class="no-highlight">42</i>&nbsp;    }
+<i class="no-highlight">43</i>&nbsp;
+<i class="no-highlight">44</i>&nbsp;    @Override
+<i class="no-highlight">45</i>&nbsp;    public JsonResult execute() throws InvalidHttpRequestBodyException, InvalidOperationException {
+<b class="fc"><i class="no-highlight">46</i>&nbsp;        String registrationKey = getNonNullRequestParamValue(Const.ParamsNames.REGKEY);</b>
+<b class="fc"><i class="no-highlight">47</i>&nbsp;        String timezone = getRequestParamValue(Const.ParamsNames.TIMEZONE);</b>
+<i class="no-highlight">48</i>&nbsp;
+<b class="fc"><i class="no-highlight">49</i>&nbsp;        if (timezone == null || !FieldValidator.getInvalidityInfoForTimeZone(timezone).isEmpty()) {</b>
+<i class="no-highlight">50</i>&nbsp;            // Use default timezone instead
+<b class="fc"><i class="no-highlight">51</i>&nbsp;            timezone = Const.DEFAULT_TIME_ZONE;</b>
+<i class="no-highlight">52</i>&nbsp;        }
+<i class="no-highlight">53</i>&nbsp;
+<b class="fc"><i class="no-highlight">54</i>&nbsp;        AccountRequestAttributes accountRequestAttributes = logic.getAccountRequestForRegistrationKey(registrationKey);</b>
+<i class="no-highlight">55</i>&nbsp;
+<b class="fc"><i class="no-highlight">56</i>&nbsp;        if (accountRequestAttributes == null) {</b>
+<b class="fc"><i class="no-highlight">57</i>&nbsp;            throw new EntityNotFoundException(&quot;Account request with registration key &quot;</b>
+<i class="no-highlight">58</i>&nbsp;                    + registrationKey + &quot; could not be found&quot;);
+<i class="no-highlight">59</i>&nbsp;        }
+<i class="no-highlight">60</i>&nbsp;
+<b class="fc"><i class="no-highlight">61</i>&nbsp;        if (accountRequestAttributes.getRegisteredAt() != null) {</b>
+<b class="fc"><i class="no-highlight">62</i>&nbsp;            throw new InvalidOperationException(&quot;The registration key &quot; + registrationKey + &quot; has already been used.&quot;);</b>
+<i class="no-highlight">63</i>&nbsp;        }
+<i class="no-highlight">64</i>&nbsp;
+<b class="fc"><i class="no-highlight">65</i>&nbsp;        String instructorEmail = accountRequestAttributes.getEmail();</b>
+<b class="fc"><i class="no-highlight">66</i>&nbsp;        String instructorName = accountRequestAttributes.getName();</b>
+<b class="fc"><i class="no-highlight">67</i>&nbsp;        String instructorInstitution = accountRequestAttributes.getInstitute();</b>
+<i class="no-highlight">68</i>&nbsp;
+<i class="no-highlight">69</i>&nbsp;        String courseId;
+<i class="no-highlight">70</i>&nbsp;
+<i class="no-highlight">71</i>&nbsp;        try {
+<b class="fc"><i class="no-highlight">72</i>&nbsp;            courseId = importDemoData(instructorEmail, instructorName, instructorInstitution, timezone);</b>
+<b class="nc"><i class="no-highlight">73</i>&nbsp;        } catch (InvalidParametersException ipe) {</b>
+<i class="no-highlight">74</i>&nbsp;            // There should not be any invalid parameter here
+<b class="nc"><i class="no-highlight">75</i>&nbsp;            log.severe(&quot;Unexpected error&quot;, ipe);</b>
+<b class="nc"><i class="no-highlight">76</i>&nbsp;            return new JsonResult(ipe.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR);</b>
+<b class="fc"><i class="no-highlight">77</i>&nbsp;        }</b>
+<i class="no-highlight">78</i>&nbsp;
+<b class="fc"><i class="no-highlight">79</i>&nbsp;        List&lt;InstructorAttributes&gt; instructorList = logic.getInstructorsForCourse(courseId);</b>
+<i class="no-highlight">80</i>&nbsp;
+<b class="fc"><i class="no-highlight">81</i>&nbsp;        assert !instructorList.isEmpty();</b>
+<i class="no-highlight">82</i>&nbsp;
+<i class="no-highlight">83</i>&nbsp;        try {
+<b class="fc"><i class="no-highlight">84</i>&nbsp;            logic.joinCourseForInstructor(instructorList.get(0).getKey(), userInfo.id);</b>
+<b class="nc"><i class="no-highlight">85</i>&nbsp;        } catch (EntityDoesNotExistException | EntityAlreadyExistsException | InvalidParametersException e) {</b>
+<i class="no-highlight">86</i>&nbsp;            // EntityDoesNotExistException should not be thrown as all entities should exist in demo course.
+<i class="no-highlight">87</i>&nbsp;            // EntityAlreadyExistsException should not be thrown as updated entities should not have
+<i class="no-highlight">88</i>&nbsp;            // conflict with generated entities in new demo course.
+<i class="no-highlight">89</i>&nbsp;            // InvalidParametersException should not be thrown as as there should not be any invalid parameters.
+<b class="nc"><i class="no-highlight">90</i>&nbsp;            log.severe(&quot;Unexpected error&quot;, e);</b>
+<b class="nc"><i class="no-highlight">91</i>&nbsp;            return new JsonResult(e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR);</b>
+<b class="fc"><i class="no-highlight">92</i>&nbsp;        }</b>
+<i class="no-highlight">93</i>&nbsp;
+<i class="no-highlight">94</i>&nbsp;        try {
+<b class="fc"><i class="no-highlight">95</i>&nbsp;            logic.updateAccountRequest(AccountRequestAttributes</b>
+<b class="fc"><i class="no-highlight">96</i>&nbsp;                    .updateOptionsBuilder(instructorEmail, instructorInstitution)</b>
+<b class="fc"><i class="no-highlight">97</i>&nbsp;                    .withRegisteredAt(Instant.now())</b>
+<b class="fc"><i class="no-highlight">98</i>&nbsp;                    .build());</b>
+<b class="nc"><i class="no-highlight">99</i>&nbsp;        } catch (EntityDoesNotExistException | InvalidParametersException e) {</b>
+<i class="no-highlight">100</i>&nbsp;            // EntityDoesNotExistException should not be thrown as existence of account request has been validated before.
+<i class="no-highlight">101</i>&nbsp;            // InvalidParametersException should not be thrown as there should not be any invalid parameters.
+<b class="nc"><i class="no-highlight">102</i>&nbsp;            log.severe(&quot;Unexpected error&quot;, e);</b>
+<b class="nc"><i class="no-highlight">103</i>&nbsp;            return new JsonResult(e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR);</b>
+<b class="fc"><i class="no-highlight">104</i>&nbsp;        }</b>
+<i class="no-highlight">105</i>&nbsp;
+<b class="fc"><i class="no-highlight">106</i>&nbsp;        return new JsonResult(&quot;Account successfully created&quot;, HttpStatus.SC_OK);</b>
+<i class="no-highlight">107</i>&nbsp;    }
+<i class="no-highlight">108</i>&nbsp;
+<i class="no-highlight">109</i>&nbsp;    /**
+<i class="no-highlight">110</i>&nbsp;     * Imports demo course for the new instructor.
+<i class="no-highlight">111</i>&nbsp;     *
+<i class="no-highlight">112</i>&nbsp;     * @return the ID of demo course
+<i class="no-highlight">113</i>&nbsp;     */
+<i class="no-highlight">114</i>&nbsp;    private String importDemoData(String instructorEmail, String instructorName, String instructorInstitute, String timezone)
+<i class="no-highlight">115</i>&nbsp;            throws InvalidParametersException {
+<i class="no-highlight">116</i>&nbsp;
+<b class="fc"><i class="no-highlight">117</i>&nbsp;        String courseId = generateDemoCourseId(instructorEmail);</b>
+<b class="fc"><i class="no-highlight">118</i>&nbsp;        String template = Templates.INSTRUCTOR_SAMPLE_DATA;</b>
+<i class="no-highlight">119</i>&nbsp;
+<b class="fc"><i class="no-highlight">120</i>&nbsp;        if (!timezone.equals(Const.DEFAULT_TIME_ZONE)) {</b>
+<b class="fc"><i class="no-highlight">121</i>&nbsp;            template = replaceAdjustedTimeAndTimezone(template, timezone);</b>
+<i class="no-highlight">122</i>&nbsp;        }
+<i class="no-highlight">123</i>&nbsp;
+<b class="fc"><i class="no-highlight">124</i>&nbsp;        String jsonString = Templates.populateTemplate(template,</b>
+<i class="no-highlight">125</i>&nbsp;                // replace email
+<i class="no-highlight">126</i>&nbsp;                &quot;teammates.demo.instructor@demo.course&quot;, instructorEmail,
+<i class="no-highlight">127</i>&nbsp;                // replace name
+<i class="no-highlight">128</i>&nbsp;                &quot;Demo_Instructor&quot;, instructorName,
+<i class="no-highlight">129</i>&nbsp;                // replace course
+<i class="no-highlight">130</i>&nbsp;                &quot;demo.course&quot;, courseId,
+<i class="no-highlight">131</i>&nbsp;                // replace institute
+<i class="no-highlight">132</i>&nbsp;                &quot;demo.institute&quot;, instructorInstitute);
+<i class="no-highlight">133</i>&nbsp;
+<b class="fc"><i class="no-highlight">134</i>&nbsp;        DataBundle data = JsonUtils.fromJson(jsonString, DataBundle.class);</b>
+<i class="no-highlight">135</i>&nbsp;
+<b class="fc"><i class="no-highlight">136</i>&nbsp;        logic.persistDataBundle(data);</b>
+<i class="no-highlight">137</i>&nbsp;
+<b class="fc"><i class="no-highlight">138</i>&nbsp;        List&lt;StudentAttributes&gt; students = logic.getStudentsForCourse(courseId);</b>
+<b class="fc"><i class="no-highlight">139</i>&nbsp;        List&lt;InstructorAttributes&gt; instructors = logic.getInstructorsForCourse(courseId);</b>
+<i class="no-highlight">140</i>&nbsp;
+<b class="fc"><i class="no-highlight">141</i>&nbsp;        for (StudentAttributes student : students) {</b>
+<b class="fc"><i class="no-highlight">142</i>&nbsp;            taskQueuer.scheduleStudentForSearchIndexing(student.getCourse(), student.getEmail());</b>
+<b class="fc"><i class="no-highlight">143</i>&nbsp;        }</b>
+<i class="no-highlight">144</i>&nbsp;
+<b class="fc"><i class="no-highlight">145</i>&nbsp;        for (InstructorAttributes instructor : instructors) {</b>
+<b class="fc"><i class="no-highlight">146</i>&nbsp;            taskQueuer.scheduleInstructorForSearchIndexing(instructor.getCourseId(), instructor.getEmail());</b>
+<b class="fc"><i class="no-highlight">147</i>&nbsp;        }</b>
+<i class="no-highlight">148</i>&nbsp;
+<b class="fc"><i class="no-highlight">149</i>&nbsp;        return courseId;</b>
+<i class="no-highlight">150</i>&nbsp;    }
+<i class="no-highlight">151</i>&nbsp;
+<i class="no-highlight">152</i>&nbsp;    // Strategy to Generate New Demo Course Id:
+<i class="no-highlight">153</i>&nbsp;    // a. keep the part of email before &quot;@&quot;
+<i class="no-highlight">154</i>&nbsp;    //    replace &quot;@&quot; with &quot;.&quot;
+<i class="no-highlight">155</i>&nbsp;    //    replace email host with their first 3 chars. eg, gmail.com -&gt; gma
+<i class="no-highlight">156</i>&nbsp;    //    append &quot;-demo&quot;
+<i class="no-highlight">157</i>&nbsp;    //    to sum up: lebron@gmail.com -&gt; lebron.gma-demo
+<i class="no-highlight">158</i>&nbsp;    //
+<i class="no-highlight">159</i>&nbsp;    // b. if the generated courseId already exists, create another one by appending a integer to the previous courseId.
+<i class="no-highlight">160</i>&nbsp;    //    if the newly generate id still exists, increment the id, until we find a feasible one
+<i class="no-highlight">161</i>&nbsp;    //    eg.
+<i class="no-highlight">162</i>&nbsp;    //    lebron@gmail.com -&gt; lebron.gma-demo  // already exists!
+<i class="no-highlight">163</i>&nbsp;    //    lebron@gmail.com -&gt; lebron.gma-demo0 // already exists!
+<i class="no-highlight">164</i>&nbsp;    //    lebron@gmail.com -&gt; lebron.gma-demo1 // already exists!
+<i class="no-highlight">165</i>&nbsp;    //    ...
+<i class="no-highlight">166</i>&nbsp;    //    lebron@gmail.com -&gt; lebron.gma-demo99 // already exists!
+<i class="no-highlight">167</i>&nbsp;    //    lebron@gmail.com -&gt; lebron.gma-demo100 // found! a feasible id
+<i class="no-highlight">168</i>&nbsp;    //
+<i class="no-highlight">169</i>&nbsp;    // c. in any cases(a or b), if generated Id is longer than FieldValidator.COURSE_ID_MAX_LENGTH, shorten the part
+<i class="no-highlight">170</i>&nbsp;    //    before &quot;@&quot; of the initial input email, by continuously removing its last character
+<i class="no-highlight">171</i>&nbsp;
+<i class="no-highlight">172</i>&nbsp;    /**
+<i class="no-highlight">173</i>&nbsp;     * Generate a course ID for demo course, and if the generated id already exists, try another one.
+<i class="no-highlight">174</i>&nbsp;     *
+<i class="no-highlight">175</i>&nbsp;     * @param instructorEmail is the instructor email.
+<i class="no-highlight">176</i>&nbsp;     * @return generated course id
+<i class="no-highlight">177</i>&nbsp;     */
+<i class="no-highlight">178</i>&nbsp;    private String generateDemoCourseId(String instructorEmail) {
+<b class="fc"><i class="no-highlight">179</i>&nbsp;        String proposedCourseId = generateNextDemoCourseId(instructorEmail, FieldValidator.COURSE_ID_MAX_LENGTH);</b>
+<b class="fc"><i class="no-highlight">180</i>&nbsp;        while (logic.getCourse(proposedCourseId) != null) {</b>
+<b class="nc"><i class="no-highlight">181</i>&nbsp;            proposedCourseId = generateNextDemoCourseId(proposedCourseId, FieldValidator.COURSE_ID_MAX_LENGTH);</b>
+<i class="no-highlight">182</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">183</i>&nbsp;        return proposedCourseId;</b>
+<i class="no-highlight">184</i>&nbsp;    }
+<i class="no-highlight">185</i>&nbsp;
+<i class="no-highlight">186</i>&nbsp;    /**
+<i class="no-highlight">187</i>&nbsp;     * Generate a course ID for demo course from a given email.
+<i class="no-highlight">188</i>&nbsp;     *
+<i class="no-highlight">189</i>&nbsp;     * @param instructorEmail is the instructor email.
+<i class="no-highlight">190</i>&nbsp;     * @return the first proposed course id. eg.lebron@gmail.com -&gt; lebron.gma-demo
+<i class="no-highlight">191</i>&nbsp;     */
+<i class="no-highlight">192</i>&nbsp;    private String getDemoCourseIdRoot(String instructorEmail) {
+<b class="fc"><i class="no-highlight">193</i>&nbsp;        String[] emailSplit = instructorEmail.split(&quot;@&quot;);</b>
+<i class="no-highlight">194</i>&nbsp;
+<b class="fc"><i class="no-highlight">195</i>&nbsp;        String username = emailSplit[0];</b>
+<b class="fc"><i class="no-highlight">196</i>&nbsp;        String host = emailSplit[1];</b>
+<i class="no-highlight">197</i>&nbsp;
+<b class="fc"><i class="no-highlight">198</i>&nbsp;        String head = StringHelper.replaceIllegalChars(username, FieldValidator.REGEX_COURSE_ID, &#39;_&#39;);</b>
+<b class="fc"><i class="no-highlight">199</i>&nbsp;        String hostAbbreviation = host.substring(0, Math.min(host.length(), 3));</b>
+<i class="no-highlight">200</i>&nbsp;
+<b class="fc"><i class="no-highlight">201</i>&nbsp;        return head + &quot;.&quot; + hostAbbreviation + &quot;-demo&quot;;</b>
+<i class="no-highlight">202</i>&nbsp;    }
+<i class="no-highlight">203</i>&nbsp;
+<i class="no-highlight">204</i>&nbsp;    /**
+<i class="no-highlight">205</i>&nbsp;     * Generate a course ID for demo course from a given email or a generated course Id.
+<i class="no-highlight">206</i>&nbsp;     *
+<i class="no-highlight">207</i>&nbsp;     * &lt;p&gt;Here we check the input string is an email or course Id and handle them accordingly;
+<i class="no-highlight">208</i>&nbsp;     * check the resulting course id, and if bigger than maximumIdLength, cut it so that it equals maximumIdLength.
+<i class="no-highlight">209</i>&nbsp;     *
+<i class="no-highlight">210</i>&nbsp;     * @param instructorEmailOrProposedCourseId is the instructor email or a proposed course id that already exists.
+<i class="no-highlight">211</i>&nbsp;     * @param maximumIdLength is the maximum resulting id length allowed, above which we will cut the part before &quot;@&quot;
+<i class="no-highlight">212</i>&nbsp;     * @return the proposed course id, e.g.:
+<i class="no-highlight">213</i>&nbsp;     *         &lt;ul&gt;
+<i class="no-highlight">214</i>&nbsp;     *         &lt;li&gt;lebron@gmail.com -&gt; lebron.gma-demo&lt;/li&gt;
+<i class="no-highlight">215</i>&nbsp;     *         &lt;li&gt;lebron.gma-demo -&gt; lebron.gma-demo0&lt;/li&gt;
+<i class="no-highlight">216</i>&nbsp;     *         &lt;li&gt;lebron.gma-demo0 -&gt; lebron.gma-demo1&lt;/li&gt;
+<i class="no-highlight">217</i>&nbsp;     *         &lt;li&gt;012345678901234567890123456789.gma-demo9 -&gt; 01234567890123456789012345678.gma-demo10 (being cut)&lt;/li&gt;
+<i class="no-highlight">218</i>&nbsp;     *         &lt;/ul&gt;
+<i class="no-highlight">219</i>&nbsp;     */
+<i class="no-highlight">220</i>&nbsp;    String generateNextDemoCourseId(String instructorEmailOrProposedCourseId, int maximumIdLength) {
+<b class="fc"><i class="no-highlight">221</i>&nbsp;        boolean isFirstCourseId = instructorEmailOrProposedCourseId.contains(&quot;@&quot;);</b>
+<b class="fc"><i class="no-highlight">222</i>&nbsp;        if (isFirstCourseId) {</b>
+<b class="fc"><i class="no-highlight">223</i>&nbsp;            return StringHelper.truncateHead(getDemoCourseIdRoot(instructorEmailOrProposedCourseId), maximumIdLength);</b>
+<i class="no-highlight">224</i>&nbsp;        }
+<i class="no-highlight">225</i>&nbsp;
+<b class="fc"><i class="no-highlight">226</i>&nbsp;        boolean isFirstTimeDuplicate = instructorEmailOrProposedCourseId.endsWith(&quot;-demo&quot;);</b>
+<b class="fc"><i class="no-highlight">227</i>&nbsp;        if (isFirstTimeDuplicate) {</b>
+<b class="fc"><i class="no-highlight">228</i>&nbsp;            return StringHelper.truncateHead(instructorEmailOrProposedCourseId + &quot;0&quot;, maximumIdLength);</b>
+<i class="no-highlight">229</i>&nbsp;        }
+<i class="no-highlight">230</i>&nbsp;
+<b class="fc"><i class="no-highlight">231</i>&nbsp;        int lastIndexOfDemo = instructorEmailOrProposedCourseId.lastIndexOf(&quot;-demo&quot;);</b>
+<b class="fc"><i class="no-highlight">232</i>&nbsp;        String root = instructorEmailOrProposedCourseId.substring(0, lastIndexOfDemo);</b>
+<b class="fc"><i class="no-highlight">233</i>&nbsp;        int previousDedupSuffix = Integer.parseInt(instructorEmailOrProposedCourseId.substring(lastIndexOfDemo + 5));</b>
+<i class="no-highlight">234</i>&nbsp;
+<b class="fc"><i class="no-highlight">235</i>&nbsp;        return StringHelper.truncateHead(root + &quot;-demo&quot; + (previousDedupSuffix + 1), maximumIdLength);</b>
+<i class="no-highlight">236</i>&nbsp;    }
+<i class="no-highlight">237</i>&nbsp;
+<i class="no-highlight">238</i>&nbsp;    /**
+<i class="no-highlight">239</i>&nbsp;     * Replace time and timezone based on users timezone.
+<i class="no-highlight">240</i>&nbsp;     * Strings representing instant are adjusted so that they represent the same date and time but in the users timezone.
+<i class="no-highlight">241</i>&nbsp;     * Timezone is changed to users timezone.
+<i class="no-highlight">242</i>&nbsp;     */
+<i class="no-highlight">243</i>&nbsp;    private String replaceAdjustedTimeAndTimezone(String template, String timezoneString) {
+<i class="no-highlight">244</i>&nbsp;        // timezoneString should have been validated in #execute() method already
+<b class="fc"><i class="no-highlight">245</i>&nbsp;        assert ZoneId.getAvailableZoneIds().contains(timezoneString);</b>
+<i class="no-highlight">246</i>&nbsp;
+<b class="fc"><i class="no-highlight">247</i>&nbsp;        String pattern = &quot;\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z&quot;; // regex for instant</b>
+<b class="fc"><i class="no-highlight">248</i>&nbsp;        ZoneId timezone = ZoneId.of(timezoneString);</b>
+<i class="no-highlight">249</i>&nbsp;
+<i class="no-highlight">250</i>&nbsp;        // replace instant with instant adjusted for user&#39;s timezone
+<b class="fc"><i class="no-highlight">251</i>&nbsp;        String updatedtemplate = Pattern.compile(pattern).matcher(template).replaceAll(timestampMatch -&gt; {</b>
+<b class="fc"><i class="no-highlight">252</i>&nbsp;            String timestamp = timestampMatch.group();</b>
+<b class="fc"><i class="no-highlight">253</i>&nbsp;            Instant instant = Instant.parse(timestamp);</b>
+<i class="no-highlight">254</i>&nbsp;
+<b class="fc"><i class="no-highlight">255</i>&nbsp;            if (TimeHelper.isSpecialTime(instant)) {</b>
+<b class="fc"><i class="no-highlight">256</i>&nbsp;                return timestamp;</b>
+<i class="no-highlight">257</i>&nbsp;            }
+<i class="no-highlight">258</i>&nbsp;
+<b class="fc"><i class="no-highlight">259</i>&nbsp;            return ZonedDateTime.ofInstant(instant, ZoneId.of(Const.DEFAULT_TIME_ZONE))</b>
+<b class="fc"><i class="no-highlight">260</i>&nbsp;                    .withZoneSameLocal(timezone).toInstant().toString();</b>
+<i class="no-highlight">261</i>&nbsp;        });
+<i class="no-highlight">262</i>&nbsp;
+<i class="no-highlight">263</i>&nbsp;        // replace timezone
+<b class="fc"><i class="no-highlight">264</i>&nbsp;        return updatedtemplate.replaceAll(Const.DEFAULT_TIME_ZONE, timezoneString);</b>
+<i class="no-highlight">265</i>&nbsp;    }
+<i class="no-highlight">266</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:52</div>
+</div>
+</body>
+</html>

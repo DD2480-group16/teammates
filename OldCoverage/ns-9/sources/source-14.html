@@ -1,0 +1,178 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > MailgunService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.logic.core</a>
+</div>
+
+<h1>Coverage Summary for Class: MailgunService (teammates.logic.core)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MailgunService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (3/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    52%
+  </span>
+  <span class="absValue">
+    (13/25)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.logic.core;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.io.IOException;
+<i class="no-highlight">4</i>&nbsp;
+<i class="no-highlight">5</i>&nbsp;import javax.ws.rs.core.MediaType;
+<i class="no-highlight">6</i>&nbsp;
+<i class="no-highlight">7</i>&nbsp;import org.apache.http.HttpStatus;
+<i class="no-highlight">8</i>&nbsp;
+<i class="no-highlight">9</i>&nbsp;import com.sun.jersey.api.client.Client;
+<i class="no-highlight">10</i>&nbsp;import com.sun.jersey.api.client.ClientResponse;
+<i class="no-highlight">11</i>&nbsp;import com.sun.jersey.api.client.WebResource;
+<i class="no-highlight">12</i>&nbsp;import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+<i class="no-highlight">13</i>&nbsp;import com.sun.jersey.multipart.FormDataMultiPart;
+<i class="no-highlight">14</i>&nbsp;
+<i class="no-highlight">15</i>&nbsp;import teammates.common.util.Config;
+<i class="no-highlight">16</i>&nbsp;import teammates.common.util.EmailSendingStatus;
+<i class="no-highlight">17</i>&nbsp;import teammates.common.util.EmailWrapper;
+<i class="no-highlight">18</i>&nbsp;import teammates.common.util.Logger;
+<i class="no-highlight">19</i>&nbsp;
+<i class="no-highlight">20</i>&nbsp;/**
+<i class="no-highlight">21</i>&nbsp; * Email sender service provided by Mailgun.
+<i class="no-highlight">22</i>&nbsp; *
+<i class="no-highlight">23</i>&nbsp; * @see &lt;a href=&quot;https://cloud.google.com/appengine/docs/standard/java11/sending-messages#mailgun&quot;&gt;https://cloud.google.com/appengine/docs/standard/java11/sending-messages#mailgun&lt;/a&gt;
+<i class="no-highlight">24</i>&nbsp; * @see FormDataMultiPart
+<i class="no-highlight">25</i>&nbsp; */
+<b class="fc"><i class="no-highlight">26</i>&nbsp;public class MailgunService implements EmailSenderService {</b>
+<i class="no-highlight">27</i>&nbsp;
+<b class="fc"><i class="no-highlight">28</i>&nbsp;    private static final Logger log = Logger.getLogger();</b>
+<i class="no-highlight">29</i>&nbsp;
+<i class="no-highlight">30</i>&nbsp;    /**
+<i class="no-highlight">31</i>&nbsp;     * {@inheritDoc}
+<i class="no-highlight">32</i>&nbsp;     */
+<i class="no-highlight">33</i>&nbsp;    @Override
+<i class="no-highlight">34</i>&nbsp;    public FormDataMultiPart parseToEmail(EmailWrapper wrapper) {
+<b class="fc"><i class="no-highlight">35</i>&nbsp;        FormDataMultiPart formData = new FormDataMultiPart();</b>
+<i class="no-highlight">36</i>&nbsp;
+<b class="fc"><i class="no-highlight">37</i>&nbsp;        String sender = wrapper.getSenderName() == null || wrapper.getSenderName().isEmpty()</b>
+<b class="nc"><i class="no-highlight">38</i>&nbsp;                        ? wrapper.getSenderEmail()</b>
+<b class="fc"><i class="no-highlight">39</i>&nbsp;                        : wrapper.getSenderName() + &quot; &lt;&quot; + wrapper.getSenderEmail() + &quot;&gt;&quot;;</b>
+<b class="fc"><i class="no-highlight">40</i>&nbsp;        formData.field(&quot;from&quot;, sender);</b>
+<i class="no-highlight">41</i>&nbsp;
+<b class="fc"><i class="no-highlight">42</i>&nbsp;        formData.field(&quot;to&quot;, wrapper.getRecipient());</b>
+<i class="no-highlight">43</i>&nbsp;
+<b class="fc"><i class="no-highlight">44</i>&nbsp;        if (wrapper.getBcc() != null &amp;&amp; !wrapper.getBcc().isEmpty()) {</b>
+<b class="fc"><i class="no-highlight">45</i>&nbsp;            formData.field(&quot;bcc&quot;, wrapper.getBcc());</b>
+<i class="no-highlight">46</i>&nbsp;        }
+<i class="no-highlight">47</i>&nbsp;
+<b class="fc"><i class="no-highlight">48</i>&nbsp;        formData.field(&quot;h:Reply-To&quot;, wrapper.getReplyTo());</b>
+<b class="fc"><i class="no-highlight">49</i>&nbsp;        formData.field(&quot;subject&quot;, wrapper.getSubject());</b>
+<b class="fc"><i class="no-highlight">50</i>&nbsp;        formData.field(&quot;html&quot;, wrapper.getContent());</b>
+<i class="no-highlight">51</i>&nbsp;
+<b class="fc"><i class="no-highlight">52</i>&nbsp;        return formData;</b>
+<i class="no-highlight">53</i>&nbsp;    }
+<i class="no-highlight">54</i>&nbsp;
+<i class="no-highlight">55</i>&nbsp;    @Override
+<i class="no-highlight">56</i>&nbsp;    public EmailSendingStatus sendEmail(EmailWrapper wrapper) {
+<b class="nc"><i class="no-highlight">57</i>&nbsp;        try (FormDataMultiPart email = parseToEmail(wrapper)) {</b>
+<b class="nc"><i class="no-highlight">58</i>&nbsp;            Client client = Client.create();</b>
+<b class="nc"><i class="no-highlight">59</i>&nbsp;            client.addFilter(new HTTPBasicAuthFilter(&quot;api&quot;, Config.MAILGUN_APIKEY));</b>
+<b class="nc"><i class="no-highlight">60</i>&nbsp;            WebResource webResource =</b>
+<b class="nc"><i class="no-highlight">61</i>&nbsp;                    client.resource(&quot;https://api.mailgun.net/v3/&quot; + Config.MAILGUN_DOMAINNAME + &quot;/messages&quot;);</b>
+<i class="no-highlight">62</i>&nbsp;
+<b class="nc"><i class="no-highlight">63</i>&nbsp;            ClientResponse response = webResource.type(MediaType.MULTIPART_FORM_DATA_TYPE)</b>
+<b class="nc"><i class="no-highlight">64</i>&nbsp;                    .post(ClientResponse.class, email);</b>
+<i class="no-highlight">65</i>&nbsp;
+<b class="nc"><i class="no-highlight">66</i>&nbsp;            return new EmailSendingStatus(response.getStatus(), response.getStatusInfo().getReasonPhrase());</b>
+<b class="nc"><i class="no-highlight">67</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i class="no-highlight">68</i>&nbsp;            log.warning(&quot;Could not clean up resources after sending email&quot;, e);</b>
+<b class="nc"><i class="no-highlight">69</i>&nbsp;            return new EmailSendingStatus(HttpStatus.SC_OK, e.getMessage());</b>
+<i class="no-highlight">70</i>&nbsp;        }
+<i class="no-highlight">71</i>&nbsp;    }
+<i class="no-highlight">72</i>&nbsp;
+<i class="no-highlight">73</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:53</div>
+</div>
+</body>
+</html>

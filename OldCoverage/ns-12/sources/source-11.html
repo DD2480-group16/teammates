@@ -1,0 +1,180 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > CreateCourseAction</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.ui.webapi</a>
+</div>
+
+<h1>Coverage Summary for Class: CreateCourseAction (teammates.ui.webapi)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CreateCourseAction</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    96.8%
+  </span>
+  <span class="absValue">
+    (30/31)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.ui.webapi;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import teammates.common.datatransfer.attributes.AccountAttributes;
+<i class="no-highlight">4</i>&nbsp;import teammates.common.datatransfer.attributes.CourseAttributes;
+<i class="no-highlight">5</i>&nbsp;import teammates.common.datatransfer.attributes.InstructorAttributes;
+<i class="no-highlight">6</i>&nbsp;import teammates.common.exception.EntityAlreadyExistsException;
+<i class="no-highlight">7</i>&nbsp;import teammates.common.exception.InvalidParametersException;
+<i class="no-highlight">8</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">9</i>&nbsp;import teammates.common.util.FieldValidator;
+<i class="no-highlight">10</i>&nbsp;import teammates.common.util.StringHelper;
+<i class="no-highlight">11</i>&nbsp;import teammates.ui.output.CourseData;
+<i class="no-highlight">12</i>&nbsp;import teammates.ui.request.CourseCreateRequest;
+<i class="no-highlight">13</i>&nbsp;import teammates.ui.request.InvalidHttpRequestBodyException;
+<i class="no-highlight">14</i>&nbsp;
+<i class="no-highlight">15</i>&nbsp;/**
+<i class="no-highlight">16</i>&nbsp; * Create a new course for an instructor.
+<i class="no-highlight">17</i>&nbsp; */
+<b class="fc"><i class="no-highlight">18</i>&nbsp;class CreateCourseAction extends Action {</b>
+<i class="no-highlight">19</i>&nbsp;
+<i class="no-highlight">20</i>&nbsp;    @Override
+<i class="no-highlight">21</i>&nbsp;    AuthType getMinAuthLevel() {
+<b class="fc"><i class="no-highlight">22</i>&nbsp;        return AuthType.LOGGED_IN;</b>
+<i class="no-highlight">23</i>&nbsp;    }
+<i class="no-highlight">24</i>&nbsp;
+<i class="no-highlight">25</i>&nbsp;    @Override
+<i class="no-highlight">26</i>&nbsp;    void checkSpecificAccessControl() throws UnauthorizedAccessException {
+<b class="fc"><i class="no-highlight">27</i>&nbsp;        if (!userInfo.isInstructor) {</b>
+<b class="fc"><i class="no-highlight">28</i>&nbsp;            throw new UnauthorizedAccessException(&quot;Instructor privilege is required to access this resource.&quot;);</b>
+<i class="no-highlight">29</i>&nbsp;        }
+<i class="no-highlight">30</i>&nbsp;    }
+<i class="no-highlight">31</i>&nbsp;
+<i class="no-highlight">32</i>&nbsp;    @Override
+<i class="no-highlight">33</i>&nbsp;    public JsonResult execute() throws InvalidHttpRequestBodyException, InvalidOperationException {
+<b class="fc"><i class="no-highlight">34</i>&nbsp;        CourseCreateRequest courseCreateRequest = getAndValidateRequestBody(CourseCreateRequest.class);</b>
+<i class="no-highlight">35</i>&nbsp;
+<b class="fc"><i class="no-highlight">36</i>&nbsp;        String newCourseTimeZone = courseCreateRequest.getTimeZone();</b>
+<i class="no-highlight">37</i>&nbsp;
+<b class="fc"><i class="no-highlight">38</i>&nbsp;        String timeZoneErrorMessage = FieldValidator.getInvalidityInfoForTimeZone(newCourseTimeZone);</b>
+<b class="fc"><i class="no-highlight">39</i>&nbsp;        if (!timeZoneErrorMessage.isEmpty()) {</b>
+<b class="nc"><i class="no-highlight">40</i>&nbsp;            throw new InvalidHttpRequestBodyException(timeZoneErrorMessage);</b>
+<i class="no-highlight">41</i>&nbsp;        }
+<i class="no-highlight">42</i>&nbsp;
+<b class="fc"><i class="no-highlight">43</i>&nbsp;        String newCourseId = courseCreateRequest.getCourseId();</b>
+<b class="fc"><i class="no-highlight">44</i>&nbsp;        String newCourseName = courseCreateRequest.getCourseName();</b>
+<i class="no-highlight">45</i>&nbsp;
+<b class="fc"><i class="no-highlight">46</i>&nbsp;        String institute = Const.UNKNOWN_INSTITUTION;</b>
+<b class="fc"><i class="no-highlight">47</i>&nbsp;        AccountAttributes account = logic.getAccount(userInfo.getId());</b>
+<b class="fc"><i class="no-highlight">48</i>&nbsp;        if (account != null &amp;&amp; !StringHelper.isEmpty(account.getInstitute())) {</b>
+<b class="fc"><i class="no-highlight">49</i>&nbsp;            institute = account.getInstitute();</b>
+<i class="no-highlight">50</i>&nbsp;        }
+<i class="no-highlight">51</i>&nbsp;
+<b class="fc"><i class="no-highlight">52</i>&nbsp;        CourseAttributes courseAttributes =</b>
+<b class="fc"><i class="no-highlight">53</i>&nbsp;                CourseAttributes.builder(newCourseId)</b>
+<b class="fc"><i class="no-highlight">54</i>&nbsp;                        .withName(newCourseName)</b>
+<b class="fc"><i class="no-highlight">55</i>&nbsp;                        .withTimezone(newCourseTimeZone)</b>
+<b class="fc"><i class="no-highlight">56</i>&nbsp;                        .withInstitute(institute)</b>
+<b class="fc"><i class="no-highlight">57</i>&nbsp;                        .build();</b>
+<i class="no-highlight">58</i>&nbsp;
+<i class="no-highlight">59</i>&nbsp;        try {
+<b class="fc"><i class="no-highlight">60</i>&nbsp;            logic.createCourseAndInstructor(userInfo.getId(), courseAttributes);</b>
+<i class="no-highlight">61</i>&nbsp;
+<b class="fc"><i class="no-highlight">62</i>&nbsp;            InstructorAttributes instructorCreatedForCourse = logic.getInstructorForGoogleId(newCourseId, userInfo.getId());</b>
+<b class="fc"><i class="no-highlight">63</i>&nbsp;            taskQueuer.scheduleInstructorForSearchIndexing(instructorCreatedForCourse.getCourseId(),</b>
+<b class="fc"><i class="no-highlight">64</i>&nbsp;                    instructorCreatedForCourse.getEmail());</b>
+<b class="fc"><i class="no-highlight">65</i>&nbsp;        } catch (EntityAlreadyExistsException e) {</b>
+<b class="fc"><i class="no-highlight">66</i>&nbsp;            throw new InvalidOperationException(&quot;The course ID &quot; + courseAttributes.getId()</b>
+<i class="no-highlight">67</i>&nbsp;                    + &quot; has been used by another course, possibly by some other user.&quot;
+<i class="no-highlight">68</i>&nbsp;                    + &quot; Please try again with a different course ID.&quot;, e);
+<b class="fc"><i class="no-highlight">69</i>&nbsp;        } catch (InvalidParametersException e) {</b>
+<b class="fc"><i class="no-highlight">70</i>&nbsp;            throw new InvalidHttpRequestBodyException(e);</b>
+<b class="fc"><i class="no-highlight">71</i>&nbsp;        }</b>
+<i class="no-highlight">72</i>&nbsp;
+<b class="fc"><i class="no-highlight">73</i>&nbsp;        return new JsonResult(new CourseData(logic.getCourse(newCourseId)));</b>
+<i class="no-highlight">74</i>&nbsp;    }
+<i class="no-highlight">75</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:52</div>
+</div>
+</body>
+</html>

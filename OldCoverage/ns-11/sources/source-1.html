@@ -1,0 +1,228 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > AuthServlet</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.ui.servlets</a>
+</div>
+
+<h1>Coverage Summary for Class: AuthServlet (teammates.ui.servlets)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AuthServlet</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/26)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">AuthServlet$AuthState</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/31)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.ui.servlets;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.io.IOException;
+<i class="no-highlight">4</i>&nbsp;import java.util.Arrays;
+<i class="no-highlight">5</i>&nbsp;import java.util.List;
+<i class="no-highlight">6</i>&nbsp;
+<i class="no-highlight">7</i>&nbsp;import javax.servlet.http.Cookie;
+<i class="no-highlight">8</i>&nbsp;import javax.servlet.http.HttpServlet;
+<i class="no-highlight">9</i>&nbsp;import javax.servlet.http.HttpServletRequest;
+<i class="no-highlight">10</i>&nbsp;
+<i class="no-highlight">11</i>&nbsp;import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
+<i class="no-highlight">12</i>&nbsp;import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+<i class="no-highlight">13</i>&nbsp;import com.google.api.client.http.GenericUrl;
+<i class="no-highlight">14</i>&nbsp;import com.google.api.client.http.HttpTransport;
+<i class="no-highlight">15</i>&nbsp;import com.google.api.client.http.javanet.NetHttpTransport;
+<i class="no-highlight">16</i>&nbsp;import com.google.api.client.json.JsonFactory;
+<i class="no-highlight">17</i>&nbsp;import com.google.api.client.json.jackson2.JacksonFactory;
+<i class="no-highlight">18</i>&nbsp;import com.google.api.client.util.store.MemoryDataStoreFactory;
+<i class="no-highlight">19</i>&nbsp;
+<i class="no-highlight">20</i>&nbsp;import teammates.common.datatransfer.UserInfoCookie;
+<i class="no-highlight">21</i>&nbsp;import teammates.common.util.Config;
+<i class="no-highlight">22</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">23</i>&nbsp;import teammates.common.util.JsonUtils;
+<i class="no-highlight">24</i>&nbsp;import teammates.common.util.StringHelper;
+<i class="no-highlight">25</i>&nbsp;
+<i class="no-highlight">26</i>&nbsp;/**
+<i class="no-highlight">27</i>&nbsp; * Common servlet class that serves user authentication-related functions.
+<i class="no-highlight">28</i>&nbsp; */
+<b class="nc"><i class="no-highlight">29</i>&nbsp;abstract class AuthServlet extends HttpServlet {</b>
+<i class="no-highlight">30</i>&nbsp;
+<b class="nc"><i class="no-highlight">31</i>&nbsp;    private static final MemoryDataStoreFactory DATA_STORE_FACTORY = MemoryDataStoreFactory.getDefaultInstance();</b>
+<b class="nc"><i class="no-highlight">32</i>&nbsp;    private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();</b>
+<b class="nc"><i class="no-highlight">33</i>&nbsp;    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();</b>
+<b class="nc"><i class="no-highlight">34</i>&nbsp;    private static final List&lt;String&gt; SCOPES = Arrays.asList(&quot;https://www.googleapis.com/auth/userinfo.email&quot;);</b>
+<i class="no-highlight">35</i>&nbsp;
+<i class="no-highlight">36</i>&nbsp;    /**
+<i class="no-highlight">37</i>&nbsp;     * Gets the authorization code flow to be used across all HTTP servlet requests.
+<i class="no-highlight">38</i>&nbsp;     */
+<i class="no-highlight">39</i>&nbsp;    AuthorizationCodeFlow getAuthorizationFlow() throws IOException {
+<b class="nc"><i class="no-highlight">40</i>&nbsp;        return new GoogleAuthorizationCodeFlow.Builder(</b>
+<i class="no-highlight">41</i>&nbsp;                HTTP_TRANSPORT, JSON_FACTORY, Config.OAUTH2_CLIENT_ID, Config.OAUTH2_CLIENT_SECRET, SCOPES)
+<b class="nc"><i class="no-highlight">42</i>&nbsp;                .setDataStoreFactory(DATA_STORE_FACTORY)</b>
+<b class="nc"><i class="no-highlight">43</i>&nbsp;                .setAccessType(&quot;offline&quot;)</b>
+<b class="nc"><i class="no-highlight">44</i>&nbsp;                .build();</b>
+<i class="no-highlight">45</i>&nbsp;    }
+<i class="no-highlight">46</i>&nbsp;
+<i class="no-highlight">47</i>&nbsp;    /**
+<i class="no-highlight">48</i>&nbsp;     * Returns the redirect URI for the given HTTP servlet request.
+<i class="no-highlight">49</i>&nbsp;     */
+<i class="no-highlight">50</i>&nbsp;    String getRedirectUri(HttpServletRequest req) {
+<b class="nc"><i class="no-highlight">51</i>&nbsp;        GenericUrl url = new GenericUrl(req.getRequestURL().toString().replaceFirst(&quot;^http://&quot;, &quot;https://&quot;));</b>
+<b class="nc"><i class="no-highlight">52</i>&nbsp;        url.setRawPath(&quot;/oauth2callback&quot;);</b>
+<b class="nc"><i class="no-highlight">53</i>&nbsp;        url.set(&quot;ngsw-bypass&quot;, &quot;true&quot;);</b>
+<b class="nc"><i class="no-highlight">54</i>&nbsp;        return url.build();</b>
+<i class="no-highlight">55</i>&nbsp;    }
+<i class="no-highlight">56</i>&nbsp;
+<i class="no-highlight">57</i>&nbsp;    Cookie getLoginInvalidationCookie() {
+<b class="nc"><i class="no-highlight">58</i>&nbsp;        Cookie cookie = new Cookie(Const.SecurityConfig.AUTH_COOKIE_NAME, &quot;&quot;);</b>
+<b class="nc"><i class="no-highlight">59</i>&nbsp;        cookie.setPath(&quot;/&quot;);</b>
+<b class="nc"><i class="no-highlight">60</i>&nbsp;        cookie.setSecure(!Config.isDevServer());</b>
+<b class="nc"><i class="no-highlight">61</i>&nbsp;        cookie.setHttpOnly(true);</b>
+<b class="nc"><i class="no-highlight">62</i>&nbsp;        cookie.setMaxAge(0);</b>
+<b class="nc"><i class="no-highlight">63</i>&nbsp;        return cookie;</b>
+<i class="no-highlight">64</i>&nbsp;    }
+<i class="no-highlight">65</i>&nbsp;
+<i class="no-highlight">66</i>&nbsp;    Cookie getLoginCookie(UserInfoCookie uic) {
+<b class="nc"><i class="no-highlight">67</i>&nbsp;        Cookie cookie = new Cookie(Const.SecurityConfig.AUTH_COOKIE_NAME,</b>
+<b class="nc"><i class="no-highlight">68</i>&nbsp;                StringHelper.encrypt(JsonUtils.toCompactJson(uic)));</b>
+<b class="nc"><i class="no-highlight">69</i>&nbsp;        cookie.setPath(&quot;/&quot;);</b>
+<b class="nc"><i class="no-highlight">70</i>&nbsp;        cookie.setSecure(!Config.isDevServer());</b>
+<b class="nc"><i class="no-highlight">71</i>&nbsp;        cookie.setHttpOnly(true);</b>
+<b class="nc"><i class="no-highlight">72</i>&nbsp;        cookie.setMaxAge(7 * 24 * 60 * 60); // one week</b>
+<b class="nc"><i class="no-highlight">73</i>&nbsp;        return cookie;</b>
+<i class="no-highlight">74</i>&nbsp;    }
+<i class="no-highlight">75</i>&nbsp;
+<i class="no-highlight">76</i>&nbsp;    /**
+<i class="no-highlight">77</i>&nbsp;     * Represents the state object to be persisted during the callback.
+<i class="no-highlight">78</i>&nbsp;     */
+<i class="no-highlight">79</i>&nbsp;    static class AuthState {
+<i class="no-highlight">80</i>&nbsp;        private final String nextUrl;
+<i class="no-highlight">81</i>&nbsp;        private final String sessionId;
+<i class="no-highlight">82</i>&nbsp;
+<b class="nc"><i class="no-highlight">83</i>&nbsp;        AuthState(String nextUrl, String sessionId) {</b>
+<b class="nc"><i class="no-highlight">84</i>&nbsp;            this.nextUrl = nextUrl;</b>
+<b class="nc"><i class="no-highlight">85</i>&nbsp;            this.sessionId = sessionId;</b>
+<i class="no-highlight">86</i>&nbsp;        }
+<i class="no-highlight">87</i>&nbsp;
+<i class="no-highlight">88</i>&nbsp;        String getNextUrl() {
+<b class="nc"><i class="no-highlight">89</i>&nbsp;            return nextUrl;</b>
+<i class="no-highlight">90</i>&nbsp;        }
+<i class="no-highlight">91</i>&nbsp;
+<i class="no-highlight">92</i>&nbsp;        public String getSessionId() {
+<b class="nc"><i class="no-highlight">93</i>&nbsp;            return sessionId;</b>
+<i class="no-highlight">94</i>&nbsp;        }
+<i class="no-highlight">95</i>&nbsp;    }
+<i class="no-highlight">96</i>&nbsp;
+<i class="no-highlight">97</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:52</div>
+</div>
+</body>
+</html>

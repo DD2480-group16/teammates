@@ -1,0 +1,161 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > FeedbackQuestionType</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.common.datatransfer.questions</a>
+</div>
+
+<h1>Coverage Summary for Class: FeedbackQuestionType (teammates.common.datatransfer.questions)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FeedbackQuestionType</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (17/17)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.common.datatransfer.questions;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;/**
+<i class="no-highlight">4</i>&nbsp; * Feedback Question Type Definitions.
+<i class="no-highlight">5</i>&nbsp; */
+<i class="no-highlight">6</i>&nbsp;// CHECKSTYLE.OFF:JavadocVariable enum names are self-documenting
+<b class="fc"><i class="no-highlight">7</i>&nbsp;public enum FeedbackQuestionType {</b>
+<b class="fc"><i class="no-highlight">8</i>&nbsp;    TEXT(FeedbackTextQuestionDetails.class, FeedbackTextResponseDetails.class),</b>
+<b class="fc"><i class="no-highlight">9</i>&nbsp;    MCQ(FeedbackMcqQuestionDetails.class, FeedbackMcqResponseDetails.class),</b>
+<b class="fc"><i class="no-highlight">10</i>&nbsp;    MSQ(FeedbackMsqQuestionDetails.class, FeedbackMsqResponseDetails.class),</b>
+<b class="fc"><i class="no-highlight">11</i>&nbsp;    NUMSCALE(FeedbackNumericalScaleQuestionDetails.class, FeedbackNumericalScaleResponseDetails.class),</b>
+<i class="no-highlight">12</i>&nbsp;
+<b class="fc"><i class="no-highlight">13</i>&nbsp;    CONSTSUM(FeedbackConstantSumQuestionDetails.class, FeedbackConstantSumResponseDetails.class),</b>
+<i class="no-highlight">14</i>&nbsp;
+<i class="no-highlight">15</i>&nbsp;    // In the back-end, only CONSTSUM and not its branched versions is recognized as a valid question type.
+<i class="no-highlight">16</i>&nbsp;    // The branching here is done to make it simpler for the front-end to render the right items.
+<b class="fc"><i class="no-highlight">17</i>&nbsp;    CONSTSUM_OPTIONS(FeedbackConstantSumQuestionDetails.class, FeedbackConstantSumResponseDetails.class),</b>
+<b class="fc"><i class="no-highlight">18</i>&nbsp;    CONSTSUM_RECIPIENTS(FeedbackConstantSumQuestionDetails.class, FeedbackConstantSumResponseDetails.class),</b>
+<i class="no-highlight">19</i>&nbsp;
+<b class="fc"><i class="no-highlight">20</i>&nbsp;    CONTRIB(FeedbackContributionQuestionDetails.class, FeedbackContributionResponseDetails.class),</b>
+<b class="fc"><i class="no-highlight">21</i>&nbsp;    RUBRIC(FeedbackRubricQuestionDetails.class, FeedbackRubricResponseDetails.class),</b>
+<b class="fc"><i class="no-highlight">22</i>&nbsp;    RANK_OPTIONS(FeedbackRankOptionsQuestionDetails.class, FeedbackRankOptionsResponseDetails.class),</b>
+<b class="fc"><i class="no-highlight">23</i>&nbsp;    RANK_RECIPIENTS(FeedbackRankRecipientsQuestionDetails.class, FeedbackRankRecipientsResponseDetails.class);</b>
+<i class="no-highlight">24</i>&nbsp;
+<i class="no-highlight">25</i>&nbsp;    private final Class&lt;? extends FeedbackQuestionDetails&gt; questionDetailsClass;
+<i class="no-highlight">26</i>&nbsp;    private final Class&lt;? extends FeedbackResponseDetails&gt; responseDetailsClass;
+<i class="no-highlight">27</i>&nbsp;
+<i class="no-highlight">28</i>&nbsp;    /**
+<i class="no-highlight">29</i>&nbsp;     * Constructor for FeedbackQuestionType.
+<i class="no-highlight">30</i>&nbsp;     * Pass in the corresponding questionDetailsClass and responseDetailsClass
+<i class="no-highlight">31</i>&nbsp;     */
+<i class="no-highlight">32</i>&nbsp;    FeedbackQuestionType(Class&lt;? extends FeedbackQuestionDetails&gt; questionDetailsClass,
+<b class="fc"><i class="no-highlight">33</i>&nbsp;                         Class&lt;? extends FeedbackResponseDetails&gt; responseDetailsClass) {</b>
+<b class="fc"><i class="no-highlight">34</i>&nbsp;        this.questionDetailsClass = questionDetailsClass;</b>
+<b class="fc"><i class="no-highlight">35</i>&nbsp;        this.responseDetailsClass = responseDetailsClass;</b>
+<i class="no-highlight">36</i>&nbsp;    }
+<i class="no-highlight">37</i>&nbsp;
+<i class="no-highlight">38</i>&nbsp;    /**
+<i class="no-highlight">39</i>&nbsp;     * Getter for corresponding Feedback*QuestionDetails class.
+<i class="no-highlight">40</i>&nbsp;     *
+<i class="no-highlight">41</i>&nbsp;     * @return Class&lt;? extends FeedbackQuestionDetails&gt;
+<i class="no-highlight">42</i>&nbsp;     */
+<i class="no-highlight">43</i>&nbsp;    public Class&lt;? extends FeedbackQuestionDetails&gt; getQuestionDetailsClass() {
+<b class="fc"><i class="no-highlight">44</i>&nbsp;        return questionDetailsClass;</b>
+<i class="no-highlight">45</i>&nbsp;    }
+<i class="no-highlight">46</i>&nbsp;
+<i class="no-highlight">47</i>&nbsp;    /**
+<i class="no-highlight">48</i>&nbsp;     * Getter for corresponding Feedback*ResponseDetails class.
+<i class="no-highlight">49</i>&nbsp;     *
+<i class="no-highlight">50</i>&nbsp;     * @return Class&lt;? extends FeedbackResponseDetails&gt;
+<i class="no-highlight">51</i>&nbsp;     */
+<i class="no-highlight">52</i>&nbsp;    public Class&lt;? extends FeedbackResponseDetails&gt; getResponseDetailsClass() {
+<b class="fc"><i class="no-highlight">53</i>&nbsp;        return responseDetailsClass;</b>
+<i class="no-highlight">54</i>&nbsp;    }
+<i class="no-highlight">55</i>&nbsp;
+<i class="no-highlight">56</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-24 18:52</div>
+</div>
+</body>
+</html>
