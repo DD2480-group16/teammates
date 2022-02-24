@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.junit.AfterClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -105,7 +106,6 @@ public class FeedbackResponsesLogicTest extends BaseLogicTest {
                 .withRecipientSection(responseToUpdate.getRecipientSection())
                 .withResponseDetails(responseToUpdate.getResponseDetails())
                 .build();
-
         frLogic.createFeedbackResponse(existingResponse);
 
         FeedbackResponseAttributes[] finalResponse = new FeedbackResponseAttributes[] { responseToUpdate };
@@ -388,7 +388,6 @@ public class FeedbackResponsesLogicTest extends BaseLogicTest {
         assertTrue(frLogic.isNameVisibleToUser(fq, fr, instructor.getEmail(), true, true, roster));
         assertTrue(frLogic.isNameVisibleToUser(fq, fr, instructor.getEmail(), true, false, roster));
         assertTrue(frLogic.isNameVisibleToUser(fq, fr, student.getEmail(), false, false, roster));
-
         ______TS("test if visible to own team members");
 
         fr.setGiver(student.getEmail());
@@ -1126,6 +1125,22 @@ public class FeedbackResponsesLogicTest extends BaseLogicTest {
         assertEquals(4, responseForQuestion.size());
     }
 
+
+    @Test
+    @AfterClass
+    public void testZ() {       //test executed last to check branch coverage   
+        boolean[] branches = frLogic.getFlag();
+        int missing = 0;
+
+        for(int i = 0; i < branches.length; i++){
+                if(!branches[i]){
+                        System.out.print(i + " ");
+                        missing += 1;
+                }
+        }
+        System.out.println("\nMissed " + missing + " out of " + branches.length + " total branches.");
+    }
+
     private FeedbackQuestionAttributes getQuestionFromDatabase(DataBundle dataBundle, String jsonId) {
         FeedbackQuestionAttributes questionToGet = dataBundle.feedbackQuestions.get(jsonId);
         questionToGet = fqLogic.getFeedbackQuestion(questionToGet.getFeedbackSessionName(),
@@ -1171,5 +1186,47 @@ public class FeedbackResponsesLogicTest extends BaseLogicTest {
             responseComments.addAll(responseCommentsForResponse);
         }
         return responseComments;
+    }
+
+
+@Test
+    public void testCoverageImprovement() {    //for branch 2 coverage
+        removeAndRestoreDataBundle(loadDataBundle("/NewTest.json"));
+
+
+        FeedbackQuestionAttributes question = fqLogic.getFeedbackQuestion(
+                "First Session", "FQLogicPCT.CS2104", 1);
+
+        // Alice will see 3 responses
+        SessionResultsBundle bundle = frLogic.getSessionResultsForUser(
+                "First Session", "FQLogicPCT.CS2104", "FQLogicPCT.alice.b@gmail.tmt",
+                false, question.getId());
+        assertEquals(1, bundle.getQuestionResponseMap().size());
+        List<FeedbackResponseAttributes> responseForQuestion =
+                bundle.getQuestionResponseMap().entrySet().iterator().next().getValue();
+        assertEquals(3, responseForQuestion.size());
+
+        
+    }
+
+
+@Test
+    public void testCoverageImprovement2() {  //for branch 5 coverage
+        removeAndRestoreDataBundle(loadDataBundle("/NewTest2.json"));
+
+
+        FeedbackQuestionAttributes question = fqLogic.getFeedbackQuestion(
+                "First Session", "FQLogicPCT.CS2104", 1);
+
+        // Instructor
+        SessionResultsBundle bundle = frLogic.getSessionResultsForUser(
+                "First Session", "FQLogicPCT.CS2104", "FQLogicPCT.alice.b@gmail.tmt",
+                false, question.getId());
+        assertEquals(1, bundle.getQuestionResponseMap().size());
+        List<FeedbackResponseAttributes> responseForQuestion =
+                bundle.getQuestionResponseMap().entrySet().iterator().next().getValue();
+        assertEquals(3, responseForQuestion.size());
+
+        
     }
 }

@@ -44,6 +44,7 @@ public final class FeedbackResponsesLogic {
     private FeedbackResponseCommentsLogic frcLogic;
     private InstructorsLogic instructorsLogic;
     private StudentsLogic studentsLogic;
+    private boolean[] flag = new boolean[11]; //for branch coverage purpose
 
     private FeedbackResponsesLogic() {
         // prevent initialization
@@ -51,6 +52,10 @@ public final class FeedbackResponsesLogic {
 
     public static FeedbackResponsesLogic inst() {
         return instance;
+    }
+
+    public boolean[] getFlag(){
+        return flag;
     }
 
     void initLogicDependencies() {
@@ -623,26 +628,41 @@ public final class FeedbackResponsesLogic {
                 || response.getGiver().equals(userEmail)
                 || !isInstructor && relatedQuestion.isResponseVisibleTo(FeedbackParticipantType.STUDENTS)) {
             isVisibleResponse = true;
+            flag[0]=true;       //we set flag to true if we enter that branch
+
         } else if (studentsEmailInTeam != null && !isInstructor) {
             if (relatedQuestion.getRecipientType() == FeedbackParticipantType.TEAMS
                     && relatedQuestion.isResponseVisibleTo(FeedbackParticipantType.RECEIVER)
                     && response.getRecipient().equals(student.getTeam())) {
                 isVisibleResponse = true;
+                flag[1]=true;
             } else if (relatedQuestion.getRecipientType() == FeedbackParticipantType.TEAMS_IN_SAME_SECTION
                     && relatedQuestion.isResponseVisibleTo(FeedbackParticipantType.RECEIVER)
                     && response.getRecipient().equals(student.getTeam())) {
                 isVisibleResponse = true;
+                flag[2]=true;      //we now enter that branch
             } else if (relatedQuestion.getGiverType() == FeedbackParticipantType.TEAMS
                     && response.getGiver().equals(student.getTeam())) {
                 isVisibleResponse = true;
+                flag[3]=true;
             } else if (relatedQuestion.isResponseVisibleTo(FeedbackParticipantType.OWN_TEAM_MEMBERS)
                     && studentsEmailInTeam.contains(response.getGiver())) {
                 isVisibleResponse = true;
+                flag[4]=true;
             } else if (relatedQuestion.isResponseVisibleTo(FeedbackParticipantType.RECEIVER_TEAM_MEMBERS)
                     && studentsEmailInTeam.contains(response.getRecipient())) {
                 isVisibleResponse = true;
+                flag[5]=true; //we now enter that branch
             }
+                else {
+                    flag[6]=true;
+                }
+            
         }
+        else {
+            flag[7]=true;
+        }
+        
         if (isVisibleResponse && instructor != null) {
             boolean isGiverSectionRestricted =
                     !instructor.isAllowedForPrivilege(response.getGiverSection(),
@@ -659,7 +679,14 @@ public final class FeedbackResponsesLogic {
             boolean isNotAllowedForInstructor = isGiverSectionRestricted || isRecipientSectionRestricted;
             if (isNotAllowedForInstructor) {
                 isVisibleResponse = false;
+                flag[8]=true;
             }
+            else {
+                flag[9]=true;
+            }
+        }
+        else {
+            flag[10]=true;
         }
         return isVisibleResponse;
     }
