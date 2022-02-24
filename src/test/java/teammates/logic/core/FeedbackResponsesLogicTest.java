@@ -421,6 +421,8 @@ public class FeedbackResponsesLogicTest extends BaseLogicTest {
         assertTrue(frLogic.isNameVisibleToUser(fq, fr, student3.getEmail(), false, false, roster));
         assertFalse(frLogic.isNameVisibleToUser(fq, fr, student5.getEmail(), false, false, roster));
 
+        // Coverage Improvements by Fredrik Starts here ---------------------------------------------------------------
+
         ______TS("test if function throws error if FeedbackPerticipantType is not valid");
         fq.setRecipientType(FeedbackParticipantType.NONE);
         fq.getShowRecipientNameTo().clear();
@@ -436,6 +438,8 @@ public class FeedbackResponsesLogicTest extends BaseLogicTest {
             exception_thrown = true;
         }
         assertTrue(exception_thrown);
+
+        // Coverage Improvements by Fredrik Ends here -----------------------------------------------------------------
 
         ______TS("test if visible to receiver/giver team members for team questions");
         fq.setRecipientType(FeedbackParticipantType.TEAMS);

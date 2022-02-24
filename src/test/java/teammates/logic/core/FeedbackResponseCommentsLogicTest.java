@@ -99,8 +99,9 @@ public class FeedbackResponseCommentsLogicTest extends BaseLogicTest {
         verifyPresentInDatabase(frComment);
     }
 
+    // Coverage Improvements by Fredrik Starts here -------------------------------------------------------------------
     @Test
-    public void test_TeamsFeedbackParticipant_exceptionShouldBeThrown() {
+    public void test_FeedbackParticipantTeams_exceptionShouldBeThrown() {
         //This test checks if an exception is thrown when commentGiverType is set to TEAMS
         FeedbackResponseCommentAttributes frComment = restoreFrCommentFromDataBundle("comment1FromT1C1ToR1Q1S1C1");
         frComment.setCommentGiverType(FeedbackParticipantType.TEAMS);
@@ -110,6 +111,7 @@ public class FeedbackResponseCommentsLogicTest extends BaseLogicTest {
                 () -> frcLogic.createFeedbackResponseComment(frComment));
         assertEquals("User Fred is not a registered team for course idOfTypicalCourse1.", ednee.getMessage());
     }
+    // Coverage Improvements by Fredrik Ends here ---------------------------------------------------------------------
 
     @Test
     public void testCreateFeedbackResponseComment_invalidCommentGiverType_exceptionShouldBeThrown() {
