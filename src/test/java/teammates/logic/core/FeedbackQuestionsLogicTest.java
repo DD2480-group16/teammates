@@ -75,6 +75,68 @@ public class FeedbackQuestionsLogicTest extends BaseLogicTest {
 
     }
 
+    //Added Test 1 - Malin
+    @Test
+    public void testGetRecipientsForQuestionOwnTeamExcludingStudentSelf() throws Exception {
+        FeedbackQuestionAttributes question;
+        String email;
+        Map<String, String> recipients;
+
+        ______TS("response to team members, student self not in recipients");
+        question = getQuestionFromDatabase("team.members.feedback");
+        email = dataBundle.students.get("student1InCourse1").getEmail();
+        recipients = fqLogic.getRecipientsForQuestion(question, email);
+        assertEquals(recipients.size(), 3);
+        assertEquals(recipients.get(email), null);
+    }
+
+    //Added Test 2 - Malin
+    @Test
+    public void testGetRecipientsForQuestionOwnTeamAsTeam() throws Exception {
+        FeedbackQuestionAttributes question;
+        String email;
+        Map<String, String> recipients;
+
+        ______TS("own team, the recipient is the team");
+        question = getQuestionFromDatabase("qn2InRANKSession"); // Added data to typicalDataBundle
+        email = dataBundle.students.get("student1InCourse1").getEmail();
+        String teamName = dataBundle.students.get("student1InCourse1").getTeam();
+        recipients = fqLogic.getRecipientsForQuestion(question, email);
+        assertEquals(recipients.size(), 1);
+        assertTrue(recipients.containsKey(teamName));
+        assertEquals(recipients.get(teamName), teamName);
+    }
+
+    //Added Test 3 - Malin
+    @Test
+    public void testGetRecipientsForQuestionOwnTeamIncludingStudentSelf() throws Exception {
+        FeedbackQuestionAttributes question;
+        String email;
+        Map<String, String> recipients;
+
+        ______TS("response to team members including student self");
+        question = getQuestionFromDatabase("qn1InSession5InCourse1"); // Added data to typicalDataBundle
+        email = dataBundle.students.get("student1InCourse1").getEmail();
+        recipients = fqLogic.getRecipientsForQuestion(question, email);
+        assertEquals(recipients.size(), 4);
+        assertTrue(recipients.containsKey(email));
+    }
+
+    //Added Test 4 - Malin
+    @Test
+    public void testGetRecipientsForQuestionStudentsInTheSameSection() throws Exception {
+        FeedbackQuestionAttributes question;
+        String email;
+        Map<String, String> recipients;
+
+        ______TS("response to students in the same section, student self not in recipients");
+        question = getQuestionFromDatabase("qn1InTeamSectionSession"); // Added data to typicalDataBundle
+        email = dataBundle.students.get("student1InCourse1").getEmail();
+        recipients = fqLogic.getRecipientsForQuestion(question, email);
+        assertEquals(recipients.size(), 3);
+        assertEquals(recipients.get(email), null);
+    }
+
     @Test
     public void allTests() throws Exception {
         testGetRecipientsForQuestion();

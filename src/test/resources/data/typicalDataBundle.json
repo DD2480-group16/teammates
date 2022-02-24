@@ -1188,6 +1188,84 @@
         "RECEIVER"
       ]
     },
+    "qn2InRANKSession": {
+      "feedbackSessionName": "RANK Session",
+      "courseId": "idOfTypicalCourse1",
+      "questionDetails": {
+        "areDuplicatesAllowed": true,
+        "questionText": "Rank the areas of improvement you think your team should make progress in.",
+        "questionType": "RANK_OPTIONS",
+        "options": [
+          "Quality of work",
+          "Quality of progress reports",
+          "Time management",
+          "Teamwork and communication",
+          "Friendliness of teammates"
+        ]
+      },
+      "questionNumber": 2,
+      "giverType": "STUDENTS",
+      "recipientType": "OWN_TEAM",
+      "numberOfEntitiesToGiveFeedbackTo": -100,
+      "showResponsesTo": [
+        "INSTRUCTORS"
+      ],
+      "showGiverNameTo": [
+        "INSTRUCTORS"
+      ],
+      "showRecipientNameTo": [
+        "INSTRUCTORS"
+      ]
+    },"qn1InTeamSectionSession": {
+      "feedbackSessionName": "TEAM SECTION Session",
+      "courseId": "idOfTypicalCourse1",
+      "questionDetails": {
+        "areDuplicatesAllowed": true,
+        "questionText": "Rank the areas of improvement you think your section should make progress in.",
+        "questionType": "RANK_OPTIONS",
+        "options": [
+          "Quality of work",
+          "Quality of progress reports",
+          "Time management",
+          "Teamwork and communication",
+          "Friendliness of teammates"
+        ]
+      },
+      "questionNumber": 2,
+      "giverType": "STUDENTS",
+      "recipientType": "STUDENTS_IN_SAME_SECTION",
+      "numberOfEntitiesToGiveFeedbackTo": -100,
+      "showResponsesTo": [
+        "INSTRUCTORS"
+      ],
+      "showGiverNameTo": [
+        "INSTRUCTORS"
+      ],
+      "showRecipientNameTo": [
+        "INSTRUCTORS"
+      ]
+    },
+    "qn1InSession5InCourse1": {
+      "feedbackSessionName": "CONTRIB Session",
+      "courseId": "idOfTypicalCourse1",
+      "questionDetails": {
+        "questionText": "How much has each team member including yourself, contributed to the project?",
+        "questionType": "CONTRIB"
+      },
+      "questionNumber": 1,
+      "giverType": "STUDENTS",
+      "recipientType": "OWN_TEAM_MEMBERS_INCLUDING_SELF",
+      "numberOfEntitiesToGiveFeedbackTo": -100,
+      "showResponsesTo": [
+        "INSTRUCTORS"
+      ],
+      "showGiverNameTo": [
+        "INSTRUCTORS"
+      ],
+      "showRecipientNameTo": [
+        "INSTRUCTORS"
+      ]
+    },
     "team.members.feedback": {
       "feedbackSessionName": "Second feedback session",
       "courseId": "idOfTypicalCourse1",
