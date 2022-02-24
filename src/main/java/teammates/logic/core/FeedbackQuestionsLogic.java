@@ -233,6 +233,27 @@ public final class FeedbackQuestionsLogic {
         return fqDb.hasFeedbackQuestionsForGiverType(feedbackSessionName, courseId, giverType);
     }
 
+    private void putStudentRecipientsInMap(String giver, List<StudentAttributes> listOfStudents,
+            Map<String, String> recipients) {
+        for (StudentAttributes student : listOfStudents) {
+            // Ensure student does not evaluate himself
+            if (!giver.equals(student.getEmail())) {
+                recipients.put(student.getEmail(), student.getName());
+            }
+        }
+    }
+
+    private void putTeamRecipientsInMap(String giverTeam, List<String> listOfTeams,
+            Map<String, String> recipients) {
+        for (String team : listOfTeams) {
+            // Ensure student('s team) does not evaluate own team.
+            if (!giverTeam.equals(team)) {
+                // recipientEmail doubles as team name in this case.
+                recipients.put(team, team);
+            }
+        }
+    }
+
     /**
      * Gets the email-name mapping of recipients for the given question for the given giver.
      */
@@ -260,22 +281,12 @@ public final class FeedbackQuestionsLogic {
             break;
         case STUDENTS:
             List<StudentAttributes> studentsInCourse = studentsLogic.getStudentsForCourse(question.getCourseId());
-            for (StudentAttributes student : studentsInCourse) {
-                // Ensure student does not evaluate himself
-                if (!giver.equals(student.getEmail())) {
-                    recipients.put(student.getEmail(), student.getName());
-                }
-            }
+            putStudentRecipientsInMap(giver, studentsInCourse, recipients);
             break;
         case STUDENTS_IN_SAME_SECTION:
             List<StudentAttributes> studentsInSection =
                     studentsLogic.getStudentsForSection(giverSection, question.getCourseId());
-            for (StudentAttributes student : studentsInSection) {
-                // Ensure student does not evaluate himself
-                if (!giver.equals(student.getEmail())) {
-                    recipients.put(student.getEmail(), student.getName());
-                }
-            }
+            putStudentRecipientsInMap(giver, studentsInSection, recipients);
             break;
         case INSTRUCTORS:
             List<InstructorAttributes> instructorsInCourse =
@@ -289,34 +300,18 @@ public final class FeedbackQuestionsLogic {
             break;
         case TEAMS:
             List<String> teams = coursesLogic.getTeamsForCourse(question.getCourseId());
-            for (String team : teams) {
-                // Ensure student('s team) does not evaluate own team.
-                if (!giverTeam.equals(team)) {
-                    // recipientEmail doubles as team name in this case.
-                    recipients.put(team, team);
-                }
-            }
+            putTeamRecipientsInMap(giverTeam, teams, recipients);
             break;
         case TEAMS_IN_SAME_SECTION:
             List<String> teamsInSection = coursesLogic.getTeamsForSection(giverSection, question.getCourseId());
-            for (String team : teamsInSection) {
-                // Ensure student('s team) does not evaluate own team.
-                if (!giverTeam.equals(team)) {
-                    // recipientEmail doubles as team name in this case.
-                    recipients.put(team, team);
-                }
-            }
+            putTeamRecipientsInMap(giverTeam, teamsInSection, recipients);
             break;
         case OWN_TEAM:
             recipients.put(giverTeam, giverTeam);
             break;
         case OWN_TEAM_MEMBERS:
             List<StudentAttributes> students = studentsLogic.getStudentsForTeam(giverTeam, question.getCourseId());
-            for (StudentAttributes student : students) {
-                if (!student.getEmail().equals(giver)) {
-                    recipients.put(student.getEmail(), student.getName());
-                }
-            }
+            putStudentRecipientsInMap(giver, students, recipients);
             break;
         case OWN_TEAM_MEMBERS_INCLUDING_SELF:
             List<StudentAttributes> teamMembers = studentsLogic.getStudentsForTeam(giverTeam, question.getCourseId());
