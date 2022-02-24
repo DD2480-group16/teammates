@@ -122,6 +122,21 @@ public class FeedbackQuestionsLogicTest extends BaseLogicTest {
         assertTrue(recipients.containsKey(email));
     }
 
+    //Added Test 4 - Malin
+    @Test
+    public void testGetRecipientsForQuestionStudentsInTheSameSection() throws Exception {
+        FeedbackQuestionAttributes question;
+        String email;
+        Map<String, String> recipients;
+
+        ______TS("response to students in the same section, student self not in recipients");
+        question = getQuestionFromDatabase("qn1InTeamSectionSession"); // Added data to typicalDataBundle
+        email = dataBundle.students.get("student1InCourse1").getEmail();
+        recipients = fqLogic.getRecipientsForQuestion(question, email);
+        assertEquals(recipients.size(), 3);
+        assertEquals(recipients.get(email), null);
+    }
+
     @Test
     public void allTests() throws Exception {
         testGetRecipientsForQuestion();
