@@ -233,6 +233,9 @@ public final class FeedbackQuestionsLogic {
         return fqDb.hasFeedbackQuestionsForGiverType(feedbackSessionName, courseId, giverType);
     }
 
+    /**
+    * Puts the given students in the map of recipients unless it is the student self.
+    */
     private void putStudentRecipientsInMap(String giver, List<StudentAttributes> listOfStudents,
             Map<String, String> recipients) {
         for (StudentAttributes student : listOfStudents) {
@@ -243,6 +246,9 @@ public final class FeedbackQuestionsLogic {
         }
     }
 
+    /*
+    * Puts the teams from the given list into recipents map unless it is the students own team.
+    */
     private void putTeamRecipientsInMap(String giverTeam, List<String> listOfTeams,
             Map<String, String> recipients) {
         for (String team : listOfTeams) {
