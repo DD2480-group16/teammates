@@ -57,7 +57,7 @@ public class FeedbackQuestionsLogicTest extends BaseLogicTest {
                 missed = missed + 1;
             }
         }
-        System.out.println(missed + " branches missed of a total of 27 branches.\n");
+        System.out.println(missed + " branches missed of a total of 28 branches.\n");
     }
 
     @BeforeMethod
