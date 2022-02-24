@@ -282,17 +282,50 @@ public class FeedbackQuestionsLogicTest extends BaseLogicTest {
         assertEquals(recipients.get(studentGiver.getEmail()), FeedbackQuestionsLogic.USER_NAME_FOR_SELF);
         assertEquals(recipients.size(), 1);
 
-        boolean[] branchesTaken = fqLogic.getBranchChecker();
-        int missedBranches = 0;
+        // NEW TESTS
+    	// Adds coverage of branch 9 and 12
+    	______TS("students in same section");
 
-        System.out.println("Branches missed in function getRecipientsOfQuestion: ");
-        for(int i = 0; i < branchesTaken.length; i++){
-                if(!branchesTaken[i]){
-                        System.out.print(i + " ");
-                        missedBranches += 1;
-                }
-        }
-        System.out.println("\nMissed " + missedBranches + " out of " + branchesTaken.length + " total branches.")
+    	question = getQuestionFromDatabase("qnStudentsInSameSection");
+    	studentGiver = dataBundle.students.get("student1InCourse1");
+    	courseRoster = new CourseRoster(
+            	studentsLogic.getStudentsForCourse(studentGiver.getCourse()),
+            	instructorsLogic.getInstructorsForCourse(studentGiver.getCourse()));
+
+    	recipients = fqLogic.getRecipientsOfQuestion(question, null, studentGiver, null);
+    	assertEquals(recipients.size(), 3);
+    	recipients = fqLogic.getRecipientsOfQuestion(question, null, studentGiver, courseRoster);
+    	assertEquals(recipients.size(), 3); // should produce the same answer
+
+    	// Adds coverage of branch 45-48
+    	______TS("own team");
+
+    	question = getQuestionFromDatabase("qnOwnTeam");
+    	question.setRecipientType(FeedbackParticipantType.OWN_TEAM_MEMBERS_INCLUDING_SELF);
+    	instructorGiver = dataBundle.instructors.get("instructor1OfCourse1");
+    	courseRoster = new CourseRoster(
+            	studentsLogic.getStudentsForCourse(studentGiver.getCourse()),
+            	instructorsLogic.getInstructorsForCourse(studentGiver.getCourse()));
+
+    	recipients = fqLogic.getRecipientsOfQuestion(question, null, studentGiver, null);
+    	assertEquals(recipients.size(), 4);
+    	recipients = fqLogic.getRecipientsOfQuestion(question, null, studentGiver, courseRoster);
+    	assertEquals(recipients.size(), 4); // should produce the same answer
+
+
+    	// BRANCH COVERAGE RESULT
+    	boolean[] branchesTaken = fqLogic.getBranchChecker();
+    	int missedBranches = 0;
+
+    	System.out.println("Branches missed in function getRecipientsOfQuestion: ");
+    	for(int i = 0; i < branchesTaken.length; i++){
+            	if(!branchesTaken[i]){
+                    	System.out.print(i + " ");
+                    	missedBranches += 1;
+            	}
+    	}
+    	System.out.println("\nMissed " + missedBranches + " out of " + branchesTaken.length + " total branches.");
+
     }
 
     @Test

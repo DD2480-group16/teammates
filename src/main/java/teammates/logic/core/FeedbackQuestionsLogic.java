@@ -347,9 +347,9 @@ public final class FeedbackQuestionsLogic {
      * @return a map which keys are the identifiers of the recipients and values are the names of the recipients
      */
     public Map<String, String> getRecipientsOfQuestion(
-            FeedbackQuestionAttributes question,
-            @Nullable InstructorAttributes instructorGiver, @Nullable StudentAttributes studentGiver,
-            @Nullable CourseRoster courseRoster) {
+        FeedbackQuestionAttributes question,
+        @Nullable InstructorAttributes instructorGiver, @Nullable StudentAttributes studentGiver,
+        @Nullable CourseRoster courseRoster) {
         assert instructorGiver != null || studentGiver != null;
 
         Map<String, String> recipients = new HashMap<>();
@@ -371,7 +371,7 @@ public final class FeedbackQuestionsLogic {
             giverTeam = Const.USER_TEAM_FOR_INSTRUCTOR;
             giverSection = Const.DEFAULT_SECTION;
         } else {
-            branchChecker[2] = true; // Branch 2
+            branchChecker[2] = true; // Branch 2 NOT REACHED
         }
 
         FeedbackParticipantType recipientType = question.getRecipientType();
@@ -396,7 +396,7 @@ public final class FeedbackQuestionsLogic {
             if (courseRoster == null) {
                 branchChecker[8] = true; // Branch 8
                 if (generateOptionsFor == FeedbackParticipantType.STUDENTS_IN_SAME_SECTION) {
-                    branchChecker[9] = true; // Branch 9
+                    branchChecker[9] = true; // Branch 9 REACHED WITH NEW TEST
                     studentList = studentsLogic.getStudentsForSection(giverSection, question.getCourseId());
                 } else {
                     branchChecker[10] = true; // Branch 10
@@ -405,7 +405,7 @@ public final class FeedbackQuestionsLogic {
             } else {
                 branchChecker[11] = true; // Branch 11
                 if (generateOptionsFor == FeedbackParticipantType.STUDENTS_IN_SAME_SECTION) {
-                    branchChecker[12] = true; // Branch 12
+                    branchChecker[12] = true; // Branch 12 REACHED WITH NEW TEST
                     final String finalGiverSection = giverSection;
                     studentList = courseRoster.getStudents().stream()
                             .filter(studentAttributes -> studentAttributes.getSection()
@@ -421,7 +421,7 @@ public final class FeedbackQuestionsLogic {
                         student.getSection(), question.getFeedbackSessionName(),
                         Const.InstructorPermissions.CAN_SUBMIT_SESSION_IN_SECTIONS)) {
                     // instructor can only see students in allowed sections for him/her
-                    branchChecker[15] = true; // Branch 15
+                    branchChecker[15] = true; // Branch 15 NOT REACHED
                     continue;
                 } else {
                     branchChecker[16] = true; // Branch 16
@@ -449,7 +449,7 @@ public final class FeedbackQuestionsLogic {
                 branchChecker[22] = true; // Branch 22
                 // remove hidden instructors for students
                 if (isStudentGiver && !instr.isDisplayedToStudents()) {
-                    branchChecker[23] = true; // Branch 23
+                    branchChecker[23] = true; // Branch 23 NOT REACHED
                     continue;
                 }else {
                     branchChecker[24] = true; // Branch 24
@@ -470,7 +470,7 @@ public final class FeedbackQuestionsLogic {
             Map<String, List<StudentAttributes>> teamToTeamMembersTable;
             List<StudentAttributes> teamStudents;
             if (generateOptionsFor == FeedbackParticipantType.TEAMS_IN_SAME_SECTION) {
-                branchChecker[29] = true; // Branch 29
+                branchChecker[29] = true; // Branch 29 NOT REACHED
                 teamStudents = studentsLogic.getStudentsForSection(giverSection, question.getCourseId());
                 teamToTeamMembersTable = CourseRoster.buildTeamToMembersTable(teamStudents);
             } else {
@@ -491,7 +491,7 @@ public final class FeedbackQuestionsLogic {
                         question.getFeedbackSessionName(),
                         Const.InstructorPermissions.CAN_SUBMIT_SESSION_IN_SECTIONS)) {
                     // instructor can only see teams in allowed sections for him/her
-                    branchChecker[34] = true; // Branch 34
+                    branchChecker[34] = true; // Branch 34 NOT REACHED
                     continue;
                 } else{
                     branchChecker[35] = true; // Branch 35
@@ -507,7 +507,7 @@ public final class FeedbackQuestionsLogic {
             }
             break;
         case OWN_TEAM:
-            branchChecker[38] = true; // Branch 38
+            branchChecker[38] = true; // Branch 38 NOT REACHED
             recipients.put(giverTeam, giverTeam);
             break;
         case OWN_TEAM_MEMBERS:
@@ -523,7 +523,7 @@ public final class FeedbackQuestionsLogic {
             for (StudentAttributes student : students) {
                 branchChecker[42] = true; // Branch 42
                 if (!student.getEmail().equals(giverEmail)) {
-                    branchChecker[43] = true; // Branch 43
+                    branchChecker[43] = true; // Branch 43 NOT REACHED
                     recipients.put(student.getEmail(), student.getName());
                 }else {
                     branchChecker[44] = true; // Branch 44
@@ -531,17 +531,17 @@ public final class FeedbackQuestionsLogic {
             }
             break;
         case OWN_TEAM_MEMBERS_INCLUDING_SELF:
-            branchChecker[45] = true; // Branch 45
+            branchChecker[45] = true; // Branch 45  REACHED WITH NEW TEST
             List<StudentAttributes> teamMembers;
             if (courseRoster == null) {
-                branchChecker[46] = true; // Branch 46
+                branchChecker[46] = true; // Branch 46  REACHED WITH NEW TEST
                 teamMembers = studentsLogic.getStudentsForTeam(giverTeam, question.getCourseId());
             } else {
-                branchChecker[47] = true; // Branch 47
+                branchChecker[47] = true; // Branch 47  REACHED WITH NEW TEST
                 teamMembers = courseRoster.getTeamToMembersTable().getOrDefault(giverTeam, Collections.emptyList());
             }
             for (StudentAttributes student : teamMembers) {
-                branchChecker[48] = true; // Branch 48
+                branchChecker[48] = true; // Branch 48  REACHED WITH NEW TEST
                 // accepts self feedback too
                 recipients.put(student.getEmail(), student.getName());
             }
@@ -551,7 +551,7 @@ public final class FeedbackQuestionsLogic {
             recipients.put(Const.GENERAL_QUESTION, Const.GENERAL_QUESTION);
             break;
         default:
-            branchChecker[50] = true; // Branch 50
+            branchChecker[50] = true; // Branch 50 NOT REACHED
             break;
         }
         return recipients;
@@ -560,6 +560,7 @@ public final class FeedbackQuestionsLogic {
     public boolean[] getBranchChecker(){
         return branchChecker;
     }
+
 
     /**
      * Builds a complete giver to recipient map for a {@code relatedQuestion}.
