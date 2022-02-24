@@ -38,6 +38,8 @@ public final class FeedbackResponseCommentsLogic {
     private InstructorsLogic instructorsLogic;
     private StudentsLogic studentsLogic;
 
+    private boolean[] branchChecker = new boolean[17];
+
     private FeedbackResponseCommentsLogic() {
         // prevent initialization
     }
@@ -224,52 +226,73 @@ public final class FeedbackResponseCommentsLogic {
         String responseGiverTeam = "giverTeam";
         if (roster.getStudentForEmail(response.getGiver()) != null) {
             responseGiverTeam = roster.getStudentForEmail(response.getGiver()).getTeam();
+            branchChecker[0] = true;
         }
         String responseRecipientTeam = "recipientTeam";
         if (roster.getStudentForEmail(response.getRecipient()) != null) {
             responseRecipientTeam = roster.getStudentForEmail(response.getRecipient()).getTeam();
+            branchChecker[1] = true;
         }
         String currentUserTeam = "currentUserTeam";
         if (roster.getStudentForEmail(userEmail) != null) {
             currentUserTeam = roster.getStudentForEmail(userEmail).getTeam();
+            branchChecker[2] = true;
         }
         for (FeedbackParticipantType type : showNameTo) {
             switch (type) {
             case INSTRUCTORS:
                 if (roster.getInstructorForEmail(userEmail) != null) {
+                    branchChecker[3] = true;
                     return true;
                 }
+                branchChecker[4] = true;
                 break;
             case OWN_TEAM_MEMBERS:
                 if (responseGiverTeam.equals(currentUserTeam)) {
+                    branchChecker[5] = true;
                     return true;
                 }
+                branchChecker[6] = true;
                 break;
             case RECEIVER:
                 if (userEmail.equals(response.getRecipient())) {
+                    branchChecker[7] = true;
                     return true;
                 }
+                branchChecker[8] = true;
                 break;
             case RECEIVER_TEAM_MEMBERS:
                 if (responseRecipientTeam.equals(currentUserTeam)) {
+                    branchChecker[9] = true;
                     return true;
                 }
+                branchChecker[10] = true;
                 break;
             case STUDENTS:
                 if (roster.getStudentForEmail(userEmail) != null) {
+                    branchChecker[11] = true;
                     return true;
                 }
+                branchChecker[12] = true;
                 break;
             case GIVER:
                 if (userEmail.equals(response.getGiver())) {
+                    branchChecker[13] = true;
                     return true;
                 }
+                branchChecker[14] = true;
                 break;
             default:
+                branchChecker[15] = true;
                 break;
             }
         }
+        branchChecker[16] = true;
         return false;
+    }
+
+    public boolean[] getBranchChecker() {
+        return branchChecker;
     }
 
     /**

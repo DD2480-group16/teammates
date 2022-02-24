@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -471,6 +472,21 @@ public class FeedbackResponseCommentsLogicTest extends BaseLogicTest {
         assertTrue(frcLogic.isNameVisibleToUser(comment, relatedResponse, student3InCourse1Email, roster));
         assertTrue(frcLogic.isNameVisibleToUser(comment, relatedResponse, student1InCourse2Email, roster));
 
+    }
+
+    @AfterClass
+    public void zzz() {
+        boolean[] branches = frcLogic.getBranchChecker();
+        int count = 0;
+
+        for (int i = 0; i < branches.length; i++) {
+            if (!branches[i]) {
+                System.out.println(i);
+                count += 1;
+            }
+        }
+        assertTrue(true);
+        System.out.println("Missed " + count + " out of " + branches.length + " total branches.");
     }
 
     @Test
