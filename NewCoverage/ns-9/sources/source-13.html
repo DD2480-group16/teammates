@@ -1,0 +1,158 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > LogicStarter</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.logic.core</a>
+</div>
+
+<h1>Coverage Summary for Class: LogicStarter (teammates.logic.core)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LogicStarter</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (2/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.9%
+  </span>
+  <span class="absValue">
+    (20/22)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.logic.core;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import javax.servlet.ServletContextEvent;
+<i class="no-highlight">4</i>&nbsp;import javax.servlet.ServletContextListener;
+<i class="no-highlight">5</i>&nbsp;
+<i class="no-highlight">6</i>&nbsp;import teammates.common.util.Logger;
+<i class="no-highlight">7</i>&nbsp;
+<i class="no-highlight">8</i>&nbsp;/**
+<i class="no-highlight">9</i>&nbsp; * Setup in web.xml to register logic classes at application startup.
+<i class="no-highlight">10</i>&nbsp; */
+<b class="nc"><i class="no-highlight">11</i>&nbsp;public class LogicStarter implements ServletContextListener {</b>
+<i class="no-highlight">12</i>&nbsp;
+<b class="fc"><i class="no-highlight">13</i>&nbsp;    private static final Logger log = Logger.getLogger();</b>
+<i class="no-highlight">14</i>&nbsp;
+<i class="no-highlight">15</i>&nbsp;    /**
+<i class="no-highlight">16</i>&nbsp;     * Registers dependencies between different logic classes.
+<i class="no-highlight">17</i>&nbsp;     */
+<i class="no-highlight">18</i>&nbsp;    public static void initializeDependencies() {
+<b class="fc"><i class="no-highlight">19</i>&nbsp;        AccountsLogic accountsLogic = AccountsLogic.inst();</b>
+<b class="fc"><i class="no-highlight">20</i>&nbsp;        CoursesLogic coursesLogic = CoursesLogic.inst();</b>
+<b class="fc"><i class="no-highlight">21</i>&nbsp;        FeedbackQuestionsLogic fqLogic = FeedbackQuestionsLogic.inst();</b>
+<b class="fc"><i class="no-highlight">22</i>&nbsp;        FeedbackResponsesLogic frLogic = FeedbackResponsesLogic.inst();</b>
+<b class="fc"><i class="no-highlight">23</i>&nbsp;        FeedbackResponseCommentsLogic frcLogic = FeedbackResponseCommentsLogic.inst();</b>
+<b class="fc"><i class="no-highlight">24</i>&nbsp;        FeedbackSessionsLogic fsLogic = FeedbackSessionsLogic.inst();</b>
+<b class="fc"><i class="no-highlight">25</i>&nbsp;        InstructorsLogic instructorsLogic = InstructorsLogic.inst();</b>
+<b class="fc"><i class="no-highlight">26</i>&nbsp;        StudentsLogic studentsLogic = StudentsLogic.inst();</b>
+<b class="fc"><i class="no-highlight">27</i>&nbsp;        ProfilesLogic profilesLogic = ProfilesLogic.inst();</b>
+<i class="no-highlight">28</i>&nbsp;
+<b class="fc"><i class="no-highlight">29</i>&nbsp;        accountsLogic.initLogicDependencies();</b>
+<b class="fc"><i class="no-highlight">30</i>&nbsp;        coursesLogic.initLogicDependencies();</b>
+<b class="fc"><i class="no-highlight">31</i>&nbsp;        fqLogic.initLogicDependencies();</b>
+<b class="fc"><i class="no-highlight">32</i>&nbsp;        frLogic.initLogicDependencies();</b>
+<b class="fc"><i class="no-highlight">33</i>&nbsp;        frcLogic.initLogicDependencies();</b>
+<b class="fc"><i class="no-highlight">34</i>&nbsp;        fsLogic.initLogicDependencies();</b>
+<b class="fc"><i class="no-highlight">35</i>&nbsp;        instructorsLogic.initLogicDependencies();</b>
+<b class="fc"><i class="no-highlight">36</i>&nbsp;        studentsLogic.initLogicDependencies();</b>
+<b class="fc"><i class="no-highlight">37</i>&nbsp;        profilesLogic.initLogicDependencies();</b>
+<i class="no-highlight">38</i>&nbsp;
+<b class="fc"><i class="no-highlight">39</i>&nbsp;        log.info(&quot;Initialized dependencies between logic classes&quot;);</b>
+<i class="no-highlight">40</i>&nbsp;    }
+<i class="no-highlight">41</i>&nbsp;
+<i class="no-highlight">42</i>&nbsp;    @Override
+<i class="no-highlight">43</i>&nbsp;    public void contextInitialized(ServletContextEvent event) {
+<i class="no-highlight">44</i>&nbsp;        // Invoked by Jetty at application startup.
+<b class="nc"><i class="no-highlight">45</i>&nbsp;        initializeDependencies();</b>
+<i class="no-highlight">46</i>&nbsp;    }
+<i class="no-highlight">47</i>&nbsp;
+<i class="no-highlight">48</i>&nbsp;    @Override
+<i class="no-highlight">49</i>&nbsp;    public void contextDestroyed(ServletContextEvent event) {
+<i class="no-highlight">50</i>&nbsp;        // Nothing to do
+<i class="no-highlight">51</i>&nbsp;    }
+<i class="no-highlight">52</i>&nbsp;
+<i class="no-highlight">53</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-25 11:18</div>
+</div>
+</body>
+</html>

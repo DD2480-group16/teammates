@@ -1,0 +1,219 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > EmailWrapper</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.common.util</a>
+</div>
+
+<h1>Coverage Summary for Class: EmailWrapper (teammates.common.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EmailWrapper</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.5%
+  </span>
+  <span class="absValue">
+    (19/21)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84.6%
+  </span>
+  <span class="absValue">
+    (22/26)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.common.util;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;/**
+<i class="no-highlight">4</i>&nbsp; * Represents an email message and its important metadata.
+<i class="no-highlight">5</i>&nbsp; */
+<b class="fc"><i class="no-highlight">6</i>&nbsp;public class EmailWrapper {</b>
+<i class="no-highlight">7</i>&nbsp;
+<i class="no-highlight">8</i>&nbsp;    /**
+<i class="no-highlight">9</i>&nbsp;     * Prefix appended to the subject if the email is set as a copy.
+<i class="no-highlight">10</i>&nbsp;     */
+<i class="no-highlight">11</i>&nbsp;    public static final String EMAIL_COPY_SUBJECT_PREFIX = &quot;[Email Copy] &quot;;
+<i class="no-highlight">12</i>&nbsp;
+<i class="no-highlight">13</i>&nbsp;    private EmailType type;
+<i class="no-highlight">14</i>&nbsp;    private String senderName;
+<i class="no-highlight">15</i>&nbsp;    private String senderEmail;
+<i class="no-highlight">16</i>&nbsp;    private String replyTo;
+<i class="no-highlight">17</i>&nbsp;    private String recipient;
+<i class="no-highlight">18</i>&nbsp;    private String bcc;
+<i class="no-highlight">19</i>&nbsp;    private String subject;
+<i class="no-highlight">20</i>&nbsp;    private String content;
+<i class="no-highlight">21</i>&nbsp;    private boolean isCopy;
+<i class="no-highlight">22</i>&nbsp;
+<i class="no-highlight">23</i>&nbsp;    public EmailType getType() {
+<b class="nc"><i class="no-highlight">24</i>&nbsp;        return type;</b>
+<i class="no-highlight">25</i>&nbsp;    }
+<i class="no-highlight">26</i>&nbsp;
+<i class="no-highlight">27</i>&nbsp;    public void setType(EmailType type) {
+<b class="fc"><i class="no-highlight">28</i>&nbsp;        this.type = type;</b>
+<i class="no-highlight">29</i>&nbsp;    }
+<i class="no-highlight">30</i>&nbsp;
+<i class="no-highlight">31</i>&nbsp;    public String getSenderName() {
+<b class="fc"><i class="no-highlight">32</i>&nbsp;        return senderName;</b>
+<i class="no-highlight">33</i>&nbsp;    }
+<i class="no-highlight">34</i>&nbsp;
+<i class="no-highlight">35</i>&nbsp;    public void setSenderName(String senderName) {
+<b class="fc"><i class="no-highlight">36</i>&nbsp;        this.senderName = senderName;</b>
+<i class="no-highlight">37</i>&nbsp;    }
+<i class="no-highlight">38</i>&nbsp;
+<i class="no-highlight">39</i>&nbsp;    public String getSenderEmail() {
+<b class="fc"><i class="no-highlight">40</i>&nbsp;        return senderEmail;</b>
+<i class="no-highlight">41</i>&nbsp;    }
+<i class="no-highlight">42</i>&nbsp;
+<i class="no-highlight">43</i>&nbsp;    public void setSenderEmail(String senderEmail) {
+<b class="fc"><i class="no-highlight">44</i>&nbsp;        this.senderEmail = senderEmail;</b>
+<i class="no-highlight">45</i>&nbsp;    }
+<i class="no-highlight">46</i>&nbsp;
+<i class="no-highlight">47</i>&nbsp;    public String getReplyTo() {
+<b class="fc"><i class="no-highlight">48</i>&nbsp;        return replyTo;</b>
+<i class="no-highlight">49</i>&nbsp;    }
+<i class="no-highlight">50</i>&nbsp;
+<i class="no-highlight">51</i>&nbsp;    public void setReplyTo(String replyTo) {
+<b class="fc"><i class="no-highlight">52</i>&nbsp;        this.replyTo = replyTo;</b>
+<i class="no-highlight">53</i>&nbsp;    }
+<i class="no-highlight">54</i>&nbsp;
+<i class="no-highlight">55</i>&nbsp;    public String getRecipient() {
+<b class="fc"><i class="no-highlight">56</i>&nbsp;        return recipient;</b>
+<i class="no-highlight">57</i>&nbsp;    }
+<i class="no-highlight">58</i>&nbsp;
+<i class="no-highlight">59</i>&nbsp;    public void setRecipient(String recipient) {
+<b class="fc"><i class="no-highlight">60</i>&nbsp;        this.recipient = recipient;</b>
+<i class="no-highlight">61</i>&nbsp;    }
+<i class="no-highlight">62</i>&nbsp;
+<i class="no-highlight">63</i>&nbsp;    public String getBcc() {
+<b class="fc"><i class="no-highlight">64</i>&nbsp;        return bcc;</b>
+<i class="no-highlight">65</i>&nbsp;    }
+<i class="no-highlight">66</i>&nbsp;
+<i class="no-highlight">67</i>&nbsp;    public void setBcc(String bcc) {
+<b class="fc"><i class="no-highlight">68</i>&nbsp;        this.bcc = bcc;</b>
+<i class="no-highlight">69</i>&nbsp;    }
+<i class="no-highlight">70</i>&nbsp;
+<i class="no-highlight">71</i>&nbsp;    public String getSubject() {
+<b class="fc"><i class="no-highlight">72</i>&nbsp;        return subject;</b>
+<i class="no-highlight">73</i>&nbsp;    }
+<i class="no-highlight">74</i>&nbsp;
+<i class="no-highlight">75</i>&nbsp;    public void setSubject(String subject) {
+<b class="fc"><i class="no-highlight">76</i>&nbsp;        this.subject = subject;</b>
+<i class="no-highlight">77</i>&nbsp;    }
+<i class="no-highlight">78</i>&nbsp;
+<i class="no-highlight">79</i>&nbsp;    /**
+<i class="no-highlight">80</i>&nbsp;     * Sets the email subject based on the email type and inserts the specified {@code params}
+<i class="no-highlight">81</i>&nbsp;     * in the indicated places.
+<i class="no-highlight">82</i>&nbsp;     */
+<i class="no-highlight">83</i>&nbsp;    public void setSubjectFromType(Object... params) {
+<b class="fc"><i class="no-highlight">84</i>&nbsp;        if (type != null) {</b>
+<b class="fc"><i class="no-highlight">85</i>&nbsp;            this.subject = String.format(type.getSubject(), params);</b>
+<i class="no-highlight">86</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">87</i>&nbsp;        if (isCopy) {</b>
+<b class="fc"><i class="no-highlight">88</i>&nbsp;            this.subject = EMAIL_COPY_SUBJECT_PREFIX + this.subject;</b>
+<i class="no-highlight">89</i>&nbsp;        }
+<i class="no-highlight">90</i>&nbsp;    }
+<i class="no-highlight">91</i>&nbsp;
+<i class="no-highlight">92</i>&nbsp;    public String getContent() {
+<b class="fc"><i class="no-highlight">93</i>&nbsp;        return content;</b>
+<i class="no-highlight">94</i>&nbsp;    }
+<i class="no-highlight">95</i>&nbsp;
+<i class="no-highlight">96</i>&nbsp;    public void setContent(String content) {
+<b class="fc"><i class="no-highlight">97</i>&nbsp;        this.content = content;</b>
+<i class="no-highlight">98</i>&nbsp;    }
+<i class="no-highlight">99</i>&nbsp;
+<i class="no-highlight">100</i>&nbsp;    public boolean getIsCopy() {
+<b class="fc"><i class="no-highlight">101</i>&nbsp;        return isCopy;</b>
+<i class="no-highlight">102</i>&nbsp;    }
+<i class="no-highlight">103</i>&nbsp;
+<i class="no-highlight">104</i>&nbsp;    public void setIsCopy(boolean isCopy) {
+<b class="fc"><i class="no-highlight">105</i>&nbsp;        this.isCopy = isCopy;</b>
+<i class="no-highlight">106</i>&nbsp;    }
+<i class="no-highlight">107</i>&nbsp;
+<i class="no-highlight">108</i>&nbsp;    public String getInfoForLogging() {
+<b class="nc"><i class="no-highlight">109</i>&nbsp;        return &quot;[Email sent]to=&quot; + getRecipient()</b>
+<b class="nc"><i class="no-highlight">110</i>&nbsp;               + &quot;|from=&quot; + getSenderEmail()</b>
+<b class="nc"><i class="no-highlight">111</i>&nbsp;               + &quot;|subject=&quot; + getSubject();</b>
+<i class="no-highlight">112</i>&nbsp;    }
+<i class="no-highlight">113</i>&nbsp;
+<i class="no-highlight">114</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-25 11:18</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,370 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > StringHelper</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.common.util</a>
+</div>
+
+<h1>Coverage Summary for Class: StringHelper (teammates.common.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">StringHelper</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (19/19)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.3%
+  </span>
+  <span class="absValue">
+    (62/71)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.common.util;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.text.DecimalFormat;
+<i class="no-highlight">4</i>&nbsp;import java.util.Collections;
+<i class="no-highlight">5</i>&nbsp;import java.util.List;
+<i class="no-highlight">6</i>&nbsp;import java.util.Objects;
+<i class="no-highlight">7</i>&nbsp;import java.util.regex.Pattern;
+<i class="no-highlight">8</i>&nbsp;import java.util.stream.Collectors;
+<i class="no-highlight">9</i>&nbsp;import java.util.stream.IntStream;
+<i class="no-highlight">10</i>&nbsp;
+<i class="no-highlight">11</i>&nbsp;import javax.crypto.BadPaddingException;
+<i class="no-highlight">12</i>&nbsp;import javax.crypto.Cipher;
+<i class="no-highlight">13</i>&nbsp;import javax.crypto.IllegalBlockSizeException;
+<i class="no-highlight">14</i>&nbsp;import javax.crypto.Mac;
+<i class="no-highlight">15</i>&nbsp;import javax.crypto.spec.SecretKeySpec;
+<i class="no-highlight">16</i>&nbsp;
+<i class="no-highlight">17</i>&nbsp;import com.google.common.base.CharMatcher;
+<i class="no-highlight">18</i>&nbsp;
+<i class="no-highlight">19</i>&nbsp;import teammates.common.exception.InvalidParametersException;
+<i class="no-highlight">20</i>&nbsp;
+<i class="no-highlight">21</i>&nbsp;/**
+<i class="no-highlight">22</i>&nbsp; * Holds String-related helper functions.
+<i class="no-highlight">23</i>&nbsp; */
+<i class="no-highlight">24</i>&nbsp;
+<b class="fc"><i class="no-highlight">25</i>&nbsp;public final class StringHelper {</b>
+<b class="fc"><i class="no-highlight">26</i>&nbsp;    private static final Logger log = Logger.getLogger();</b>
+<i class="no-highlight">27</i>&nbsp;
+<i class="no-highlight">28</i>&nbsp;    private StringHelper() {
+<i class="no-highlight">29</i>&nbsp;        // utility class
+<i class="no-highlight">30</i>&nbsp;    }
+<i class="no-highlight">31</i>&nbsp;
+<i class="no-highlight">32</i>&nbsp;    /**
+<i class="no-highlight">33</i>&nbsp;     * Checks whether the input string is empty or equals {@code null}.
+<i class="no-highlight">34</i>&nbsp;     * @param s The string to be checked
+<i class="no-highlight">35</i>&nbsp;     */
+<i class="no-highlight">36</i>&nbsp;    public static boolean isEmpty(String s) {
+<b class="fc"><i class="no-highlight">37</i>&nbsp;        return s == null || s.isEmpty();</b>
+<i class="no-highlight">38</i>&nbsp;    }
+<i class="no-highlight">39</i>&nbsp;
+<i class="no-highlight">40</i>&nbsp;    /**
+<i class="no-highlight">41</i>&nbsp;     * Generates a string which consists of {@code length} copies of {@code character} without space.
+<i class="no-highlight">42</i>&nbsp;     */
+<i class="no-highlight">43</i>&nbsp;    static String generateStringOfLength(int length, char character) {
+<b class="fc"><i class="no-highlight">44</i>&nbsp;        assert length &gt;= 0;</b>
+<b class="fc"><i class="no-highlight">45</i>&nbsp;        return String.join(&quot;&quot;, Collections.nCopies(length, String.valueOf(character)));</b>
+<i class="no-highlight">46</i>&nbsp;    }
+<i class="no-highlight">47</i>&nbsp;
+<i class="no-highlight">48</i>&nbsp;    /**
+<i class="no-highlight">49</i>&nbsp;     * Checks whether the input string matches the regex.
+<i class="no-highlight">50</i>&nbsp;     * @param input The string to be matched
+<i class="no-highlight">51</i>&nbsp;     * @param regex The regex  used for the matching
+<i class="no-highlight">52</i>&nbsp;     */
+<i class="no-highlight">53</i>&nbsp;    public static boolean isMatching(String input, String regex) {
+<i class="no-highlight">54</i>&nbsp;        // Important to use the CANON_EQ flag to make sure that canonical characters
+<i class="no-highlight">55</i>&nbsp;        // such as é is correctly matched regardless of single/double code point encoding
+<b class="fc"><i class="no-highlight">56</i>&nbsp;        return Pattern.compile(regex, Pattern.CANON_EQ).matcher(input).matches();</b>
+<i class="no-highlight">57</i>&nbsp;    }
+<i class="no-highlight">58</i>&nbsp;
+<i class="no-highlight">59</i>&nbsp;    /**
+<i class="no-highlight">60</i>&nbsp;     * Generates a left-indentation of {@code length} units.
+<i class="no-highlight">61</i>&nbsp;     */
+<i class="no-highlight">62</i>&nbsp;    public static String getIndent(int length) {
+<b class="fc"><i class="no-highlight">63</i>&nbsp;        return generateStringOfLength(length, &#39; &#39;);</b>
+<i class="no-highlight">64</i>&nbsp;    }
+<i class="no-highlight">65</i>&nbsp;
+<i class="no-highlight">66</i>&nbsp;    /**
+<i class="no-highlight">67</i>&nbsp;     * Trims head of the String if it is longer than specified Length.
+<i class="no-highlight">68</i>&nbsp;     *  E.g., String &quot;12345678&quot; with maximumStringLength = 6, returns &quot;345678&quot;
+<i class="no-highlight">69</i>&nbsp;     * @param maximumStringLength - maximum required length of the string
+<i class="no-highlight">70</i>&nbsp;     * @return String with at most maximumStringLength length
+<i class="no-highlight">71</i>&nbsp;     */
+<i class="no-highlight">72</i>&nbsp;    public static String truncateHead(String inputString, int maximumStringLength) {
+<b class="fc"><i class="no-highlight">73</i>&nbsp;        int inputStringLength = inputString.length();</b>
+<b class="fc"><i class="no-highlight">74</i>&nbsp;        if (inputStringLength &lt;= maximumStringLength) {</b>
+<b class="fc"><i class="no-highlight">75</i>&nbsp;            return inputString;</b>
+<i class="no-highlight">76</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">77</i>&nbsp;        return inputString.substring(inputStringLength - maximumStringLength);</b>
+<i class="no-highlight">78</i>&nbsp;    }
+<i class="no-highlight">79</i>&nbsp;
+<i class="no-highlight">80</i>&nbsp;    /**
+<i class="no-highlight">81</i>&nbsp;     * Generates the HMAC SHA-1 signature for a supplied string.
+<i class="no-highlight">82</i>&nbsp;     *
+<i class="no-highlight">83</i>&nbsp;     * @param data The string to be signed
+<i class="no-highlight">84</i>&nbsp;     * @return The signature value as a hex-string
+<i class="no-highlight">85</i>&nbsp;     */
+<i class="no-highlight">86</i>&nbsp;    public static String generateSignature(String data) {
+<i class="no-highlight">87</i>&nbsp;        try {
+<b class="fc"><i class="no-highlight">88</i>&nbsp;            SecretKeySpec signingKey =</b>
+<b class="fc"><i class="no-highlight">89</i>&nbsp;                    new SecretKeySpec(hexStringToByteArray(Config.ENCRYPTION_KEY), &quot;HmacSHA1&quot;);</b>
+<b class="fc"><i class="no-highlight">90</i>&nbsp;            Mac mac = Mac.getInstance(&quot;HmacSHA1&quot;);</b>
+<b class="fc"><i class="no-highlight">91</i>&nbsp;            mac.init(signingKey);</b>
+<b class="fc"><i class="no-highlight">92</i>&nbsp;            byte[] value = mac.doFinal(data.getBytes());</b>
+<b class="fc"><i class="no-highlight">93</i>&nbsp;            return byteArrayToHexString(value);</b>
+<b class="nc"><i class="no-highlight">94</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i class="no-highlight">95</i>&nbsp;            assert false;</b>
+<b class="nc"><i class="no-highlight">96</i>&nbsp;            return null;</b>
+<i class="no-highlight">97</i>&nbsp;        }
+<i class="no-highlight">98</i>&nbsp;    }
+<i class="no-highlight">99</i>&nbsp;
+<i class="no-highlight">100</i>&nbsp;    /**
+<i class="no-highlight">101</i>&nbsp;     * Verifies the HMAC SHA-1 signature against a given value.
+<i class="no-highlight">102</i>&nbsp;     *
+<i class="no-highlight">103</i>&nbsp;     * @param value The value to be checked
+<i class="no-highlight">104</i>&nbsp;     * @param signature The signature in hex-string format
+<i class="no-highlight">105</i>&nbsp;     * @return True if signature matches value
+<i class="no-highlight">106</i>&nbsp;     */
+<i class="no-highlight">107</i>&nbsp;    public static boolean isCorrectSignature(String value, String signature) {
+<b class="fc"><i class="no-highlight">108</i>&nbsp;        if (value == null || signature == null) {</b>
+<b class="fc"><i class="no-highlight">109</i>&nbsp;            return false;</b>
+<i class="no-highlight">110</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">111</i>&nbsp;        return Objects.equals(generateSignature(value), signature);</b>
+<i class="no-highlight">112</i>&nbsp;    }
+<i class="no-highlight">113</i>&nbsp;
+<i class="no-highlight">114</i>&nbsp;    /**
+<i class="no-highlight">115</i>&nbsp;     * Encrypts the supplied string.
+<i class="no-highlight">116</i>&nbsp;     *
+<i class="no-highlight">117</i>&nbsp;     * @param value the plaintext as a string
+<i class="no-highlight">118</i>&nbsp;     * @return the ciphertext
+<i class="no-highlight">119</i>&nbsp;     * @throws RuntimeException if the encryption fails for some reason, such as {@code Cipher} initialization failure.
+<i class="no-highlight">120</i>&nbsp;     */
+<i class="no-highlight">121</i>&nbsp;    public static String encrypt(String value) {
+<i class="no-highlight">122</i>&nbsp;        try {
+<b class="fc"><i class="no-highlight">123</i>&nbsp;            SecretKeySpec sks = new SecretKeySpec(hexStringToByteArray(Config.ENCRYPTION_KEY), &quot;AES&quot;);</b>
+<b class="fc"><i class="no-highlight">124</i>&nbsp;            Cipher cipher = Cipher.getInstance(&quot;AES/ECB/PKCS5Padding&quot;);</b>
+<b class="fc"><i class="no-highlight">125</i>&nbsp;            cipher.init(Cipher.ENCRYPT_MODE, sks, cipher.getParameters());</b>
+<b class="fc"><i class="no-highlight">126</i>&nbsp;            byte[] encrypted = cipher.doFinal(value.getBytes());</b>
+<b class="fc"><i class="no-highlight">127</i>&nbsp;            return byteArrayToHexString(encrypted);</b>
+<b class="nc"><i class="no-highlight">128</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i class="no-highlight">129</i>&nbsp;            assert false;</b>
+<b class="nc"><i class="no-highlight">130</i>&nbsp;            return null;</b>
+<i class="no-highlight">131</i>&nbsp;        }
+<i class="no-highlight">132</i>&nbsp;    }
+<i class="no-highlight">133</i>&nbsp;
+<i class="no-highlight">134</i>&nbsp;    /**
+<i class="no-highlight">135</i>&nbsp;     * Decrypts the supplied string.
+<i class="no-highlight">136</i>&nbsp;     *
+<i class="no-highlight">137</i>&nbsp;     * @param message the ciphertext as a hexadecimal string
+<i class="no-highlight">138</i>&nbsp;     * @return the plaintext
+<i class="no-highlight">139</i>&nbsp;     * @throws InvalidParametersException if the ciphertext is invalid.
+<i class="no-highlight">140</i>&nbsp;     * @throws RuntimeException if the decryption fails for any other reason, such as {@code Cipher} initialization failure.
+<i class="no-highlight">141</i>&nbsp;     */
+<i class="no-highlight">142</i>&nbsp;    public static String decrypt(String message) throws InvalidParametersException {
+<i class="no-highlight">143</i>&nbsp;        try {
+<b class="fc"><i class="no-highlight">144</i>&nbsp;            SecretKeySpec sks = new SecretKeySpec(hexStringToByteArray(Config.ENCRYPTION_KEY), &quot;AES&quot;);</b>
+<b class="fc"><i class="no-highlight">145</i>&nbsp;            Cipher cipher = Cipher.getInstance(&quot;AES/ECB/PKCS5Padding&quot;);</b>
+<b class="fc"><i class="no-highlight">146</i>&nbsp;            cipher.init(Cipher.DECRYPT_MODE, sks);</b>
+<b class="fc"><i class="no-highlight">147</i>&nbsp;            byte[] decrypted = cipher.doFinal(hexStringToByteArray(message));</b>
+<b class="fc"><i class="no-highlight">148</i>&nbsp;            return new String(decrypted);</b>
+<b class="fc"><i class="no-highlight">149</i>&nbsp;        } catch (NumberFormatException | IllegalBlockSizeException | BadPaddingException e) {</b>
+<b class="fc"><i class="no-highlight">150</i>&nbsp;            log.warning(&quot;Attempted to decrypt invalid ciphertext: &quot; + message);</b>
+<b class="fc"><i class="no-highlight">151</i>&nbsp;            throw new InvalidParametersException(e);</b>
+<b class="nc"><i class="no-highlight">152</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i class="no-highlight">153</i>&nbsp;            assert false;</b>
+<b class="nc"><i class="no-highlight">154</i>&nbsp;            return null;</b>
+<i class="no-highlight">155</i>&nbsp;        }
+<i class="no-highlight">156</i>&nbsp;    }
+<i class="no-highlight">157</i>&nbsp;
+<i class="no-highlight">158</i>&nbsp;    /**
+<i class="no-highlight">159</i>&nbsp;     * Converts and concatenates a list of objects to a single string, separated by line breaks.
+<i class="no-highlight">160</i>&nbsp;     * The conversion is done by using the {@link Object#toString()} method.
+<i class="no-highlight">161</i>&nbsp;     * @return Concatenated string.
+<i class="no-highlight">162</i>&nbsp;     */
+<i class="no-highlight">163</i>&nbsp;    public static &lt;T&gt; String toString(List&lt;T&gt; list) {
+<b class="fc"><i class="no-highlight">164</i>&nbsp;        return toString(list, System.lineSeparator());</b>
+<i class="no-highlight">165</i>&nbsp;    }
+<i class="no-highlight">166</i>&nbsp;
+<i class="no-highlight">167</i>&nbsp;    /**
+<i class="no-highlight">168</i>&nbsp;     * Converts and concatenates a list of objects to a single string, separated by the given delimiter.
+<i class="no-highlight">169</i>&nbsp;     * The conversion is done by using the {@link Object#toString()} method.
+<i class="no-highlight">170</i>&nbsp;     * @return Concatenated string.
+<i class="no-highlight">171</i>&nbsp;     */
+<i class="no-highlight">172</i>&nbsp;    public static &lt;T&gt; String toString(List&lt;T&gt; list, String delimiter) {
+<b class="fc"><i class="no-highlight">173</i>&nbsp;        return list.stream()</b>
+<b class="fc"><i class="no-highlight">174</i>&nbsp;                .map(s -&gt; s.toString())</b>
+<b class="fc"><i class="no-highlight">175</i>&nbsp;                .collect(Collectors.joining(delimiter));</b>
+<i class="no-highlight">176</i>&nbsp;    }
+<i class="no-highlight">177</i>&nbsp;
+<i class="no-highlight">178</i>&nbsp;    /**
+<i class="no-highlight">179</i>&nbsp;     * Converts a double value between 0 and 1 to 3dp-string.
+<i class="no-highlight">180</i>&nbsp;     */
+<i class="no-highlight">181</i>&nbsp;    public static String toDecimalFormatString(double doubleVal) {
+<b class="fc"><i class="no-highlight">182</i>&nbsp;        DecimalFormat df = new DecimalFormat(&quot;0.###&quot;);</b>
+<b class="fc"><i class="no-highlight">183</i>&nbsp;        return df.format(doubleVal);</b>
+<i class="no-highlight">184</i>&nbsp;    }
+<i class="no-highlight">185</i>&nbsp;
+<i class="no-highlight">186</i>&nbsp;    /**
+<i class="no-highlight">187</i>&nbsp;     * Trims the string and reduces consecutive white spaces to only one space.
+<i class="no-highlight">188</i>&nbsp;     * Example: &quot; a   a  &quot; --&gt; &quot;a a&quot;.
+<i class="no-highlight">189</i>&nbsp;     * @return processed string, returns null if parameter is null
+<i class="no-highlight">190</i>&nbsp;     */
+<i class="no-highlight">191</i>&nbsp;    public static String removeExtraSpace(String str) {
+<b class="fc"><i class="no-highlight">192</i>&nbsp;        if (str == null) {</b>
+<b class="fc"><i class="no-highlight">193</i>&nbsp;            return null;</b>
+<i class="no-highlight">194</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">195</i>&nbsp;        return CharMatcher.whitespace().trimFrom(str).replaceAll(&quot;\\s+&quot;, &quot; &quot;);</b>
+<i class="no-highlight">196</i>&nbsp;    }
+<i class="no-highlight">197</i>&nbsp;
+<i class="no-highlight">198</i>&nbsp;    /**
+<i class="no-highlight">199</i>&nbsp;     * Replaces every character in {@code str} that does not match
+<i class="no-highlight">200</i>&nbsp;     * {@code regex} with the character {@code replacement}.
+<i class="no-highlight">201</i>&nbsp;     *
+<i class="no-highlight">202</i>&nbsp;     * @param str String to be replaced.
+<i class="no-highlight">203</i>&nbsp;     * @param regex Pattern that every character is to be matched against.
+<i class="no-highlight">204</i>&nbsp;     * @param replacement Character unmatching characters should be replaced with.
+<i class="no-highlight">205</i>&nbsp;     * @return String with all unmatching characters replaced; null if input is null.
+<i class="no-highlight">206</i>&nbsp;     */
+<i class="no-highlight">207</i>&nbsp;    public static String replaceIllegalChars(String str, String regex, char replacement) {
+<b class="fc"><i class="no-highlight">208</i>&nbsp;        if (str == null) {</b>
+<b class="fc"><i class="no-highlight">209</i>&nbsp;            return null;</b>
+<i class="no-highlight">210</i>&nbsp;        }
+<i class="no-highlight">211</i>&nbsp;
+<b class="fc"><i class="no-highlight">212</i>&nbsp;        char[] charArray = str.toCharArray();</b>
+<i class="no-highlight">213</i>&nbsp;
+<b class="fc"><i class="no-highlight">214</i>&nbsp;        IntStream.range(0, charArray.length)</b>
+<b class="fc"><i class="no-highlight">215</i>&nbsp;                .filter(i -&gt; !isMatching(Character.toString(charArray[i]), regex))</b>
+<b class="fc"><i class="no-highlight">216</i>&nbsp;                .forEach(i -&gt; charArray[i] = replacement);</b>
+<i class="no-highlight">217</i>&nbsp;
+<b class="fc"><i class="no-highlight">218</i>&nbsp;        return String.valueOf(charArray);</b>
+<i class="no-highlight">219</i>&nbsp;    }
+<i class="no-highlight">220</i>&nbsp;
+<i class="no-highlight">221</i>&nbsp;    /**
+<i class="no-highlight">222</i>&nbsp;     * Converts a byte array to hexadecimal string.
+<i class="no-highlight">223</i>&nbsp;     */
+<i class="no-highlight">224</i>&nbsp;    static String byteArrayToHexString(byte[] bytes) {
+<b class="fc"><i class="no-highlight">225</i>&nbsp;        StringBuilder sb = new StringBuilder(bytes.length * 2);</b>
+<b class="fc"><i class="no-highlight">226</i>&nbsp;        for (byte b : bytes) {</b>
+<b class="fc"><i class="no-highlight">227</i>&nbsp;            int v = b &amp; 0xff;</b>
+<b class="fc"><i class="no-highlight">228</i>&nbsp;            if (v &lt; 16) {</b>
+<b class="fc"><i class="no-highlight">229</i>&nbsp;                sb.append(&#39;0&#39;);</b>
+<i class="no-highlight">230</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">231</i>&nbsp;            sb.append(Integer.toHexString(v));</b>
+<i class="no-highlight">232</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">233</i>&nbsp;        return sb.toString().toUpperCase();</b>
+<i class="no-highlight">234</i>&nbsp;    }
+<i class="no-highlight">235</i>&nbsp;
+<i class="no-highlight">236</i>&nbsp;    /**
+<i class="no-highlight">237</i>&nbsp;     * Converts a hexadecimal string to byte array.
+<i class="no-highlight">238</i>&nbsp;     */
+<i class="no-highlight">239</i>&nbsp;    public static byte[] hexStringToByteArray(String s) {
+<b class="fc"><i class="no-highlight">240</i>&nbsp;        byte[] b = new byte[s.length() / 2];</b>
+<b class="fc"><i class="no-highlight">241</i>&nbsp;        IntStream.range(0, b.length)</b>
+<b class="fc"><i class="no-highlight">242</i>&nbsp;                .forEach(i -&gt; b[i] = (byte) Integer.parseInt(s.substring(i * 2, i * 2 + 2), 16));</b>
+<b class="fc"><i class="no-highlight">243</i>&nbsp;        return b;</b>
+<i class="no-highlight">244</i>&nbsp;    }
+<i class="no-highlight">245</i>&nbsp;
+<i class="no-highlight">246</i>&nbsp;    /**
+<i class="no-highlight">247</i>&nbsp;     * Trims the string if it is not null.
+<i class="no-highlight">248</i>&nbsp;     *
+<i class="no-highlight">249</i>&nbsp;     * @return the trimmed string or null (if the parameter was null).
+<i class="no-highlight">250</i>&nbsp;     */
+<i class="no-highlight">251</i>&nbsp;    public static String trimIfNotNull(String string) {
+<b class="fc"><i class="no-highlight">252</i>&nbsp;        return string == null ? null : string.trim();</b>
+<i class="no-highlight">253</i>&nbsp;    }
+<i class="no-highlight">254</i>&nbsp;
+<i class="no-highlight">255</i>&nbsp;    /**
+<i class="no-highlight">256</i>&nbsp;     * Converts null input to empty string. Non-null inputs will be left as is.
+<i class="no-highlight">257</i>&nbsp;     * This method is for displaying purpose.
+<i class="no-highlight">258</i>&nbsp;     *
+<i class="no-highlight">259</i>&nbsp;     * @return empty string if null, the string itself otherwise
+<i class="no-highlight">260</i>&nbsp;     */
+<i class="no-highlight">261</i>&nbsp;    public static String convertToEmptyStringIfNull(String str) {
+<b class="fc"><i class="no-highlight">262</i>&nbsp;        return str == null ? &quot;&quot; : str;</b>
+<i class="no-highlight">263</i>&nbsp;    }
+<i class="no-highlight">264</i>&nbsp;
+<i class="no-highlight">265</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-25 11:18</div>
+</div>
+</body>
+</html>

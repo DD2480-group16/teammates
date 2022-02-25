@@ -1,0 +1,187 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > UpdateStudentProfileAction</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.ui.webapi</a>
+</div>
+
+<h1>Coverage Summary for Class: UpdateStudentProfileAction (teammates.ui.webapi)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UpdateStudentProfileAction</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    97.5%
+  </span>
+  <span class="absValue">
+    (39/40)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.ui.webapi;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import teammates.common.datatransfer.attributes.StudentProfileAttributes;
+<i class="no-highlight">4</i>&nbsp;import teammates.common.exception.InvalidParametersException;
+<i class="no-highlight">5</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">6</i>&nbsp;import teammates.common.util.StringHelper;
+<i class="no-highlight">7</i>&nbsp;import teammates.ui.request.InvalidHttpRequestBodyException;
+<i class="no-highlight">8</i>&nbsp;import teammates.ui.request.StudentProfileUpdateRequest;
+<i class="no-highlight">9</i>&nbsp;
+<i class="no-highlight">10</i>&nbsp;/**
+<i class="no-highlight">11</i>&nbsp; * Update a student&#39;s profile.
+<i class="no-highlight">12</i>&nbsp; */
+<b class="fc"><i class="no-highlight">13</i>&nbsp;class UpdateStudentProfileAction extends Action {</b>
+<i class="no-highlight">14</i>&nbsp;
+<i class="no-highlight">15</i>&nbsp;    @Override
+<i class="no-highlight">16</i>&nbsp;    AuthType getMinAuthLevel() {
+<b class="fc"><i class="no-highlight">17</i>&nbsp;        return AuthType.LOGGED_IN;</b>
+<i class="no-highlight">18</i>&nbsp;    }
+<i class="no-highlight">19</i>&nbsp;
+<i class="no-highlight">20</i>&nbsp;    @Override
+<i class="no-highlight">21</i>&nbsp;    void checkSpecificAccessControl() throws UnauthorizedAccessException {
+<b class="fc"><i class="no-highlight">22</i>&nbsp;        if (!userInfo.isStudent) {</b>
+<b class="fc"><i class="no-highlight">23</i>&nbsp;            throw new UnauthorizedAccessException(&quot;Student privilege is required to access this resource.&quot;);</b>
+<i class="no-highlight">24</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">25</i>&nbsp;        String studentId = getNonNullRequestParamValue(Const.ParamsNames.STUDENT_ID);</b>
+<b class="fc"><i class="no-highlight">26</i>&nbsp;        if (!studentId.equals(userInfo.id)) {</b>
+<b class="fc"><i class="no-highlight">27</i>&nbsp;            throw new UnauthorizedAccessException(&quot;You are not authorized to update this student&#39;s profile.&quot;);</b>
+<i class="no-highlight">28</i>&nbsp;        }
+<i class="no-highlight">29</i>&nbsp;    }
+<i class="no-highlight">30</i>&nbsp;
+<i class="no-highlight">31</i>&nbsp;    @Override
+<i class="no-highlight">32</i>&nbsp;    public JsonResult execute() throws InvalidHttpRequestBodyException {
+<b class="fc"><i class="no-highlight">33</i>&nbsp;        String studentId = getNonNullRequestParamValue(Const.ParamsNames.STUDENT_ID);</b>
+<b class="fc"><i class="no-highlight">34</i>&nbsp;        StudentProfileUpdateRequest updateRequest = getAndValidateRequestBody(StudentProfileUpdateRequest.class);</b>
+<i class="no-highlight">35</i>&nbsp;
+<i class="no-highlight">36</i>&nbsp;        try {
+<b class="fc"><i class="no-highlight">37</i>&nbsp;            StudentProfileAttributes studentProfile = sanitizeProfile(extractProfileData(studentId, updateRequest));</b>
+<b class="fc"><i class="no-highlight">38</i>&nbsp;            logic.updateOrCreateStudentProfile(</b>
+<b class="fc"><i class="no-highlight">39</i>&nbsp;                    StudentProfileAttributes.updateOptionsBuilder(studentId)</b>
+<b class="fc"><i class="no-highlight">40</i>&nbsp;                            .withShortName(studentProfile.getShortName())</b>
+<b class="fc"><i class="no-highlight">41</i>&nbsp;                            .withEmail(studentProfile.getEmail())</b>
+<b class="fc"><i class="no-highlight">42</i>&nbsp;                            .withGender(studentProfile.getGender())</b>
+<b class="fc"><i class="no-highlight">43</i>&nbsp;                            .withNationality(studentProfile.getNationality())</b>
+<b class="fc"><i class="no-highlight">44</i>&nbsp;                            .withInstitute(studentProfile.getInstitute())</b>
+<b class="fc"><i class="no-highlight">45</i>&nbsp;                            .withMoreInfo(studentProfile.getMoreInfo())</b>
+<b class="fc"><i class="no-highlight">46</i>&nbsp;                            .build());</b>
+<b class="fc"><i class="no-highlight">47</i>&nbsp;            return new JsonResult(&quot;Your profile has been edited successfully&quot;);</b>
+<b class="fc"><i class="no-highlight">48</i>&nbsp;        } catch (InvalidParametersException ipe) {</b>
+<b class="fc"><i class="no-highlight">49</i>&nbsp;            throw new InvalidHttpRequestBodyException(ipe);</b>
+<i class="no-highlight">50</i>&nbsp;        }
+<i class="no-highlight">51</i>&nbsp;    }
+<i class="no-highlight">52</i>&nbsp;
+<i class="no-highlight">53</i>&nbsp;    private StudentProfileAttributes extractProfileData(String studentId, StudentProfileUpdateRequest req) {
+<b class="fc"><i class="no-highlight">54</i>&nbsp;        StudentProfileAttributes editedProfile =</b>
+<b class="fc"><i class="no-highlight">55</i>&nbsp;                StudentProfileAttributes.builder(studentId).build();</b>
+<i class="no-highlight">56</i>&nbsp;
+<b class="fc"><i class="no-highlight">57</i>&nbsp;        editedProfile.setShortName(req.getShortName());</b>
+<b class="fc"><i class="no-highlight">58</i>&nbsp;        editedProfile.setEmail(req.getEmail());</b>
+<b class="fc"><i class="no-highlight">59</i>&nbsp;        editedProfile.setInstitute(req.getInstitute());</b>
+<b class="fc"><i class="no-highlight">60</i>&nbsp;        editedProfile.setNationality(req.getNationality());</b>
+<i class="no-highlight">61</i>&nbsp;
+<b class="fc"><i class="no-highlight">62</i>&nbsp;        if (&quot;&quot;.equals(editedProfile.getNationality())) {</b>
+<b class="nc"><i class="no-highlight">63</i>&nbsp;            editedProfile.setNationality(req.getExistingNationality());</b>
+<i class="no-highlight">64</i>&nbsp;        }
+<i class="no-highlight">65</i>&nbsp;
+<b class="fc"><i class="no-highlight">66</i>&nbsp;        editedProfile.setGender(StudentProfileAttributes.Gender.getGenderEnumValue(req.getGender()));</b>
+<b class="fc"><i class="no-highlight">67</i>&nbsp;        editedProfile.setMoreInfo(req.getMoreInfo());</b>
+<i class="no-highlight">68</i>&nbsp;
+<b class="fc"><i class="no-highlight">69</i>&nbsp;        sanitizeProfile(editedProfile);</b>
+<b class="fc"><i class="no-highlight">70</i>&nbsp;        return editedProfile;</b>
+<i class="no-highlight">71</i>&nbsp;    }
+<i class="no-highlight">72</i>&nbsp;
+<i class="no-highlight">73</i>&nbsp;    private StudentProfileAttributes sanitizeProfile(StudentProfileAttributes studentProfile) {
+<b class="fc"><i class="no-highlight">74</i>&nbsp;        studentProfile.setShortName(StringHelper.trimIfNotNull(studentProfile.getShortName()));</b>
+<b class="fc"><i class="no-highlight">75</i>&nbsp;        studentProfile.setEmail(StringHelper.trimIfNotNull(studentProfile.getEmail()));</b>
+<b class="fc"><i class="no-highlight">76</i>&nbsp;        studentProfile.setNationality(StringHelper.trimIfNotNull(studentProfile.getNationality()));</b>
+<b class="fc"><i class="no-highlight">77</i>&nbsp;        studentProfile.setInstitute(StringHelper.trimIfNotNull(studentProfile.getInstitute()));</b>
+<b class="fc"><i class="no-highlight">78</i>&nbsp;        studentProfile.setMoreInfo(StringHelper.trimIfNotNull(studentProfile.getMoreInfo()));</b>
+<i class="no-highlight">79</i>&nbsp;
+<b class="fc"><i class="no-highlight">80</i>&nbsp;        return studentProfile;</b>
+<i class="no-highlight">81</i>&nbsp;    }
+<i class="no-highlight">82</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-25 11:18</div>
+</div>
+</body>
+</html>

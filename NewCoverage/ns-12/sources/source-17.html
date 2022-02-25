@@ -1,0 +1,190 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > DatastoreBackupAction</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.ui.webapi</a>
+</div>
+
+<h1>Coverage Summary for Class: DatastoreBackupAction (teammates.ui.webapi)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DatastoreBackupAction</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/36)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.ui.webapi;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.io.BufferedReader;
+<i class="no-highlight">4</i>&nbsp;import java.io.IOException;
+<i class="no-highlight">5</i>&nbsp;import java.io.InputStreamReader;
+<i class="no-highlight">6</i>&nbsp;import java.nio.charset.Charset;
+<i class="no-highlight">7</i>&nbsp;import java.time.Instant;
+<i class="no-highlight">8</i>&nbsp;import java.util.HashMap;
+<i class="no-highlight">9</i>&nbsp;import java.util.Map;
+<i class="no-highlight">10</i>&nbsp;import java.util.stream.Collectors;
+<i class="no-highlight">11</i>&nbsp;
+<i class="no-highlight">12</i>&nbsp;import org.apache.http.HttpStatus;
+<i class="no-highlight">13</i>&nbsp;import org.apache.http.client.methods.CloseableHttpResponse;
+<i class="no-highlight">14</i>&nbsp;import org.apache.http.client.methods.HttpPost;
+<i class="no-highlight">15</i>&nbsp;import org.apache.http.entity.StringEntity;
+<i class="no-highlight">16</i>&nbsp;import org.apache.http.impl.client.CloseableHttpClient;
+<i class="no-highlight">17</i>&nbsp;import org.apache.http.impl.client.HttpClients;
+<i class="no-highlight">18</i>&nbsp;
+<i class="no-highlight">19</i>&nbsp;import com.google.auth.oauth2.GoogleCredentials;
+<i class="no-highlight">20</i>&nbsp;
+<i class="no-highlight">21</i>&nbsp;import teammates.common.util.Config;
+<i class="no-highlight">22</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">23</i>&nbsp;import teammates.common.util.JsonUtils;
+<i class="no-highlight">24</i>&nbsp;import teammates.common.util.Logger;
+<i class="no-highlight">25</i>&nbsp;
+<i class="no-highlight">26</i>&nbsp;/**
+<i class="no-highlight">27</i>&nbsp; * Cron job: performs Datastore backup.
+<i class="no-highlight">28</i>&nbsp; *
+<i class="no-highlight">29</i>&nbsp; * @see &lt;a href=&quot;https://cloud.google.com/datastore/docs/export-import-entities&quot;&gt;https://cloud.google.com/datastore/docs/export-import-entities&lt;/a&gt;
+<i class="no-highlight">30</i>&nbsp; * @see &lt;a href=&quot;https://cloud.google.com/datastore/docs/reference/admin/rest/v1/projects/export&quot;&gt;https://cloud.google.com/datastore/docs/reference/admin/rest/v1/projects/export&lt;/a&gt;
+<i class="no-highlight">31</i>&nbsp; */
+<b class="nc"><i class="no-highlight">32</i>&nbsp;class DatastoreBackupAction extends AdminOnlyAction {</b>
+<i class="no-highlight">33</i>&nbsp;
+<b class="nc"><i class="no-highlight">34</i>&nbsp;    private static final Logger log = Logger.getLogger();</b>
+<i class="no-highlight">35</i>&nbsp;
+<i class="no-highlight">36</i>&nbsp;    @Override
+<i class="no-highlight">37</i>&nbsp;    public JsonResult execute() {
+<b class="nc"><i class="no-highlight">38</i>&nbsp;        if (Config.isDevServer()) {</b>
+<b class="nc"><i class="no-highlight">39</i>&nbsp;            log.info(&quot;Skipping backup in dev server.&quot;);</b>
+<b class="nc"><i class="no-highlight">40</i>&nbsp;            return new JsonResult(&quot;Successful&quot;);</b>
+<i class="no-highlight">41</i>&nbsp;        }
+<b class="nc"><i class="no-highlight">42</i>&nbsp;        if (!Config.ENABLE_DATASTORE_BACKUP) {</b>
+<b class="nc"><i class="no-highlight">43</i>&nbsp;            log.info(&quot;Skipping backup by system admin&#39;s choice.&quot;);</b>
+<b class="nc"><i class="no-highlight">44</i>&nbsp;            return new JsonResult(&quot;Successful&quot;);</b>
+<i class="no-highlight">45</i>&nbsp;        }
+<b class="nc"><i class="no-highlight">46</i>&nbsp;        String appId = Config.APP_ID;</b>
+<i class="no-highlight">47</i>&nbsp;
+<b class="nc"><i class="no-highlight">48</i>&nbsp;        HttpPost post = new HttpPost(&quot;https://datastore.googleapis.com/v1/projects/&quot; + appId + &quot;:export&quot;);</b>
+<b class="nc"><i class="no-highlight">49</i>&nbsp;        post.setHeader(&quot;Content-Type&quot;, &quot;application/json&quot;);</b>
+<i class="no-highlight">50</i>&nbsp;
+<i class="no-highlight">51</i>&nbsp;        try {
+<b class="nc"><i class="no-highlight">52</i>&nbsp;            String accessToken = GoogleCredentials.getApplicationDefault()</b>
+<b class="nc"><i class="no-highlight">53</i>&nbsp;                    .createScoped(&quot;https://www.googleapis.com/auth/datastore&quot;)</b>
+<b class="nc"><i class="no-highlight">54</i>&nbsp;                    .refreshAccessToken()</b>
+<b class="nc"><i class="no-highlight">55</i>&nbsp;                    .getTokenValue();</b>
+<b class="nc"><i class="no-highlight">56</i>&nbsp;            post.setHeader(&quot;Authorization&quot;, &quot;Bearer &quot; + accessToken);</b>
+<b class="nc"><i class="no-highlight">57</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i class="no-highlight">58</i>&nbsp;            log.severe(&quot;Failed to obtain credentials: &quot; + e.getMessage());</b>
+<b class="nc"><i class="no-highlight">59</i>&nbsp;            return new JsonResult(&quot;Failure&quot;);</b>
+<b class="nc"><i class="no-highlight">60</i>&nbsp;        }</b>
+<i class="no-highlight">61</i>&nbsp;
+<b class="nc"><i class="no-highlight">62</i>&nbsp;        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</b>
+<b class="nc"><i class="no-highlight">63</i>&nbsp;        String timestamp = Instant.now().toString();</b>
+<i class="no-highlight">64</i>&nbsp;        // Documentation is wrong; the param name is output_url_prefix instead of outputUrlPrefix
+<b class="nc"><i class="no-highlight">65</i>&nbsp;        body.put(&quot;output_url_prefix&quot;, &quot;gs://&quot; + Config.BACKUP_GCS_BUCKETNAME + &quot;/datastore-backups/&quot; + timestamp);</b>
+<i class="no-highlight">66</i>&nbsp;
+<b class="nc"><i class="no-highlight">67</i>&nbsp;        StringEntity entity = new StringEntity(JsonUtils.toCompactJson(body), Charset.forName(Const.ENCODING));</b>
+<b class="nc"><i class="no-highlight">68</i>&nbsp;        post.setEntity(entity);</b>
+<i class="no-highlight">69</i>&nbsp;
+<b class="nc"><i class="no-highlight">70</i>&nbsp;        try (CloseableHttpClient client = HttpClients.createDefault();</b>
+<b class="nc"><i class="no-highlight">71</i>&nbsp;                CloseableHttpResponse resp = client.execute(post);</b>
+<b class="nc"><i class="no-highlight">72</i>&nbsp;                BufferedReader br = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()))) {</b>
+<b class="nc"><i class="no-highlight">73</i>&nbsp;            String output = br.lines().collect(Collectors.joining(System.lineSeparator()));</b>
+<b class="nc"><i class="no-highlight">74</i>&nbsp;            if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {</b>
+<b class="nc"><i class="no-highlight">75</i>&nbsp;                log.info(&quot;Backup request successful:&quot; + System.lineSeparator() + output);</b>
+<i class="no-highlight">76</i>&nbsp;            } else {
+<b class="nc"><i class="no-highlight">77</i>&nbsp;                log.severe(&quot;Backup request failure:&quot; + System.lineSeparator() + output);</b>
+<i class="no-highlight">78</i>&nbsp;            }
+<b class="nc"><i class="no-highlight">79</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i class="no-highlight">80</i>&nbsp;            log.severe(&quot;Backup request failure: &quot; + e.getMessage());</b>
+<b class="nc"><i class="no-highlight">81</i>&nbsp;        }</b>
+<b class="nc"><i class="no-highlight">82</i>&nbsp;        return new JsonResult(&quot;Successful&quot;);</b>
+<i class="no-highlight">83</i>&nbsp;    }
+<i class="no-highlight">84</i>&nbsp;
+<i class="no-highlight">85</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-25 11:18</div>
+</div>
+</body>
+</html>

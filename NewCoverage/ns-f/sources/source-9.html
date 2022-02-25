@@ -1,0 +1,185 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > CourseData</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.ui.output</a>
+</div>
+
+<h1>Coverage Summary for Class: CourseData (teammates.ui.output)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CourseData</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    91.7%
+  </span>
+  <span class="absValue">
+    (11/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    95%
+  </span>
+  <span class="absValue">
+    (19/20)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.ui.output;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import javax.annotation.Nullable;
+<i class="no-highlight">4</i>&nbsp;
+<i class="no-highlight">5</i>&nbsp;import teammates.common.datatransfer.InstructorPermissionSet;
+<i class="no-highlight">6</i>&nbsp;import teammates.common.datatransfer.attributes.CourseAttributes;
+<i class="no-highlight">7</i>&nbsp;
+<i class="no-highlight">8</i>&nbsp;/**
+<i class="no-highlight">9</i>&nbsp; * The API output format of a course.
+<i class="no-highlight">10</i>&nbsp; */
+<i class="no-highlight">11</i>&nbsp;public class CourseData extends ApiOutput {
+<i class="no-highlight">12</i>&nbsp;
+<i class="no-highlight">13</i>&nbsp;    private final String courseId;
+<i class="no-highlight">14</i>&nbsp;    private final String courseName;
+<i class="no-highlight">15</i>&nbsp;    private final String timeZone;
+<i class="no-highlight">16</i>&nbsp;    private final String institute;
+<i class="no-highlight">17</i>&nbsp;    private long creationTimestamp;
+<i class="no-highlight">18</i>&nbsp;    private long deletionTimestamp;
+<i class="no-highlight">19</i>&nbsp;    @Nullable
+<i class="no-highlight">20</i>&nbsp;    private InstructorPermissionSet privileges;
+<i class="no-highlight">21</i>&nbsp;
+<b class="fc"><i class="no-highlight">22</i>&nbsp;    public CourseData(CourseAttributes courseAttributes) {</b>
+<b class="fc"><i class="no-highlight">23</i>&nbsp;        this.courseId = courseAttributes.getId();</b>
+<b class="fc"><i class="no-highlight">24</i>&nbsp;        this.courseName = courseAttributes.getName();</b>
+<b class="fc"><i class="no-highlight">25</i>&nbsp;        this.timeZone = courseAttributes.getTimeZone();</b>
+<b class="fc"><i class="no-highlight">26</i>&nbsp;        this.institute = courseAttributes.getInstitute();</b>
+<b class="fc"><i class="no-highlight">27</i>&nbsp;        this.creationTimestamp = courseAttributes.getCreatedAt().toEpochMilli();</b>
+<b class="fc"><i class="no-highlight">28</i>&nbsp;        if (courseAttributes.getDeletedAt() != null) {</b>
+<b class="fc"><i class="no-highlight">29</i>&nbsp;            this.deletionTimestamp = courseAttributes.getDeletedAt().toEpochMilli();</b>
+<i class="no-highlight">30</i>&nbsp;        }
+<i class="no-highlight">31</i>&nbsp;    }
+<i class="no-highlight">32</i>&nbsp;
+<i class="no-highlight">33</i>&nbsp;    public String getCourseId() {
+<b class="fc"><i class="no-highlight">34</i>&nbsp;        return courseId;</b>
+<i class="no-highlight">35</i>&nbsp;    }
+<i class="no-highlight">36</i>&nbsp;
+<i class="no-highlight">37</i>&nbsp;    public String getCourseName() {
+<b class="fc"><i class="no-highlight">38</i>&nbsp;        return courseName;</b>
+<i class="no-highlight">39</i>&nbsp;    }
+<i class="no-highlight">40</i>&nbsp;
+<i class="no-highlight">41</i>&nbsp;    public String getInstitute() {
+<b class="fc"><i class="no-highlight">42</i>&nbsp;        return institute;</b>
+<i class="no-highlight">43</i>&nbsp;    }
+<i class="no-highlight">44</i>&nbsp;
+<i class="no-highlight">45</i>&nbsp;    public String getTimeZone() {
+<b class="fc"><i class="no-highlight">46</i>&nbsp;        return timeZone;</b>
+<i class="no-highlight">47</i>&nbsp;    }
+<i class="no-highlight">48</i>&nbsp;
+<i class="no-highlight">49</i>&nbsp;    public long getCreationTimestamp() {
+<b class="fc"><i class="no-highlight">50</i>&nbsp;        return creationTimestamp;</b>
+<i class="no-highlight">51</i>&nbsp;    }
+<i class="no-highlight">52</i>&nbsp;
+<i class="no-highlight">53</i>&nbsp;    public long getDeletionTimestamp() {
+<b class="fc"><i class="no-highlight">54</i>&nbsp;        return deletionTimestamp;</b>
+<i class="no-highlight">55</i>&nbsp;    }
+<i class="no-highlight">56</i>&nbsp;
+<i class="no-highlight">57</i>&nbsp;    public InstructorPermissionSet getPrivileges() {
+<b class="nc"><i class="no-highlight">58</i>&nbsp;        return privileges;</b>
+<i class="no-highlight">59</i>&nbsp;    }
+<i class="no-highlight">60</i>&nbsp;
+<i class="no-highlight">61</i>&nbsp;    public void setCreationTimestamp(long creationTimestamp) {
+<b class="fc"><i class="no-highlight">62</i>&nbsp;        this.creationTimestamp = creationTimestamp;</b>
+<i class="no-highlight">63</i>&nbsp;    }
+<i class="no-highlight">64</i>&nbsp;
+<i class="no-highlight">65</i>&nbsp;    public void setDeletionTimestamp(long deletionTimestamp) {
+<b class="fc"><i class="no-highlight">66</i>&nbsp;        this.deletionTimestamp = deletionTimestamp;</b>
+<i class="no-highlight">67</i>&nbsp;    }
+<i class="no-highlight">68</i>&nbsp;
+<i class="no-highlight">69</i>&nbsp;    public void setPrivileges(InstructorPermissionSet privileges) {
+<b class="fc"><i class="no-highlight">70</i>&nbsp;        this.privileges = privileges;</b>
+<i class="no-highlight">71</i>&nbsp;    }
+<i class="no-highlight">72</i>&nbsp;
+<i class="no-highlight">73</i>&nbsp;    /**
+<i class="no-highlight">74</i>&nbsp;     * Hides some attributes to student.
+<i class="no-highlight">75</i>&nbsp;     */
+<i class="no-highlight">76</i>&nbsp;    public void hideInformationForStudent() {
+<b class="fc"><i class="no-highlight">77</i>&nbsp;        setCreationTimestamp(0);</b>
+<b class="fc"><i class="no-highlight">78</i>&nbsp;        setDeletionTimestamp(0);</b>
+<i class="no-highlight">79</i>&nbsp;    }
+<i class="no-highlight">80</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-25 11:18</div>
+</div>
+</body>
+</html>

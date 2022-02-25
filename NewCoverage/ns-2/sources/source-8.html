@@ -1,0 +1,581 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > InstructorPrivileges</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.common.datatransfer</a>
+</div>
+
+<h1>Coverage Summary for Class: InstructorPrivileges (teammates.common.datatransfer)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InstructorPrivileges</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (43/43)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    98.1%
+  </span>
+  <span class="absValue">
+    (207/211)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.common.datatransfer;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.util.Arrays;
+<i class="no-highlight">4</i>&nbsp;import java.util.HashMap;
+<i class="no-highlight">5</i>&nbsp;import java.util.LinkedHashMap;
+<i class="no-highlight">6</i>&nbsp;import java.util.LinkedHashSet;
+<i class="no-highlight">7</i>&nbsp;import java.util.Map;
+<i class="no-highlight">8</i>&nbsp;import java.util.Set;
+<i class="no-highlight">9</i>&nbsp;
+<i class="no-highlight">10</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">11</i>&nbsp;
+<i class="no-highlight">12</i>&nbsp;/**
+<i class="no-highlight">13</i>&nbsp; * Representation of instructor privileges. Store the privileges of the instructor
+<i class="no-highlight">14</i>&nbsp; */
+<b class="fc"><i class="no-highlight">15</i>&nbsp;public final class InstructorPrivileges {</b>
+<i class="no-highlight">16</i>&nbsp;
+<b class="fc"><i class="no-highlight">17</i>&nbsp;    private static final InstructorPermissionSet PRIVILEGES_COOWNER = new InstructorPermissionSet();</b>
+<b class="fc"><i class="no-highlight">18</i>&nbsp;    private static final InstructorPermissionSet PRIVILEGES_MANAGER = new InstructorPermissionSet();</b>
+<b class="fc"><i class="no-highlight">19</i>&nbsp;    private static final InstructorPermissionSet PRIVILEGES_OBSERVER = new InstructorPermissionSet();</b>
+<b class="fc"><i class="no-highlight">20</i>&nbsp;    private static final InstructorPermissionSet PRIVILEGES_TUTOR = new InstructorPermissionSet();</b>
+<b class="fc"><i class="no-highlight">21</i>&nbsp;    private static final InstructorPermissionSet PRIVILEGES_CUSTOM = new InstructorPermissionSet();</b>
+<i class="no-highlight">22</i>&nbsp;
+<i class="no-highlight">23</i>&nbsp;    static {
+<b class="fc"><i class="no-highlight">24</i>&nbsp;        PRIVILEGES_COOWNER.setCanModifyCourse(true);</b>
+<b class="fc"><i class="no-highlight">25</i>&nbsp;        PRIVILEGES_COOWNER.setCanModifyInstructor(true);</b>
+<b class="fc"><i class="no-highlight">26</i>&nbsp;        PRIVILEGES_COOWNER.setCanModifySession(true);</b>
+<b class="fc"><i class="no-highlight">27</i>&nbsp;        PRIVILEGES_COOWNER.setCanModifyStudent(true);</b>
+<b class="fc"><i class="no-highlight">28</i>&nbsp;        PRIVILEGES_COOWNER.setCanViewStudentInSections(true);</b>
+<b class="fc"><i class="no-highlight">29</i>&nbsp;        PRIVILEGES_COOWNER.setCanViewSessionInSections(true);</b>
+<b class="fc"><i class="no-highlight">30</i>&nbsp;        PRIVILEGES_COOWNER.setCanSubmitSessionInSections(true);</b>
+<b class="fc"><i class="no-highlight">31</i>&nbsp;        PRIVILEGES_COOWNER.setCanModifySessionCommentsInSections(true);</b>
+<i class="no-highlight">32</i>&nbsp;
+<b class="fc"><i class="no-highlight">33</i>&nbsp;        PRIVILEGES_MANAGER.setCanModifyCourse(false);</b>
+<b class="fc"><i class="no-highlight">34</i>&nbsp;        PRIVILEGES_MANAGER.setCanModifyInstructor(true);</b>
+<b class="fc"><i class="no-highlight">35</i>&nbsp;        PRIVILEGES_MANAGER.setCanModifySession(true);</b>
+<b class="fc"><i class="no-highlight">36</i>&nbsp;        PRIVILEGES_MANAGER.setCanModifyStudent(true);</b>
+<b class="fc"><i class="no-highlight">37</i>&nbsp;        PRIVILEGES_MANAGER.setCanViewStudentInSections(true);</b>
+<b class="fc"><i class="no-highlight">38</i>&nbsp;        PRIVILEGES_MANAGER.setCanViewSessionInSections(true);</b>
+<b class="fc"><i class="no-highlight">39</i>&nbsp;        PRIVILEGES_MANAGER.setCanSubmitSessionInSections(true);</b>
+<b class="fc"><i class="no-highlight">40</i>&nbsp;        PRIVILEGES_MANAGER.setCanModifySessionCommentsInSections(true);</b>
+<i class="no-highlight">41</i>&nbsp;
+<b class="fc"><i class="no-highlight">42</i>&nbsp;        PRIVILEGES_OBSERVER.setCanModifyCourse(false);</b>
+<b class="fc"><i class="no-highlight">43</i>&nbsp;        PRIVILEGES_OBSERVER.setCanModifyInstructor(false);</b>
+<b class="fc"><i class="no-highlight">44</i>&nbsp;        PRIVILEGES_OBSERVER.setCanModifySession(false);</b>
+<b class="fc"><i class="no-highlight">45</i>&nbsp;        PRIVILEGES_OBSERVER.setCanModifyStudent(false);</b>
+<b class="fc"><i class="no-highlight">46</i>&nbsp;        PRIVILEGES_OBSERVER.setCanViewStudentInSections(true);</b>
+<b class="fc"><i class="no-highlight">47</i>&nbsp;        PRIVILEGES_OBSERVER.setCanViewSessionInSections(true);</b>
+<b class="fc"><i class="no-highlight">48</i>&nbsp;        PRIVILEGES_OBSERVER.setCanSubmitSessionInSections(false);</b>
+<b class="fc"><i class="no-highlight">49</i>&nbsp;        PRIVILEGES_OBSERVER.setCanModifySessionCommentsInSections(false);</b>
+<i class="no-highlight">50</i>&nbsp;
+<b class="fc"><i class="no-highlight">51</i>&nbsp;        PRIVILEGES_TUTOR.setCanModifyCourse(false);</b>
+<b class="fc"><i class="no-highlight">52</i>&nbsp;        PRIVILEGES_TUTOR.setCanModifyInstructor(false);</b>
+<b class="fc"><i class="no-highlight">53</i>&nbsp;        PRIVILEGES_TUTOR.setCanModifySession(false);</b>
+<b class="fc"><i class="no-highlight">54</i>&nbsp;        PRIVILEGES_TUTOR.setCanModifyStudent(false);</b>
+<b class="fc"><i class="no-highlight">55</i>&nbsp;        PRIVILEGES_TUTOR.setCanViewStudentInSections(true);</b>
+<b class="fc"><i class="no-highlight">56</i>&nbsp;        PRIVILEGES_TUTOR.setCanViewSessionInSections(true);</b>
+<b class="fc"><i class="no-highlight">57</i>&nbsp;        PRIVILEGES_TUTOR.setCanSubmitSessionInSections(true);</b>
+<b class="fc"><i class="no-highlight">58</i>&nbsp;        PRIVILEGES_TUTOR.setCanModifySessionCommentsInSections(false);</b>
+<i class="no-highlight">59</i>&nbsp;
+<b class="fc"><i class="no-highlight">60</i>&nbsp;        PRIVILEGES_CUSTOM.setCanModifyCourse(false);</b>
+<b class="fc"><i class="no-highlight">61</i>&nbsp;        PRIVILEGES_CUSTOM.setCanModifyInstructor(false);</b>
+<b class="fc"><i class="no-highlight">62</i>&nbsp;        PRIVILEGES_CUSTOM.setCanModifySession(false);</b>
+<b class="fc"><i class="no-highlight">63</i>&nbsp;        PRIVILEGES_CUSTOM.setCanModifyStudent(false);</b>
+<b class="fc"><i class="no-highlight">64</i>&nbsp;        PRIVILEGES_CUSTOM.setCanViewStudentInSections(false);</b>
+<b class="fc"><i class="no-highlight">65</i>&nbsp;        PRIVILEGES_CUSTOM.setCanViewSessionInSections(false);</b>
+<b class="fc"><i class="no-highlight">66</i>&nbsp;        PRIVILEGES_CUSTOM.setCanSubmitSessionInSections(false);</b>
+<b class="fc"><i class="no-highlight">67</i>&nbsp;        PRIVILEGES_CUSTOM.setCanModifySessionCommentsInSections(false);</b>
+<i class="no-highlight">68</i>&nbsp;    }
+<i class="no-highlight">69</i>&nbsp;
+<b class="fc"><i class="no-highlight">70</i>&nbsp;    private static final String[] COURSE_LEVEL_ONLY_LIST = new String[] {</b>
+<i class="no-highlight">71</i>&nbsp;            Const.InstructorPermissions.CAN_MODIFY_COURSE,
+<i class="no-highlight">72</i>&nbsp;            Const.InstructorPermissions.CAN_MODIFY_INSTRUCTOR,
+<i class="no-highlight">73</i>&nbsp;            Const.InstructorPermissions.CAN_MODIFY_SESSION,
+<i class="no-highlight">74</i>&nbsp;            Const.InstructorPermissions.CAN_MODIFY_STUDENT,
+<i class="no-highlight">75</i>&nbsp;    };
+<i class="no-highlight">76</i>&nbsp;
+<b class="fc"><i class="no-highlight">77</i>&nbsp;    private static final String[] SECTION_LEVEL_ONLY_LIST = new String[] {</b>
+<i class="no-highlight">78</i>&nbsp;            Const.InstructorPermissions.CAN_VIEW_STUDENT_IN_SECTIONS,
+<i class="no-highlight">79</i>&nbsp;    };
+<i class="no-highlight">80</i>&nbsp;
+<b class="fc"><i class="no-highlight">81</i>&nbsp;    private static final String[] SESSION_LEVEL_ONLY_LIST = new String[] {</b>
+<i class="no-highlight">82</i>&nbsp;            Const.InstructorPermissions.CAN_VIEW_SESSION_IN_SECTIONS,
+<i class="no-highlight">83</i>&nbsp;            Const.InstructorPermissions.CAN_SUBMIT_SESSION_IN_SECTIONS,
+<i class="no-highlight">84</i>&nbsp;            Const.InstructorPermissions.CAN_MODIFY_SESSION_COMMENT_IN_SECTIONS,
+<i class="no-highlight">85</i>&nbsp;    };
+<i class="no-highlight">86</i>&nbsp;
+<b class="fc"><i class="no-highlight">87</i>&nbsp;    private static final Set&lt;String&gt; COURSE_LEVEL_ONLY_PRIVILEGES =</b>
+<b class="fc"><i class="no-highlight">88</i>&nbsp;            new LinkedHashSet&lt;&gt;(Arrays.asList(COURSE_LEVEL_ONLY_LIST));</b>
+<b class="fc"><i class="no-highlight">89</i>&nbsp;    private static final Set&lt;String&gt; SECTION_LEVEL_ONLY_PRIVILEGES =</b>
+<b class="fc"><i class="no-highlight">90</i>&nbsp;            new LinkedHashSet&lt;&gt;(Arrays.asList(SECTION_LEVEL_ONLY_LIST));</b>
+<b class="fc"><i class="no-highlight">91</i>&nbsp;    private static final Set&lt;String&gt; SESSION_LEVEL_ONLY_PRIVILEGES =</b>
+<b class="fc"><i class="no-highlight">92</i>&nbsp;            new LinkedHashSet&lt;&gt;(Arrays.asList(SESSION_LEVEL_ONLY_LIST));</b>
+<i class="no-highlight">93</i>&nbsp;
+<i class="no-highlight">94</i>&nbsp;    private final InstructorPermissionSet courseLevel;
+<i class="no-highlight">95</i>&nbsp;    private final Map&lt;String, InstructorPermissionSet&gt; sectionLevel;
+<i class="no-highlight">96</i>&nbsp;    private final Map&lt;String, Map&lt;String, InstructorPermissionSet&gt;&gt; sessionLevel;
+<i class="no-highlight">97</i>&nbsp;
+<b class="fc"><i class="no-highlight">98</i>&nbsp;    public InstructorPrivileges() {</b>
+<b class="fc"><i class="no-highlight">99</i>&nbsp;        this.courseLevel = new InstructorPermissionSet();</b>
+<b class="fc"><i class="no-highlight">100</i>&nbsp;        this.sectionLevel = new LinkedHashMap&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">101</i>&nbsp;        this.sessionLevel = new LinkedHashMap&lt;&gt;();</b>
+<i class="no-highlight">102</i>&nbsp;    }
+<i class="no-highlight">103</i>&nbsp;
+<i class="no-highlight">104</i>&nbsp;    public InstructorPrivileges(String instrRole) {
+<b class="fc"><i class="no-highlight">105</i>&nbsp;        this();</b>
+<b class="fc"><i class="no-highlight">106</i>&nbsp;        switch (instrRole) {</b>
+<i class="no-highlight">107</i>&nbsp;        case Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_COOWNER:
+<b class="fc"><i class="no-highlight">108</i>&nbsp;            setDefaultPrivilegesForCoowner();</b>
+<b class="fc"><i class="no-highlight">109</i>&nbsp;            break;</b>
+<i class="no-highlight">110</i>&nbsp;        case Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_MANAGER:
+<b class="fc"><i class="no-highlight">111</i>&nbsp;            setDefaultPrivilegesForManager();</b>
+<b class="fc"><i class="no-highlight">112</i>&nbsp;            break;</b>
+<i class="no-highlight">113</i>&nbsp;        case Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_OBSERVER:
+<b class="fc"><i class="no-highlight">114</i>&nbsp;            setDefaultPrivilegesForObserver();</b>
+<b class="fc"><i class="no-highlight">115</i>&nbsp;            break;</b>
+<i class="no-highlight">116</i>&nbsp;        case Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_TUTOR:
+<b class="fc"><i class="no-highlight">117</i>&nbsp;            setDefaultPrivilegesForTutor();</b>
+<b class="fc"><i class="no-highlight">118</i>&nbsp;            break;</b>
+<i class="no-highlight">119</i>&nbsp;        case Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_CUSTOM:
+<i class="no-highlight">120</i>&nbsp;        default:
+<b class="fc"><i class="no-highlight">121</i>&nbsp;            setDefaultPrivilegesForCustom();</b>
+<i class="no-highlight">122</i>&nbsp;            break;
+<i class="no-highlight">123</i>&nbsp;        }
+<i class="no-highlight">124</i>&nbsp;    }
+<i class="no-highlight">125</i>&nbsp;
+<b class="fc"><i class="no-highlight">126</i>&nbsp;    public InstructorPrivileges(InstructorPrivilegesLegacy legacyFormat) {</b>
+<b class="fc"><i class="no-highlight">127</i>&nbsp;        this.courseLevel = InstructorPermissionSet.fromLegacyMapFormat(legacyFormat.getCourseLevel());</b>
+<i class="no-highlight">128</i>&nbsp;
+<b class="fc"><i class="no-highlight">129</i>&nbsp;        this.sectionLevel = new LinkedHashMap&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">130</i>&nbsp;        for (Map.Entry&lt;String, Map&lt;String, Boolean&gt;&gt; entry : legacyFormat.getSectionLevel().entrySet()) {</b>
+<b class="fc"><i class="no-highlight">131</i>&nbsp;            this.sectionLevel.put(entry.getKey(), InstructorPermissionSet.fromLegacyMapFormat(entry.getValue()));</b>
+<b class="fc"><i class="no-highlight">132</i>&nbsp;        }</b>
+<i class="no-highlight">133</i>&nbsp;
+<b class="fc"><i class="no-highlight">134</i>&nbsp;        this.sessionLevel = new LinkedHashMap&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">135</i>&nbsp;        for (Map.Entry&lt;String, Map&lt;String, Map&lt;String, Boolean&gt;&gt;&gt; section : legacyFormat.getSessionLevel().entrySet()) {</b>
+<b class="fc"><i class="no-highlight">136</i>&nbsp;            Map&lt;String, InstructorPermissionSet&gt; sessionMap = new HashMap&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">137</i>&nbsp;            for (Map.Entry&lt;String, Map&lt;String, Boolean&gt;&gt; session : section.getValue().entrySet()) {</b>
+<b class="fc"><i class="no-highlight">138</i>&nbsp;                sessionMap.put(session.getKey(), InstructorPermissionSet.fromLegacyMapFormat(session.getValue()));</b>
+<b class="fc"><i class="no-highlight">139</i>&nbsp;            }</b>
+<b class="fc"><i class="no-highlight">140</i>&nbsp;            this.sessionLevel.put(section.getKey(), sessionMap);</b>
+<b class="fc"><i class="no-highlight">141</i>&nbsp;        }</b>
+<i class="no-highlight">142</i>&nbsp;    }
+<i class="no-highlight">143</i>&nbsp;
+<i class="no-highlight">144</i>&nbsp;    /**
+<i class="no-highlight">145</i>&nbsp;     * Converts the current privilege object to its legacy format.
+<i class="no-highlight">146</i>&nbsp;     */
+<i class="no-highlight">147</i>&nbsp;    public InstructorPrivilegesLegacy toLegacyFormat() {
+<b class="fc"><i class="no-highlight">148</i>&nbsp;        InstructorPrivilegesLegacy privilegesLegacy = new InstructorPrivilegesLegacy();</b>
+<b class="fc"><i class="no-highlight">149</i>&nbsp;        privilegesLegacy.getCourseLevel().putAll(courseLevel.toLegacyMapFormat());</b>
+<b class="fc"><i class="no-highlight">150</i>&nbsp;        for (Map.Entry&lt;String, InstructorPermissionSet&gt; entry : sectionLevel.entrySet()) {</b>
+<b class="fc"><i class="no-highlight">151</i>&nbsp;            Map&lt;String, Boolean&gt; legacySectionMap = new HashMap&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">152</i>&nbsp;            for (Map.Entry&lt;String, Boolean&gt; section : entry.getValue().toLegacyMapFormat().entrySet()) {</b>
+<b class="fc"><i class="no-highlight">153</i>&nbsp;                if (isPrivilegeNameValidForSectionLevel(section.getKey())) {</b>
+<b class="fc"><i class="no-highlight">154</i>&nbsp;                    legacySectionMap.put(section.getKey(), section.getValue());</b>
+<i class="no-highlight">155</i>&nbsp;                }
+<b class="fc"><i class="no-highlight">156</i>&nbsp;            }</b>
+<b class="fc"><i class="no-highlight">157</i>&nbsp;            privilegesLegacy.getSectionLevel().put(entry.getKey(), legacySectionMap);</b>
+<b class="fc"><i class="no-highlight">158</i>&nbsp;        }</b>
+<b class="fc"><i class="no-highlight">159</i>&nbsp;        for (Map.Entry&lt;String, Map&lt;String, InstructorPermissionSet&gt;&gt; section : sessionLevel.entrySet()) {</b>
+<b class="fc"><i class="no-highlight">160</i>&nbsp;            Map&lt;String, Map&lt;String, Boolean&gt;&gt; sessionMap = new HashMap&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">161</i>&nbsp;            for (Map.Entry&lt;String, InstructorPermissionSet&gt; entry : section.getValue().entrySet()) {</b>
+<b class="fc"><i class="no-highlight">162</i>&nbsp;                Map&lt;String, Boolean&gt; legacySessionMap = new HashMap&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">163</i>&nbsp;                for (Map.Entry&lt;String, Boolean&gt; session : entry.getValue().toLegacyMapFormat().entrySet()) {</b>
+<b class="fc"><i class="no-highlight">164</i>&nbsp;                    if (isPrivilegeNameValidForSessionLevel(session.getKey())) {</b>
+<b class="fc"><i class="no-highlight">165</i>&nbsp;                        legacySessionMap.put(session.getKey(), session.getValue());</b>
+<i class="no-highlight">166</i>&nbsp;                    }
+<b class="fc"><i class="no-highlight">167</i>&nbsp;                }</b>
+<b class="fc"><i class="no-highlight">168</i>&nbsp;                sessionMap.put(entry.getKey(), legacySessionMap);</b>
+<b class="fc"><i class="no-highlight">169</i>&nbsp;            }</b>
+<b class="fc"><i class="no-highlight">170</i>&nbsp;            privilegesLegacy.getSessionLevel().put(section.getKey(), sessionMap);</b>
+<b class="fc"><i class="no-highlight">171</i>&nbsp;        }</b>
+<b class="fc"><i class="no-highlight">172</i>&nbsp;        return privilegesLegacy;</b>
+<i class="no-highlight">173</i>&nbsp;    }
+<i class="no-highlight">174</i>&nbsp;
+<i class="no-highlight">175</i>&nbsp;    /**
+<i class="no-highlight">176</i>&nbsp;     * Returns true if the given string is a valid privilege name.
+<i class="no-highlight">177</i>&nbsp;     */
+<i class="no-highlight">178</i>&nbsp;    public static boolean isPrivilegeNameValid(String privilegeName) {
+<b class="fc"><i class="no-highlight">179</i>&nbsp;        return COURSE_LEVEL_ONLY_PRIVILEGES.contains(privilegeName)</b>
+<b class="fc"><i class="no-highlight">180</i>&nbsp;                || SECTION_LEVEL_ONLY_PRIVILEGES.contains(privilegeName)</b>
+<b class="fc"><i class="no-highlight">181</i>&nbsp;                || SESSION_LEVEL_ONLY_PRIVILEGES.contains(privilegeName);</b>
+<i class="no-highlight">182</i>&nbsp;    }
+<i class="no-highlight">183</i>&nbsp;
+<i class="no-highlight">184</i>&nbsp;    /**
+<i class="no-highlight">185</i>&nbsp;     * Returns true if the given string is a valid section-level privilege name.
+<i class="no-highlight">186</i>&nbsp;     */
+<i class="no-highlight">187</i>&nbsp;    public static boolean isPrivilegeNameValidForSectionLevel(String privilegeName) {
+<b class="fc"><i class="no-highlight">188</i>&nbsp;        return SECTION_LEVEL_ONLY_PRIVILEGES.contains(privilegeName)</b>
+<b class="fc"><i class="no-highlight">189</i>&nbsp;                || SESSION_LEVEL_ONLY_PRIVILEGES.contains(privilegeName);</b>
+<i class="no-highlight">190</i>&nbsp;    }
+<i class="no-highlight">191</i>&nbsp;
+<i class="no-highlight">192</i>&nbsp;    /**
+<i class="no-highlight">193</i>&nbsp;     * Returns true if the given string is a valid session-level privilege name.
+<i class="no-highlight">194</i>&nbsp;     */
+<i class="no-highlight">195</i>&nbsp;    public static boolean isPrivilegeNameValidForSessionLevel(String privilegeName) {
+<b class="fc"><i class="no-highlight">196</i>&nbsp;        return SESSION_LEVEL_ONLY_PRIVILEGES.contains(privilegeName);</b>
+<i class="no-highlight">197</i>&nbsp;    }
+<i class="no-highlight">198</i>&nbsp;
+<i class="no-highlight">199</i>&nbsp;    void setDefaultPrivilegesForCoowner() {
+<b class="fc"><i class="no-highlight">200</i>&nbsp;        setDefaultPrivileges(PRIVILEGES_COOWNER);</b>
+<i class="no-highlight">201</i>&nbsp;    }
+<i class="no-highlight">202</i>&nbsp;
+<i class="no-highlight">203</i>&nbsp;    void setDefaultPrivilegesForManager() {
+<b class="fc"><i class="no-highlight">204</i>&nbsp;        setDefaultPrivileges(PRIVILEGES_MANAGER);</b>
+<i class="no-highlight">205</i>&nbsp;    }
+<i class="no-highlight">206</i>&nbsp;
+<i class="no-highlight">207</i>&nbsp;    void setDefaultPrivilegesForObserver() {
+<b class="fc"><i class="no-highlight">208</i>&nbsp;        setDefaultPrivileges(PRIVILEGES_OBSERVER);</b>
+<i class="no-highlight">209</i>&nbsp;    }
+<i class="no-highlight">210</i>&nbsp;
+<i class="no-highlight">211</i>&nbsp;    void setDefaultPrivilegesForTutor() {
+<b class="fc"><i class="no-highlight">212</i>&nbsp;        setDefaultPrivileges(PRIVILEGES_TUTOR);</b>
+<i class="no-highlight">213</i>&nbsp;    }
+<i class="no-highlight">214</i>&nbsp;
+<i class="no-highlight">215</i>&nbsp;    void setDefaultPrivilegesForCustom() {
+<b class="fc"><i class="no-highlight">216</i>&nbsp;        setDefaultPrivileges(PRIVILEGES_CUSTOM);</b>
+<i class="no-highlight">217</i>&nbsp;    }
+<i class="no-highlight">218</i>&nbsp;
+<i class="no-highlight">219</i>&nbsp;    private void setDefaultPrivileges(InstructorPermissionSet defaultPrivileges) {
+<b class="fc"><i class="no-highlight">220</i>&nbsp;        courseLevel.setCanModifyCourse(defaultPrivileges.isCanModifyCourse());</b>
+<b class="fc"><i class="no-highlight">221</i>&nbsp;        courseLevel.setCanModifyInstructor(defaultPrivileges.isCanModifyInstructor());</b>
+<b class="fc"><i class="no-highlight">222</i>&nbsp;        courseLevel.setCanModifySession(defaultPrivileges.isCanModifySession());</b>
+<b class="fc"><i class="no-highlight">223</i>&nbsp;        courseLevel.setCanModifyStudent(defaultPrivileges.isCanModifyStudent());</b>
+<b class="fc"><i class="no-highlight">224</i>&nbsp;        courseLevel.setCanViewStudentInSections(defaultPrivileges.isCanViewStudentInSections());</b>
+<b class="fc"><i class="no-highlight">225</i>&nbsp;        courseLevel.setCanViewSessionInSections(defaultPrivileges.isCanViewSessionInSections());</b>
+<b class="fc"><i class="no-highlight">226</i>&nbsp;        courseLevel.setCanSubmitSessionInSections(defaultPrivileges.isCanSubmitSessionInSections());</b>
+<b class="fc"><i class="no-highlight">227</i>&nbsp;        courseLevel.setCanModifySessionCommentsInSections(defaultPrivileges.isCanModifySessionCommentsInSections());</b>
+<i class="no-highlight">228</i>&nbsp;    }
+<i class="no-highlight">229</i>&nbsp;
+<i class="no-highlight">230</i>&nbsp;    private InstructorPermissionSet getOverallPrivilegesForSections() {
+<b class="fc"><i class="no-highlight">231</i>&nbsp;        InstructorPermissionSet privileges = new InstructorPermissionSet();</b>
+<i class="no-highlight">232</i>&nbsp;
+<b class="fc"><i class="no-highlight">233</i>&nbsp;        privileges.setCanViewStudentInSections(courseLevel.isCanViewStudentInSections());</b>
+<b class="fc"><i class="no-highlight">234</i>&nbsp;        privileges.setCanViewSessionInSections(courseLevel.isCanViewSessionInSections());</b>
+<b class="fc"><i class="no-highlight">235</i>&nbsp;        privileges.setCanSubmitSessionInSections(courseLevel.isCanSubmitSessionInSections());</b>
+<b class="fc"><i class="no-highlight">236</i>&nbsp;        privileges.setCanModifySessionCommentsInSections(courseLevel.isCanModifySessionCommentsInSections());</b>
+<i class="no-highlight">237</i>&nbsp;
+<b class="fc"><i class="no-highlight">238</i>&nbsp;        return privileges;</b>
+<i class="no-highlight">239</i>&nbsp;    }
+<i class="no-highlight">240</i>&nbsp;
+<i class="no-highlight">241</i>&nbsp;    /**
+<i class="no-highlight">242</i>&nbsp;     * Sets privilege for the privilege specified by privilegeName.
+<i class="no-highlight">243</i>&nbsp;     */
+<i class="no-highlight">244</i>&nbsp;    public void updatePrivilege(String privilegeName, boolean isAllowed) {
+<b class="fc"><i class="no-highlight">245</i>&nbsp;        updatePrivilegeInCourseLevel(privilegeName, isAllowed);</b>
+<i class="no-highlight">246</i>&nbsp;    }
+<i class="no-highlight">247</i>&nbsp;
+<i class="no-highlight">248</i>&nbsp;    /**
+<i class="no-highlight">249</i>&nbsp;     * Sets privilege for the privilege specified by privilegeName for sectionName.
+<i class="no-highlight">250</i>&nbsp;     */
+<i class="no-highlight">251</i>&nbsp;    public void updatePrivilege(String sectionName, String privilegeName, boolean isAllowed) {
+<b class="fc"><i class="no-highlight">252</i>&nbsp;        updatePrivilegeInSectionLevel(sectionName, privilegeName, isAllowed);</b>
+<i class="no-highlight">253</i>&nbsp;    }
+<i class="no-highlight">254</i>&nbsp;
+<i class="no-highlight">255</i>&nbsp;    /**
+<i class="no-highlight">256</i>&nbsp;     * Sets privilege for the privilege specified by privilegeName for sessionName in sectionName.
+<i class="no-highlight">257</i>&nbsp;     */
+<i class="no-highlight">258</i>&nbsp;    public void updatePrivilege(String sectionName, String sessionName, String privilegeName, boolean isAllowed) {
+<b class="fc"><i class="no-highlight">259</i>&nbsp;        updatePrivilegeInSessionLevel(sectionName, sessionName, privilegeName, isAllowed);</b>
+<i class="no-highlight">260</i>&nbsp;    }
+<i class="no-highlight">261</i>&nbsp;
+<i class="no-highlight">262</i>&nbsp;    private void updatePrivilegeInCourseLevel(String privilegeName, boolean isAllowed) {
+<b class="fc"><i class="no-highlight">263</i>&nbsp;        if (!isPrivilegeNameValid(privilegeName)) {</b>
+<i class="no-highlight">264</i>&nbsp;            return;
+<i class="no-highlight">265</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">266</i>&nbsp;        this.courseLevel.put(privilegeName, isAllowed);</b>
+<i class="no-highlight">267</i>&nbsp;    }
+<i class="no-highlight">268</i>&nbsp;
+<i class="no-highlight">269</i>&nbsp;    private void updatePrivilegeInSectionLevel(String sectionName, String privilegeName, boolean isAllowed) {
+<b class="fc"><i class="no-highlight">270</i>&nbsp;        if (!isPrivilegeNameValidForSectionLevel(privilegeName)) {</b>
+<i class="no-highlight">271</i>&nbsp;            return;
+<i class="no-highlight">272</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">273</i>&nbsp;        addSectionWithDefaultPrivileges(sectionName);</b>
+<b class="fc"><i class="no-highlight">274</i>&nbsp;        this.sectionLevel.get(sectionName).put(privilegeName, isAllowed);</b>
+<i class="no-highlight">275</i>&nbsp;    }
+<i class="no-highlight">276</i>&nbsp;
+<i class="no-highlight">277</i>&nbsp;    private void updatePrivilegeInSessionLevel(String sectionName, String sessionName,
+<i class="no-highlight">278</i>&nbsp;                                               String privilegeName, boolean isAllowed) {
+<b class="fc"><i class="no-highlight">279</i>&nbsp;        if (!isPrivilegeNameValidForSessionLevel(privilegeName)) {</b>
+<i class="no-highlight">280</i>&nbsp;            return;
+<i class="no-highlight">281</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">282</i>&nbsp;        verifyExistenceOfsectionName(sectionName);</b>
+<b class="fc"><i class="no-highlight">283</i>&nbsp;        this.sessionLevel.get(sectionName).computeIfAbsent(sessionName, key -&gt; new InstructorPermissionSet())</b>
+<b class="fc"><i class="no-highlight">284</i>&nbsp;                                          .put(privilegeName, isAllowed);</b>
+<i class="no-highlight">285</i>&nbsp;    }
+<i class="no-highlight">286</i>&nbsp;
+<i class="no-highlight">287</i>&nbsp;    private void verifyExistenceOfsectionName(String sectionName) {
+<b class="fc"><i class="no-highlight">288</i>&nbsp;        this.sessionLevel.computeIfAbsent(sectionName, key -&gt; {</b>
+<b class="fc"><i class="no-highlight">289</i>&nbsp;            addSectionWithDefaultPrivileges(sectionName);</b>
+<b class="fc"><i class="no-highlight">290</i>&nbsp;            return new LinkedHashMap&lt;&gt;();</b>
+<i class="no-highlight">291</i>&nbsp;        });
+<i class="no-highlight">292</i>&nbsp;    }
+<i class="no-highlight">293</i>&nbsp;
+<i class="no-highlight">294</i>&nbsp;    void addSectionWithDefaultPrivileges(String sectionName) {
+<b class="fc"><i class="no-highlight">295</i>&nbsp;        this.sectionLevel.putIfAbsent(sectionName, getOverallPrivilegesForSections());</b>
+<i class="no-highlight">296</i>&nbsp;    }
+<i class="no-highlight">297</i>&nbsp;
+<i class="no-highlight">298</i>&nbsp;    /**
+<i class="no-highlight">299</i>&nbsp;     * Returns true if it is allowed for the privilege specified by privilegeName.
+<i class="no-highlight">300</i>&nbsp;     */
+<i class="no-highlight">301</i>&nbsp;    public boolean isAllowedForPrivilege(String privilegeName) {
+<b class="fc"><i class="no-highlight">302</i>&nbsp;        return isAllowedInCourseLevel(privilegeName);</b>
+<i class="no-highlight">303</i>&nbsp;    }
+<i class="no-highlight">304</i>&nbsp;
+<i class="no-highlight">305</i>&nbsp;    /**
+<i class="no-highlight">306</i>&nbsp;     * Returns true if it is allowed for the privilege specified by privilegeName in sectionName.
+<i class="no-highlight">307</i>&nbsp;     */
+<i class="no-highlight">308</i>&nbsp;    public boolean isAllowedForPrivilege(String sectionName, String privilegeName) {
+<b class="fc"><i class="no-highlight">309</i>&nbsp;        return isAllowedInSectionLevel(sectionName, privilegeName);</b>
+<i class="no-highlight">310</i>&nbsp;    }
+<i class="no-highlight">311</i>&nbsp;
+<i class="no-highlight">312</i>&nbsp;    /**
+<i class="no-highlight">313</i>&nbsp;     * Returns true if it is allowed for the privilege specified by privilegeName for sessionName in sectionName.
+<i class="no-highlight">314</i>&nbsp;     */
+<i class="no-highlight">315</i>&nbsp;    public boolean isAllowedForPrivilege(String sectionName, String sessionName, String privilegeName) {
+<b class="fc"><i class="no-highlight">316</i>&nbsp;        return isAllowedInSessionLevel(sectionName, sessionName, privilegeName);</b>
+<i class="no-highlight">317</i>&nbsp;    }
+<i class="no-highlight">318</i>&nbsp;
+<i class="no-highlight">319</i>&nbsp;    /**
+<i class="no-highlight">320</i>&nbsp;     * Returns true if privilege for session is present for any section.
+<i class="no-highlight">321</i>&nbsp;     */
+<i class="no-highlight">322</i>&nbsp;    public boolean isAllowedForPrivilegeAnySection(String sessionName, String privilegeName) {
+<b class="fc"><i class="no-highlight">323</i>&nbsp;        return isAllowedInSessionLevelAnySection(sessionName, privilegeName);</b>
+<i class="no-highlight">324</i>&nbsp;    }
+<i class="no-highlight">325</i>&nbsp;
+<i class="no-highlight">326</i>&nbsp;    /**
+<i class="no-highlight">327</i>&nbsp;     * Returns true if co-owner privilege exists.
+<i class="no-highlight">328</i>&nbsp;     */
+<i class="no-highlight">329</i>&nbsp;    public boolean hasCoownerPrivileges() {
+<b class="fc"><i class="no-highlight">330</i>&nbsp;        return courseLevel.equals(PRIVILEGES_COOWNER);</b>
+<i class="no-highlight">331</i>&nbsp;    }
+<i class="no-highlight">332</i>&nbsp;
+<i class="no-highlight">333</i>&nbsp;    /**
+<i class="no-highlight">334</i>&nbsp;     * Returns true if manager privilege exists.
+<i class="no-highlight">335</i>&nbsp;     */
+<i class="no-highlight">336</i>&nbsp;    public boolean hasManagerPrivileges() {
+<b class="fc"><i class="no-highlight">337</i>&nbsp;        return courseLevel.equals(PRIVILEGES_MANAGER);</b>
+<i class="no-highlight">338</i>&nbsp;    }
+<i class="no-highlight">339</i>&nbsp;
+<i class="no-highlight">340</i>&nbsp;    /**
+<i class="no-highlight">341</i>&nbsp;     * Returns true if observer privilege exists.
+<i class="no-highlight">342</i>&nbsp;     */
+<i class="no-highlight">343</i>&nbsp;    public boolean hasObserverPrivileges() {
+<b class="fc"><i class="no-highlight">344</i>&nbsp;        return courseLevel.equals(PRIVILEGES_OBSERVER);</b>
+<i class="no-highlight">345</i>&nbsp;    }
+<i class="no-highlight">346</i>&nbsp;
+<i class="no-highlight">347</i>&nbsp;    /**
+<i class="no-highlight">348</i>&nbsp;     * Returns true if tutor privilege exists.
+<i class="no-highlight">349</i>&nbsp;     */
+<i class="no-highlight">350</i>&nbsp;    public boolean hasTutorPrivileges() {
+<b class="fc"><i class="no-highlight">351</i>&nbsp;        return courseLevel.equals(PRIVILEGES_TUTOR);</b>
+<i class="no-highlight">352</i>&nbsp;    }
+<i class="no-highlight">353</i>&nbsp;
+<i class="no-highlight">354</i>&nbsp;    private boolean isAllowedInCourseLevel(String privilegeName) {
+<i class="no-highlight">355</i>&nbsp;
+<b class="fc"><i class="no-highlight">356</i>&nbsp;        assert isPrivilegeNameValid(privilegeName);</b>
+<i class="no-highlight">357</i>&nbsp;
+<b class="fc"><i class="no-highlight">358</i>&nbsp;        return this.courseLevel.get(privilegeName);</b>
+<i class="no-highlight">359</i>&nbsp;    }
+<i class="no-highlight">360</i>&nbsp;
+<i class="no-highlight">361</i>&nbsp;    private boolean isAllowedInSectionLevel(String sectionName, String privilegeName) {
+<i class="no-highlight">362</i>&nbsp;
+<b class="fc"><i class="no-highlight">363</i>&nbsp;        assert isPrivilegeNameValid(privilegeName);</b>
+<i class="no-highlight">364</i>&nbsp;
+<b class="fc"><i class="no-highlight">365</i>&nbsp;        if (!this.sectionLevel.containsKey(sectionName)) {</b>
+<b class="fc"><i class="no-highlight">366</i>&nbsp;            return isAllowedInCourseLevel(privilegeName);</b>
+<i class="no-highlight">367</i>&nbsp;        }
+<i class="no-highlight">368</i>&nbsp;
+<b class="fc"><i class="no-highlight">369</i>&nbsp;        return this.sectionLevel.get(sectionName).get(privilegeName);</b>
+<i class="no-highlight">370</i>&nbsp;    }
+<i class="no-highlight">371</i>&nbsp;
+<i class="no-highlight">372</i>&nbsp;    private boolean isAllowedInSessionLevel(String sectionName, String sessionName, String privilegeName) {
+<i class="no-highlight">373</i>&nbsp;
+<b class="fc"><i class="no-highlight">374</i>&nbsp;        assert isPrivilegeNameValid(privilegeName);</b>
+<i class="no-highlight">375</i>&nbsp;
+<b class="fc"><i class="no-highlight">376</i>&nbsp;        if (!this.sessionLevel.containsKey(sectionName)</b>
+<b class="fc"><i class="no-highlight">377</i>&nbsp;                || !this.sessionLevel.get(sectionName).containsKey(sessionName)) {</b>
+<b class="fc"><i class="no-highlight">378</i>&nbsp;            return isAllowedInSectionLevel(sectionName, privilegeName);</b>
+<i class="no-highlight">379</i>&nbsp;        }
+<i class="no-highlight">380</i>&nbsp;
+<b class="fc"><i class="no-highlight">381</i>&nbsp;        return this.sessionLevel.get(sectionName).get(sessionName).get(privilegeName);</b>
+<i class="no-highlight">382</i>&nbsp;    }
+<i class="no-highlight">383</i>&nbsp;
+<i class="no-highlight">384</i>&nbsp;    private boolean isAllowedInSessionLevelAnySection(String sessionName, String privilegeName) {
+<i class="no-highlight">385</i>&nbsp;
+<b class="fc"><i class="no-highlight">386</i>&nbsp;        assert isPrivilegeNameValid(privilegeName);</b>
+<i class="no-highlight">387</i>&nbsp;
+<b class="fc"><i class="no-highlight">388</i>&nbsp;        Set&lt;String&gt; sections = new LinkedHashSet&lt;&gt;(this.sessionLevel.keySet());</b>
+<b class="fc"><i class="no-highlight">389</i>&nbsp;        sections.addAll(this.sectionLevel.keySet());</b>
+<b class="fc"><i class="no-highlight">390</i>&nbsp;        for (String sectionName : sections) {</b>
+<b class="nc"><i class="no-highlight">391</i>&nbsp;            if (isAllowedInSessionLevel(sectionName, sessionName, privilegeName)) {</b>
+<b class="nc"><i class="no-highlight">392</i>&nbsp;                return true;</b>
+<i class="no-highlight">393</i>&nbsp;            }
+<b class="nc"><i class="no-highlight">394</i>&nbsp;        }</b>
+<b class="fc"><i class="no-highlight">395</i>&nbsp;        return false;</b>
+<i class="no-highlight">396</i>&nbsp;    }
+<i class="no-highlight">397</i>&nbsp;
+<i class="no-highlight">398</i>&nbsp;    /**
+<i class="no-highlight">399</i>&nbsp;     * Validates the privileges in course level, section level and session level.
+<i class="no-highlight">400</i>&nbsp;     *
+<i class="no-highlight">401</i>&nbsp;     * &lt;p&gt;Makes sure there is nothing wrong with privileges hierarchy by adding the
+<i class="no-highlight">402</i>&nbsp;     * prerequisite privileges if they have not been granted yet.
+<i class="no-highlight">403</i>&nbsp;     */
+<i class="no-highlight">404</i>&nbsp;    public void validatePrivileges() {
+<b class="fc"><i class="no-highlight">405</i>&nbsp;        if (this.courseLevel.isCanModifySessionCommentsInSections()) {</b>
+<b class="fc"><i class="no-highlight">406</i>&nbsp;            this.courseLevel.setCanViewSessionInSections(true);</b>
+<i class="no-highlight">407</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">408</i>&nbsp;        for (InstructorPermissionSet sectionMap : this.sectionLevel.values()) {</b>
+<b class="fc"><i class="no-highlight">409</i>&nbsp;            if (sectionMap.isCanModifySessionCommentsInSections()) {</b>
+<b class="fc"><i class="no-highlight">410</i>&nbsp;                sectionMap.setCanViewSessionInSections(true);</b>
+<i class="no-highlight">411</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">412</i>&nbsp;        }</b>
+<b class="fc"><i class="no-highlight">413</i>&nbsp;        for (Map&lt;String, InstructorPermissionSet&gt; section : this.sessionLevel.values()) {</b>
+<b class="fc"><i class="no-highlight">414</i>&nbsp;            for (InstructorPermissionSet sessionMap : section.values()) {</b>
+<b class="fc"><i class="no-highlight">415</i>&nbsp;                if (sessionMap.isCanModifySessionCommentsInSections()) {</b>
+<b class="fc"><i class="no-highlight">416</i>&nbsp;                    sessionMap.setCanViewSessionInSections(true);</b>
+<i class="no-highlight">417</i>&nbsp;                }
+<b class="fc"><i class="no-highlight">418</i>&nbsp;            }</b>
+<b class="fc"><i class="no-highlight">419</i>&nbsp;        }</b>
+<i class="no-highlight">420</i>&nbsp;    }
+<i class="no-highlight">421</i>&nbsp;
+<i class="no-highlight">422</i>&nbsp;    public InstructorPermissionSet getCourseLevelPrivileges() {
+<b class="fc"><i class="no-highlight">423</i>&nbsp;        return courseLevel.getCopy();</b>
+<i class="no-highlight">424</i>&nbsp;    }
+<i class="no-highlight">425</i>&nbsp;
+<i class="no-highlight">426</i>&nbsp;    /**
+<i class="no-highlight">427</i>&nbsp;     * Returns the section level privileges of the instructor.
+<i class="no-highlight">428</i>&nbsp;     */
+<i class="no-highlight">429</i>&nbsp;    public Map&lt;String, InstructorPermissionSet&gt; getSectionLevelPrivileges() {
+<b class="fc"><i class="no-highlight">430</i>&nbsp;        Map&lt;String, InstructorPermissionSet&gt; copy = new LinkedHashMap&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">431</i>&nbsp;        sectionLevel.forEach((key, value) -&gt; copy.put(key, value.getCopy()));</b>
+<b class="fc"><i class="no-highlight">432</i>&nbsp;        return copy;</b>
+<i class="no-highlight">433</i>&nbsp;    }
+<i class="no-highlight">434</i>&nbsp;
+<i class="no-highlight">435</i>&nbsp;    /**
+<i class="no-highlight">436</i>&nbsp;     * Returns the session level privileges of the instructor.
+<i class="no-highlight">437</i>&nbsp;     */
+<i class="no-highlight">438</i>&nbsp;    public Map&lt;String, Map&lt;String, InstructorPermissionSet&gt;&gt; getSessionLevelPrivileges() {
+<b class="fc"><i class="no-highlight">439</i>&nbsp;        Map&lt;String, Map&lt;String, InstructorPermissionSet&gt;&gt; copy = new LinkedHashMap&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">440</i>&nbsp;        sessionLevel.forEach((sessionLevelKey, sessionLevelValue) -&gt; {</b>
+<b class="fc"><i class="no-highlight">441</i>&nbsp;            Map&lt;String, InstructorPermissionSet&gt; sectionCopy = new LinkedHashMap&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">442</i>&nbsp;            sessionLevelValue.forEach((key, value) -&gt; sectionCopy.put(key, value.getCopy()));</b>
+<i class="no-highlight">443</i>&nbsp;
+<b class="fc"><i class="no-highlight">444</i>&nbsp;            copy.put(sessionLevelKey, sectionCopy);</b>
+<i class="no-highlight">445</i>&nbsp;        });
+<b class="fc"><i class="no-highlight">446</i>&nbsp;        return copy;</b>
+<i class="no-highlight">447</i>&nbsp;    }
+<i class="no-highlight">448</i>&nbsp;
+<i class="no-highlight">449</i>&nbsp;    @Override
+<i class="no-highlight">450</i>&nbsp;    public boolean equals(Object another) {
+<b class="fc"><i class="no-highlight">451</i>&nbsp;        if (!(another instanceof InstructorPrivileges)) {</b>
+<b class="nc"><i class="no-highlight">452</i>&nbsp;            return false;</b>
+<i class="no-highlight">453</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">454</i>&nbsp;        if (another == this) {</b>
+<b class="fc"><i class="no-highlight">455</i>&nbsp;            return true;</b>
+<i class="no-highlight">456</i>&nbsp;        }
+<i class="no-highlight">457</i>&nbsp;
+<b class="fc"><i class="no-highlight">458</i>&nbsp;        InstructorPrivileges rhs = (InstructorPrivileges) another;</b>
+<b class="fc"><i class="no-highlight">459</i>&nbsp;        return this.getCourseLevelPrivileges().equals(rhs.getCourseLevelPrivileges())</b>
+<b class="fc"><i class="no-highlight">460</i>&nbsp;               &amp;&amp; this.getSectionLevelPrivileges().equals(rhs.getSectionLevelPrivileges())</b>
+<b class="fc"><i class="no-highlight">461</i>&nbsp;               &amp;&amp; this.getSessionLevelPrivileges().equals(rhs.getSessionLevelPrivileges());</b>
+<i class="no-highlight">462</i>&nbsp;    }
+<i class="no-highlight">463</i>&nbsp;
+<i class="no-highlight">464</i>&nbsp;    @Override
+<i class="no-highlight">465</i>&nbsp;    public int hashCode() {
+<b class="fc"><i class="no-highlight">466</i>&nbsp;        int prime = 31;</b>
+<b class="fc"><i class="no-highlight">467</i>&nbsp;        int result = 1;</b>
+<i class="no-highlight">468</i>&nbsp;
+<b class="fc"><i class="no-highlight">469</i>&nbsp;        result = prime * result + this.getCourseLevelPrivileges().hashCode();</b>
+<b class="fc"><i class="no-highlight">470</i>&nbsp;        result = prime * result + this.getSectionLevelPrivileges().hashCode();</b>
+<b class="fc"><i class="no-highlight">471</i>&nbsp;        result = prime * result + this.getSessionLevelPrivileges().hashCode();</b>
+<i class="no-highlight">472</i>&nbsp;
+<b class="fc"><i class="no-highlight">473</i>&nbsp;        return result;</b>
+<i class="no-highlight">474</i>&nbsp;    }
+<i class="no-highlight">475</i>&nbsp;
+<i class="no-highlight">476</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-25 11:18</div>
+</div>
+</body>
+</html>

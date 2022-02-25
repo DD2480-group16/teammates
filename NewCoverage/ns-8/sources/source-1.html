@@ -1,0 +1,1051 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > EmailGenerator</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.logic.api</a>
+</div>
+
+<h1>Coverage Summary for Class: EmailGenerator (teammates.logic.api)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EmailGenerator</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (45/45)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    98.3%
+  </span>
+  <span class="absValue">
+    (464/472)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.logic.api;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.time.Duration;
+<i class="no-highlight">4</i>&nbsp;import java.time.Instant;
+<i class="no-highlight">5</i>&nbsp;import java.util.ArrayList;
+<i class="no-highlight">6</i>&nbsp;import java.util.HashMap;
+<i class="no-highlight">7</i>&nbsp;import java.util.List;
+<i class="no-highlight">8</i>&nbsp;import java.util.Map;
+<i class="no-highlight">9</i>&nbsp;import java.util.stream.Collectors;
+<i class="no-highlight">10</i>&nbsp;
+<i class="no-highlight">11</i>&nbsp;import teammates.common.datatransfer.ErrorLogEntry;
+<i class="no-highlight">12</i>&nbsp;import teammates.common.datatransfer.attributes.AccountAttributes;
+<i class="no-highlight">13</i>&nbsp;import teammates.common.datatransfer.attributes.CourseAttributes;
+<i class="no-highlight">14</i>&nbsp;import teammates.common.datatransfer.attributes.FeedbackSessionAttributes;
+<i class="no-highlight">15</i>&nbsp;import teammates.common.datatransfer.attributes.InstructorAttributes;
+<i class="no-highlight">16</i>&nbsp;import teammates.common.datatransfer.attributes.StudentAttributes;
+<i class="no-highlight">17</i>&nbsp;import teammates.common.exception.EntityDoesNotExistException;
+<i class="no-highlight">18</i>&nbsp;import teammates.common.util.Config;
+<i class="no-highlight">19</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">20</i>&nbsp;import teammates.common.util.EmailType;
+<i class="no-highlight">21</i>&nbsp;import teammates.common.util.EmailWrapper;
+<i class="no-highlight">22</i>&nbsp;import teammates.common.util.Logger;
+<i class="no-highlight">23</i>&nbsp;import teammates.common.util.RequestTracer;
+<i class="no-highlight">24</i>&nbsp;import teammates.common.util.SanitizationHelper;
+<i class="no-highlight">25</i>&nbsp;import teammates.common.util.Templates;
+<i class="no-highlight">26</i>&nbsp;import teammates.common.util.Templates.EmailTemplates;
+<i class="no-highlight">27</i>&nbsp;import teammates.common.util.TimeHelper;
+<i class="no-highlight">28</i>&nbsp;import teammates.logic.core.CoursesLogic;
+<i class="no-highlight">29</i>&nbsp;import teammates.logic.core.FeedbackSessionsLogic;
+<i class="no-highlight">30</i>&nbsp;import teammates.logic.core.InstructorsLogic;
+<i class="no-highlight">31</i>&nbsp;import teammates.logic.core.StudentsLogic;
+<i class="no-highlight">32</i>&nbsp;
+<i class="no-highlight">33</i>&nbsp;/**
+<i class="no-highlight">34</i>&nbsp; * Handles operations related to generating emails to be sent from provided templates.
+<i class="no-highlight">35</i>&nbsp; *
+<i class="no-highlight">36</i>&nbsp; * @see EmailTemplates
+<i class="no-highlight">37</i>&nbsp; * @see EmailType
+<i class="no-highlight">38</i>&nbsp; * @see EmailWrapper
+<i class="no-highlight">39</i>&nbsp; */
+<b class="fc"><i class="no-highlight">40</i>&nbsp;public final class EmailGenerator {</b>
+<i class="no-highlight">41</i>&nbsp;    // status-related strings
+<i class="no-highlight">42</i>&nbsp;    private static final String FEEDBACK_STATUS_SESSION_OPEN = &quot;is still open for submissions&quot;;
+<i class="no-highlight">43</i>&nbsp;    private static final String FEEDBACK_STATUS_SESSION_OPENING = &quot;is now open&quot;;
+<i class="no-highlight">44</i>&nbsp;    private static final String FEEDBACK_STATUS_SESSION_CLOSING = &quot;is closing soon&quot;;
+<i class="no-highlight">45</i>&nbsp;    private static final String FEEDBACK_STATUS_SESSION_CLOSED =
+<i class="no-highlight">46</i>&nbsp;            &quot;is now closed. You can still view your submission by going to the link sent earlier, &quot;
+<i class="no-highlight">47</i>&nbsp;            + &quot;but you will not be able to edit existing responses or submit new responses&quot;;
+<i class="no-highlight">48</i>&nbsp;
+<i class="no-highlight">49</i>&nbsp;    // feedback action strings
+<i class="no-highlight">50</i>&nbsp;    private static final String FEEDBACK_ACTION_SUBMIT_EDIT_OR_VIEW = &quot;submit, edit or view&quot;;
+<i class="no-highlight">51</i>&nbsp;    private static final String FEEDBACK_ACTION_VIEW = &quot;view&quot;;
+<i class="no-highlight">52</i>&nbsp;    private static final String HTML_NO_ACTION_REQUIRED =
+<b class="fc"><i class="no-highlight">53</i>&nbsp;            &quot;&lt;p&gt;No action is required if you have already submitted.&lt;/p&gt;&quot; + System.lineSeparator();</b>
+<i class="no-highlight">54</i>&nbsp;
+<b class="fc"><i class="no-highlight">55</i>&nbsp;    private static final Logger log = Logger.getLogger();</b>
+<i class="no-highlight">56</i>&nbsp;
+<i class="no-highlight">57</i>&nbsp;    private static final String DATETIME_DISPLAY_FORMAT = &quot;EEE, dd MMM yyyy, hh:mm a z&quot;;
+<i class="no-highlight">58</i>&nbsp;
+<b class="fc"><i class="no-highlight">59</i>&nbsp;    private static final Duration SESSION_LINK_RECOVERY_DURATION = Duration.ofDays(90);</b>
+<i class="no-highlight">60</i>&nbsp;
+<b class="fc"><i class="no-highlight">61</i>&nbsp;    private static final EmailGenerator instance = new EmailGenerator();</b>
+<i class="no-highlight">62</i>&nbsp;
+<b class="fc"><i class="no-highlight">63</i>&nbsp;    private final CoursesLogic coursesLogic = CoursesLogic.inst();</b>
+<b class="fc"><i class="no-highlight">64</i>&nbsp;    private final FeedbackSessionsLogic fsLogic = FeedbackSessionsLogic.inst();</b>
+<b class="fc"><i class="no-highlight">65</i>&nbsp;    private final InstructorsLogic instructorsLogic = InstructorsLogic.inst();</b>
+<b class="fc"><i class="no-highlight">66</i>&nbsp;    private final StudentsLogic studentsLogic = StudentsLogic.inst();</b>
+<i class="no-highlight">67</i>&nbsp;
+<b class="fc"><i class="no-highlight">68</i>&nbsp;    private EmailGenerator() {</b>
+<i class="no-highlight">69</i>&nbsp;        // prevent initialization
+<i class="no-highlight">70</i>&nbsp;    }
+<i class="no-highlight">71</i>&nbsp;
+<i class="no-highlight">72</i>&nbsp;    public static EmailGenerator inst() {
+<b class="fc"><i class="no-highlight">73</i>&nbsp;        return instance;</b>
+<i class="no-highlight">74</i>&nbsp;    }
+<i class="no-highlight">75</i>&nbsp;
+<i class="no-highlight">76</i>&nbsp;    /**
+<i class="no-highlight">77</i>&nbsp;     * Generates the feedback session opening emails for the given {@code session}.
+<i class="no-highlight">78</i>&nbsp;     */
+<i class="no-highlight">79</i>&nbsp;    public List&lt;EmailWrapper&gt; generateFeedbackSessionOpeningEmails(FeedbackSessionAttributes session) {
+<b class="fc"><i class="no-highlight">80</i>&nbsp;        CourseAttributes course = coursesLogic.getCourse(session.getCourseId());</b>
+<b class="fc"><i class="no-highlight">81</i>&nbsp;        boolean isEmailNeededForStudents = fsLogic.isFeedbackSessionForUserTypeToAnswer(session, false);</b>
+<b class="fc"><i class="no-highlight">82</i>&nbsp;        boolean isEmailNeededForInstructors = fsLogic.isFeedbackSessionForUserTypeToAnswer(session, true);</b>
+<b class="fc"><i class="no-highlight">83</i>&nbsp;        List&lt;InstructorAttributes&gt; instructorsToNotify = isEmailNeededForStudents</b>
+<b class="fc"><i class="no-highlight">84</i>&nbsp;                ? instructorsLogic.getCoOwnersForCourse(session.getCourseId())</b>
+<b class="fc"><i class="no-highlight">85</i>&nbsp;                : new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">86</i>&nbsp;        List&lt;StudentAttributes&gt; students = isEmailNeededForStudents</b>
+<b class="fc"><i class="no-highlight">87</i>&nbsp;                ? studentsLogic.getStudentsForCourse(session.getCourseId())</b>
+<b class="fc"><i class="no-highlight">88</i>&nbsp;                : new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">89</i>&nbsp;        List&lt;InstructorAttributes&gt; instructors = isEmailNeededForInstructors</b>
+<b class="fc"><i class="no-highlight">90</i>&nbsp;                ? instructorsLogic.getInstructorsForCourse(session.getCourseId())</b>
+<b class="fc"><i class="no-highlight">91</i>&nbsp;                : new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">92</i>&nbsp;
+<b class="fc"><i class="no-highlight">93</i>&nbsp;        String template = EmailTemplates.USER_FEEDBACK_SESSION.replace(&quot;${status}&quot;, FEEDBACK_STATUS_SESSION_OPENING);</b>
+<b class="fc"><i class="no-highlight">94</i>&nbsp;        return generateFeedbackSessionEmailBases(course, session, students, instructors,</b>
+<i class="no-highlight">95</i>&nbsp;                instructorsToNotify, template, EmailType.FEEDBACK_OPENING, FEEDBACK_ACTION_SUBMIT_EDIT_OR_VIEW);
+<i class="no-highlight">96</i>&nbsp;    }
+<i class="no-highlight">97</i>&nbsp;
+<i class="no-highlight">98</i>&nbsp;    /**
+<i class="no-highlight">99</i>&nbsp;     * Generate email to notify course co-owners that the feedback session is opening soon,
+<i class="no-highlight">100</i>&nbsp;     * in case the feedback session opening info was set wrongly.
+<i class="no-highlight">101</i>&nbsp;     */
+<i class="no-highlight">102</i>&nbsp;    public List&lt;EmailWrapper&gt; generateFeedbackSessionOpeningSoonEmails(FeedbackSessionAttributes session) {
+<b class="fc"><i class="no-highlight">103</i>&nbsp;        CourseAttributes course = coursesLogic.getCourse(session.getCourseId());</b>
+<i class="no-highlight">104</i>&nbsp;
+<i class="no-highlight">105</i>&nbsp;        // notify only course co-owners
+<b class="fc"><i class="no-highlight">106</i>&nbsp;        List&lt;InstructorAttributes&gt; coOwners = instructorsLogic.getCoOwnersForCourse(session.getCourseId());</b>
+<b class="fc"><i class="no-highlight">107</i>&nbsp;        List&lt;EmailWrapper&gt; emails = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">108</i>&nbsp;
+<b class="fc"><i class="no-highlight">109</i>&nbsp;        for (InstructorAttributes coOwner : coOwners) {</b>
+<b class="fc"><i class="no-highlight">110</i>&nbsp;            String editUrl = Config.getFrontEndAppUrl(Const.WebPageURIs.INSTRUCTOR_SESSION_EDIT_PAGE)</b>
+<b class="fc"><i class="no-highlight">111</i>&nbsp;                    .withCourseId(course.getId())</b>
+<b class="fc"><i class="no-highlight">112</i>&nbsp;                    .withSessionName(session.getFeedbackSessionName())</b>
+<b class="fc"><i class="no-highlight">113</i>&nbsp;                    .toAbsoluteString();</b>
+<i class="no-highlight">114</i>&nbsp;
+<b class="fc"><i class="no-highlight">115</i>&nbsp;            emails.add(generateFeedbackSessionOpeningSoonEmailBase(course, session, coOwner, editUrl));</b>
+<b class="fc"><i class="no-highlight">116</i>&nbsp;        }</b>
+<i class="no-highlight">117</i>&nbsp;
+<b class="fc"><i class="no-highlight">118</i>&nbsp;        return emails;</b>
+<i class="no-highlight">119</i>&nbsp;    }
+<i class="no-highlight">120</i>&nbsp;
+<i class="no-highlight">121</i>&nbsp;    /**
+<i class="no-highlight">122</i>&nbsp;     * Creates an email for a co-owner, reminding them that a session is opening soon.
+<i class="no-highlight">123</i>&nbsp;     */
+<i class="no-highlight">124</i>&nbsp;    private EmailWrapper generateFeedbackSessionOpeningSoonEmailBase(
+<i class="no-highlight">125</i>&nbsp;            CourseAttributes course, FeedbackSessionAttributes session,
+<i class="no-highlight">126</i>&nbsp;            InstructorAttributes coOwner, String editUrl) {
+<i class="no-highlight">127</i>&nbsp;
+<i class="no-highlight">128</i>&nbsp;        String additionalNotes;
+<i class="no-highlight">129</i>&nbsp;
+<i class="no-highlight">130</i>&nbsp;        // If instructor has not joined the course, populate additional notes with information to join course.
+<b class="fc"><i class="no-highlight">131</i>&nbsp;        if (coOwner.isRegistered()) {</b>
+<b class="fc"><i class="no-highlight">132</i>&nbsp;            additionalNotes = fillUpEditFeedbackSessionDetailsFragment(editUrl);</b>
+<i class="no-highlight">133</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">134</i>&nbsp;            additionalNotes = fillUpJoinCourseBeforeEditFeedbackSessionDetailsFragment(editUrl,</b>
+<b class="fc"><i class="no-highlight">135</i>&nbsp;                    getInstructorCourseJoinUrl(coOwner));</b>
+<i class="no-highlight">136</i>&nbsp;        }
+<i class="no-highlight">137</i>&nbsp;
+<b class="fc"><i class="no-highlight">138</i>&nbsp;        Instant startTime = TimeHelper.getMidnightAdjustedInstantBasedOnZone(</b>
+<b class="fc"><i class="no-highlight">139</i>&nbsp;                session.getStartTime(), session.getTimeZone(), false);</b>
+<b class="fc"><i class="no-highlight">140</i>&nbsp;        Instant endTime = TimeHelper.getMidnightAdjustedInstantBasedOnZone(</b>
+<b class="fc"><i class="no-highlight">141</i>&nbsp;                session.getEndTime(), session.getTimeZone(), false);</b>
+<b class="fc"><i class="no-highlight">142</i>&nbsp;        String emailBody = Templates.populateTemplate(EmailTemplates.OWNER_FEEDBACK_SESSION_OPENING_SOON,</b>
+<b class="fc"><i class="no-highlight">143</i>&nbsp;                &quot;${userName}&quot;, SanitizationHelper.sanitizeForHtml(coOwner.getName()),</b>
+<b class="fc"><i class="no-highlight">144</i>&nbsp;                &quot;${courseName}&quot;, SanitizationHelper.sanitizeForHtml(course.getName()),</b>
+<b class="fc"><i class="no-highlight">145</i>&nbsp;                &quot;${courseId}&quot;, SanitizationHelper.sanitizeForHtml(course.getId()),</b>
+<b class="fc"><i class="no-highlight">146</i>&nbsp;                &quot;${feedbackSessionName}&quot;, SanitizationHelper.sanitizeForHtml(session.getFeedbackSessionName()),</b>
+<b class="fc"><i class="no-highlight">147</i>&nbsp;                &quot;${deadline}&quot;, SanitizationHelper.sanitizeForHtml(</b>
+<b class="fc"><i class="no-highlight">148</i>&nbsp;                        TimeHelper.formatInstant(endTime, session.getTimeZone(), DATETIME_DISPLAY_FORMAT)),</b>
+<i class="no-highlight">149</i>&nbsp;                &quot;${instructorPreamble}&quot;, &quot;&quot;,
+<b class="fc"><i class="no-highlight">150</i>&nbsp;                &quot;${sessionInstructions}&quot;, session.getInstructionsString(),</b>
+<b class="fc"><i class="no-highlight">151</i>&nbsp;                &quot;${startTime}&quot;, SanitizationHelper.sanitizeForHtml(</b>
+<b class="fc"><i class="no-highlight">152</i>&nbsp;                        TimeHelper.formatInstant(startTime, session.getTimeZone(), DATETIME_DISPLAY_FORMAT)),</b>
+<i class="no-highlight">153</i>&nbsp;                &quot;${additionalNotes}&quot;, additionalNotes,
+<i class="no-highlight">154</i>&nbsp;                &quot;${sessionEditUrl}&quot;, editUrl,
+<i class="no-highlight">155</i>&nbsp;                &quot;${additionalContactInformation}&quot;, &quot;&quot;);
+<i class="no-highlight">156</i>&nbsp;
+<b class="fc"><i class="no-highlight">157</i>&nbsp;        EmailWrapper email = getEmptyEmailAddressedToEmail(coOwner.getEmail());</b>
+<b class="fc"><i class="no-highlight">158</i>&nbsp;        email.setType(EmailType.FEEDBACK_OPENING_SOON);</b>
+<b class="fc"><i class="no-highlight">159</i>&nbsp;        email.setSubjectFromType(course.getName(), session.getFeedbackSessionName());</b>
+<b class="fc"><i class="no-highlight">160</i>&nbsp;        email.setContent(emailBody);</b>
+<b class="fc"><i class="no-highlight">161</i>&nbsp;        return email;</b>
+<i class="no-highlight">162</i>&nbsp;    }
+<i class="no-highlight">163</i>&nbsp;
+<i class="no-highlight">164</i>&nbsp;    /**
+<i class="no-highlight">165</i>&nbsp;     * Generates the fragment for instructions on how to edit details for feedback session at {@code editUrl}.
+<i class="no-highlight">166</i>&nbsp;     */
+<i class="no-highlight">167</i>&nbsp;    private String fillUpEditFeedbackSessionDetailsFragment(String editUrl) {
+<b class="fc"><i class="no-highlight">168</i>&nbsp;        return Templates.populateTemplate(EmailTemplates.FRAGMENT_OPENING_SOON_EDIT_DETAILS,</b>
+<i class="no-highlight">169</i>&nbsp;                &quot;${sessionEditUrl}&quot;, editUrl);
+<i class="no-highlight">170</i>&nbsp;    }
+<i class="no-highlight">171</i>&nbsp;
+<i class="no-highlight">172</i>&nbsp;    /**
+<i class="no-highlight">173</i>&nbsp;     * Generates the fragment for instructions on how to edit details for feedback session at {@code editUrl} and
+<i class="no-highlight">174</i>&nbsp;     * how to join the course at {@code joinUrl}.
+<i class="no-highlight">175</i>&nbsp;     */
+<i class="no-highlight">176</i>&nbsp;    private String fillUpJoinCourseBeforeEditFeedbackSessionDetailsFragment(String editUrl, String joinUrl) {
+<b class="fc"><i class="no-highlight">177</i>&nbsp;        return Templates.populateTemplate(EmailTemplates.FRAGMENT_OPENING_SOON_JOIN_COURSE_BEFORE_EDIT_DETAILS,</b>
+<i class="no-highlight">178</i>&nbsp;                &quot;${sessionEditUrl}&quot;, editUrl,
+<i class="no-highlight">179</i>&nbsp;                &quot;${joinUrl}&quot;, joinUrl
+<i class="no-highlight">180</i>&nbsp;        );
+<i class="no-highlight">181</i>&nbsp;    }
+<i class="no-highlight">182</i>&nbsp;
+<i class="no-highlight">183</i>&nbsp;    /**
+<i class="no-highlight">184</i>&nbsp;     * Generates the feedback session reminder emails for the given {@code session} for {@code students}
+<i class="no-highlight">185</i>&nbsp;     * and {@code instructorsToRemind}. In addition, the emails will also be forwarded to {@code instructorsToNotify}.
+<i class="no-highlight">186</i>&nbsp;     */
+<i class="no-highlight">187</i>&nbsp;    public List&lt;EmailWrapper&gt; generateFeedbackSessionReminderEmails(
+<i class="no-highlight">188</i>&nbsp;            FeedbackSessionAttributes session, List&lt;StudentAttributes&gt; students,
+<i class="no-highlight">189</i>&nbsp;            List&lt;InstructorAttributes&gt; instructorsToRemind, InstructorAttributes instructorToNotify) {
+<i class="no-highlight">190</i>&nbsp;
+<b class="fc"><i class="no-highlight">191</i>&nbsp;        CourseAttributes course = coursesLogic.getCourse(session.getCourseId());</b>
+<b class="fc"><i class="no-highlight">192</i>&nbsp;        String template = EmailTemplates.USER_FEEDBACK_SESSION.replace(&quot;${status}&quot;, FEEDBACK_STATUS_SESSION_OPEN);</b>
+<b class="fc"><i class="no-highlight">193</i>&nbsp;        List&lt;InstructorAttributes&gt; instructorToNotifyAsList = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">194</i>&nbsp;        if (instructorToNotify != null) {</b>
+<b class="fc"><i class="no-highlight">195</i>&nbsp;            instructorToNotifyAsList.add(instructorToNotify);</b>
+<i class="no-highlight">196</i>&nbsp;        }
+<i class="no-highlight">197</i>&nbsp;
+<b class="fc"><i class="no-highlight">198</i>&nbsp;        return generateFeedbackSessionEmailBases(course, session, students, instructorsToRemind, instructorToNotifyAsList,</b>
+<i class="no-highlight">199</i>&nbsp;                template, EmailType.FEEDBACK_SESSION_REMINDER, FEEDBACK_ACTION_SUBMIT_EDIT_OR_VIEW);
+<i class="no-highlight">200</i>&nbsp;    }
+<i class="no-highlight">201</i>&nbsp;
+<i class="no-highlight">202</i>&nbsp;    /**
+<i class="no-highlight">203</i>&nbsp;     * Generates the email containing the summary of the feedback sessions
+<i class="no-highlight">204</i>&nbsp;     * email for the given {@code courseId} for {@code userEmail}.
+<i class="no-highlight">205</i>&nbsp;     * @param courseId - ID of the course
+<i class="no-highlight">206</i>&nbsp;     * @param userEmail - Email of student to send feedback session summary to
+<i class="no-highlight">207</i>&nbsp;     * @param emailType - The email type which corresponds to the reason behind why the links are being resent
+<i class="no-highlight">208</i>&nbsp;     */
+<i class="no-highlight">209</i>&nbsp;    public EmailWrapper generateFeedbackSessionSummaryOfCourse(
+<i class="no-highlight">210</i>&nbsp;            String courseId, String userEmail, EmailType emailType) {
+<b class="fc"><i class="no-highlight">211</i>&nbsp;        assert emailType == EmailType.STUDENT_EMAIL_CHANGED</b>
+<i class="no-highlight">212</i>&nbsp;                || emailType == EmailType.STUDENT_COURSE_LINKS_REGENERATED
+<i class="no-highlight">213</i>&nbsp;                || emailType == EmailType.INSTRUCTOR_COURSE_LINKS_REGENERATED;
+<i class="no-highlight">214</i>&nbsp;
+<b class="fc"><i class="no-highlight">215</i>&nbsp;        CourseAttributes course = coursesLogic.getCourse(courseId);</b>
+<b class="fc"><i class="no-highlight">216</i>&nbsp;        boolean isInstructor = emailType == EmailType.INSTRUCTOR_COURSE_LINKS_REGENERATED;</b>
+<b class="fc"><i class="no-highlight">217</i>&nbsp;        StudentAttributes student = null;</b>
+<b class="fc"><i class="no-highlight">218</i>&nbsp;        InstructorAttributes instructor = null;</b>
+<b class="fc"><i class="no-highlight">219</i>&nbsp;        if (isInstructor) {</b>
+<b class="fc"><i class="no-highlight">220</i>&nbsp;            instructor = instructorsLogic.getInstructorForEmail(courseId, userEmail);</b>
+<i class="no-highlight">221</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">222</i>&nbsp;            student = studentsLogic.getStudentForEmail(courseId, userEmail);</b>
+<i class="no-highlight">223</i>&nbsp;        }
+<i class="no-highlight">224</i>&nbsp;
+<b class="fc"><i class="no-highlight">225</i>&nbsp;        List&lt;FeedbackSessionAttributes&gt; sessions = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">226</i>&nbsp;        List&lt;FeedbackSessionAttributes&gt; fsInCourse = fsLogic.getFeedbackSessionsForCourse(courseId);</b>
+<i class="no-highlight">227</i>&nbsp;
+<b class="fc"><i class="no-highlight">228</i>&nbsp;        for (FeedbackSessionAttributes fsa : fsInCourse) {</b>
+<b class="fc"><i class="no-highlight">229</i>&nbsp;            if (fsa.isSentOpenEmail() || fsa.isSentPublishedEmail()) {</b>
+<b class="fc"><i class="no-highlight">230</i>&nbsp;                sessions.add(fsa);</b>
+<i class="no-highlight">231</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">232</i>&nbsp;        }</b>
+<i class="no-highlight">233</i>&nbsp;
+<b class="fc"><i class="no-highlight">234</i>&nbsp;        StringBuilder linksFragmentValue = new StringBuilder(1000);</b>
+<b class="fc"><i class="no-highlight">235</i>&nbsp;        String joinUrl = Config.getFrontEndAppUrl(</b>
+<b class="fc"><i class="no-highlight">236</i>&nbsp;                isInstructor ? instructor.getRegistrationUrl() : student.getRegistrationUrl()).toAbsoluteString();</b>
+<b class="fc"><i class="no-highlight">237</i>&nbsp;        boolean isYetToJoinCourse = isInstructor ? isYetToJoinCourse(instructor) : isYetToJoinCourse(student);</b>
+<b class="fc"><i class="no-highlight">238</i>&nbsp;        String joinFragmentTemplate = isInstructor</b>
+<b class="fc"><i class="no-highlight">239</i>&nbsp;                ? EmailTemplates.FRAGMENT_INSTRUCTOR_COURSE_REJOIN_AFTER_REGKEY_RESET</b>
+<b class="fc"><i class="no-highlight">240</i>&nbsp;                : emailType == EmailType.STUDENT_EMAIL_CHANGED</b>
+<b class="fc"><i class="no-highlight">241</i>&nbsp;                        ? EmailTemplates.FRAGMENT_STUDENT_COURSE_JOIN</b>
+<b class="fc"><i class="no-highlight">242</i>&nbsp;                        : EmailTemplates.FRAGMENT_STUDENT_COURSE_REJOIN_AFTER_REGKEY_RESET;</b>
+<i class="no-highlight">243</i>&nbsp;
+<b class="fc"><i class="no-highlight">244</i>&nbsp;        String joinFragmentValue = isYetToJoinCourse</b>
+<b class="fc"><i class="no-highlight">245</i>&nbsp;                ? Templates.populateTemplate(joinFragmentTemplate,</b>
+<i class="no-highlight">246</i>&nbsp;                        &quot;${joinUrl}&quot;, joinUrl,
+<b class="fc"><i class="no-highlight">247</i>&nbsp;                        &quot;${courseName}&quot;, SanitizationHelper.sanitizeForHtml(course.getName()),</b>
+<b class="fc"><i class="no-highlight">248</i>&nbsp;                        &quot;${coOwnersEmails}&quot;, generateCoOwnersEmailsLine(course.getId()),</b>
+<i class="no-highlight">249</i>&nbsp;                        &quot;${supportEmail}&quot;, Config.SUPPORT_EMAIL)
+<b class="fc"><i class="no-highlight">250</i>&nbsp;                : &quot;&quot;;</b>
+<i class="no-highlight">251</i>&nbsp;
+<b class="fc"><i class="no-highlight">252</i>&nbsp;        for (FeedbackSessionAttributes fsa : sessions) {</b>
+<b class="fc"><i class="no-highlight">253</i>&nbsp;            String submitUrlHtml = &quot;(Feedback session is not yet opened)&quot;;</b>
+<b class="fc"><i class="no-highlight">254</i>&nbsp;            String reportUrlHtml = &quot;(Feedback session is not yet published)&quot;;</b>
+<i class="no-highlight">255</i>&nbsp;
+<b class="fc"><i class="no-highlight">256</i>&nbsp;            String userKey = isInstructor ? instructor.getKey() : student.getKey();</b>
+<i class="no-highlight">257</i>&nbsp;
+<b class="fc"><i class="no-highlight">258</i>&nbsp;            if (fsa.isOpened() || fsa.isClosed()) {</b>
+<b class="fc"><i class="no-highlight">259</i>&nbsp;                String submitUrl = Config.getFrontEndAppUrl(Const.WebPageURIs.SESSION_SUBMISSION_PAGE)</b>
+<b class="fc"><i class="no-highlight">260</i>&nbsp;                        .withCourseId(course.getId())</b>
+<b class="fc"><i class="no-highlight">261</i>&nbsp;                        .withSessionName(fsa.getFeedbackSessionName())</b>
+<b class="fc"><i class="no-highlight">262</i>&nbsp;                        .withRegistrationKey(userKey)</b>
+<b class="fc"><i class="no-highlight">263</i>&nbsp;                        .withEntityType(isInstructor ? Const.EntityType.INSTRUCTOR : &quot;&quot;)</b>
+<b class="fc"><i class="no-highlight">264</i>&nbsp;                        .toAbsoluteString();</b>
+<b class="fc"><i class="no-highlight">265</i>&nbsp;                submitUrlHtml = &quot;&lt;a href=\&quot;&quot; + submitUrl + &quot;\&quot;&gt;&quot; + submitUrl + &quot;&lt;/a&gt;&quot;;</b>
+<i class="no-highlight">266</i>&nbsp;            }
+<i class="no-highlight">267</i>&nbsp;
+<b class="fc"><i class="no-highlight">268</i>&nbsp;            if (fsa.isPublished()) {</b>
+<b class="fc"><i class="no-highlight">269</i>&nbsp;                String reportUrl = Config.getFrontEndAppUrl(Const.WebPageURIs.SESSION_RESULTS_PAGE)</b>
+<b class="fc"><i class="no-highlight">270</i>&nbsp;                        .withCourseId(course.getId())</b>
+<b class="fc"><i class="no-highlight">271</i>&nbsp;                        .withSessionName(fsa.getFeedbackSessionName())</b>
+<b class="fc"><i class="no-highlight">272</i>&nbsp;                        .withRegistrationKey(userKey)</b>
+<b class="fc"><i class="no-highlight">273</i>&nbsp;                        .withEntityType(isInstructor ? Const.EntityType.INSTRUCTOR : &quot;&quot;)</b>
+<b class="fc"><i class="no-highlight">274</i>&nbsp;                        .toAbsoluteString();</b>
+<b class="fc"><i class="no-highlight">275</i>&nbsp;                reportUrlHtml = &quot;&lt;a href=\&quot;&quot; + reportUrl + &quot;\&quot;&gt;&quot; + reportUrl + &quot;&lt;/a&gt;&quot;;</b>
+<i class="no-highlight">276</i>&nbsp;            }
+<i class="no-highlight">277</i>&nbsp;
+<b class="fc"><i class="no-highlight">278</i>&nbsp;            Instant endTime = TimeHelper.getMidnightAdjustedInstantBasedOnZone(</b>
+<b class="fc"><i class="no-highlight">279</i>&nbsp;                    fsa.getEndTime(), fsa.getTimeZone(), false);</b>
+<b class="fc"><i class="no-highlight">280</i>&nbsp;            linksFragmentValue.append(Templates.populateTemplate(</b>
+<i class="no-highlight">281</i>&nbsp;                    EmailTemplates.FRAGMENT_SINGLE_FEEDBACK_SESSION_LINKS,
+<b class="fc"><i class="no-highlight">282</i>&nbsp;                    &quot;${feedbackSessionName}&quot;, fsa.getFeedbackSessionName(),</b>
+<b class="fc"><i class="no-highlight">283</i>&nbsp;                    &quot;${deadline}&quot;, TimeHelper.formatInstant(endTime, fsa.getTimeZone(), DATETIME_DISPLAY_FORMAT)</b>
+<b class="fc"><i class="no-highlight">284</i>&nbsp;                            + (fsa.isClosed() ? &quot; (Passed)&quot; : &quot;&quot;),</b>
+<i class="no-highlight">285</i>&nbsp;                    &quot;${submitUrl}&quot;, submitUrlHtml,
+<i class="no-highlight">286</i>&nbsp;                    &quot;${reportUrl}&quot;, reportUrlHtml));
+<b class="fc"><i class="no-highlight">287</i>&nbsp;        }</b>
+<i class="no-highlight">288</i>&nbsp;
+<b class="fc"><i class="no-highlight">289</i>&nbsp;        if (linksFragmentValue.length() == 0) {</b>
+<b class="fc"><i class="no-highlight">290</i>&nbsp;            linksFragmentValue.append(&quot;No links found.&quot;);</b>
+<i class="no-highlight">291</i>&nbsp;        }
+<i class="no-highlight">292</i>&nbsp;
+<b class="fc"><i class="no-highlight">293</i>&nbsp;        String additionalContactInformation = getAdditionalContactInformationFragment(course, isInstructor);</b>
+<b class="fc"><i class="no-highlight">294</i>&nbsp;        String resendLinksTemplate = emailType == EmailType.STUDENT_EMAIL_CHANGED</b>
+<b class="fc"><i class="no-highlight">295</i>&nbsp;                ? Templates.EmailTemplates.USER_FEEDBACK_SESSION_RESEND_ALL_LINKS</b>
+<b class="fc"><i class="no-highlight">296</i>&nbsp;                : Templates.EmailTemplates.USER_REGKEY_REGENERATION_RESEND_ALL_COURSE_LINKS;</b>
+<i class="no-highlight">297</i>&nbsp;
+<b class="fc"><i class="no-highlight">298</i>&nbsp;        String userName = isInstructor ? instructor.getName() : student.getName();</b>
+<b class="fc"><i class="no-highlight">299</i>&nbsp;        String emailBody = Templates.populateTemplate(resendLinksTemplate,</b>
+<b class="fc"><i class="no-highlight">300</i>&nbsp;                &quot;${userName}&quot;, SanitizationHelper.sanitizeForHtml(userName),</b>
+<i class="no-highlight">301</i>&nbsp;                &quot;${userEmail}&quot;, userEmail,
+<b class="fc"><i class="no-highlight">302</i>&nbsp;                &quot;${courseName}&quot;, SanitizationHelper.sanitizeForHtml(course.getName()),</b>
+<b class="fc"><i class="no-highlight">303</i>&nbsp;                &quot;${courseId}&quot;, course.getId(),</b>
+<i class="no-highlight">304</i>&nbsp;                &quot;${joinFragment}&quot;, joinFragmentValue,
+<b class="fc"><i class="no-highlight">305</i>&nbsp;                &quot;${linksFragment}&quot;, linksFragmentValue.toString(),</b>
+<i class="no-highlight">306</i>&nbsp;                &quot;${additionalContactInformation}&quot;, additionalContactInformation);
+<i class="no-highlight">307</i>&nbsp;
+<b class="fc"><i class="no-highlight">308</i>&nbsp;        EmailWrapper email = getEmptyEmailAddressedToEmail(userEmail);</b>
+<b class="fc"><i class="no-highlight">309</i>&nbsp;        email.setContent(emailBody);</b>
+<b class="fc"><i class="no-highlight">310</i>&nbsp;        email.setType(emailType);</b>
+<b class="fc"><i class="no-highlight">311</i>&nbsp;        email.setSubjectFromType(course.getName(), course.getId());</b>
+<b class="fc"><i class="no-highlight">312</i>&nbsp;        return email;</b>
+<i class="no-highlight">313</i>&nbsp;    }
+<i class="no-highlight">314</i>&nbsp;
+<i class="no-highlight">315</i>&nbsp;    /**
+<i class="no-highlight">316</i>&nbsp;     * Generates for the student an recovery email listing the links to submit/view responses for all feedback sessions
+<i class="no-highlight">317</i>&nbsp;     * under {@code recoveryEmailAddress} in the past 180 days. If no student with {@code recoveryEmailAddress} is
+<i class="no-highlight">318</i>&nbsp;     * found, generate an email stating that there is no such student in the system. If no feedback sessions are found,
+<i class="no-highlight">319</i>&nbsp;     * generate an email stating no feedback sessions found.
+<i class="no-highlight">320</i>&nbsp;     */
+<i class="no-highlight">321</i>&nbsp;    public EmailWrapper generateSessionLinksRecoveryEmailForStudent(String recoveryEmailAddress) {
+<b class="fc"><i class="no-highlight">322</i>&nbsp;        List&lt;StudentAttributes&gt; studentsForEmail = studentsLogic.getAllStudentsForEmail(recoveryEmailAddress);</b>
+<i class="no-highlight">323</i>&nbsp;
+<b class="fc"><i class="no-highlight">324</i>&nbsp;        if (studentsForEmail.isEmpty()) {</b>
+<b class="fc"><i class="no-highlight">325</i>&nbsp;            return generateSessionLinksRecoveryEmailForNonExistentStudent(recoveryEmailAddress);</b>
+<i class="no-highlight">326</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">327</i>&nbsp;            return generateSessionLinksRecoveryEmailForExistingStudent(recoveryEmailAddress, studentsForEmail);</b>
+<i class="no-highlight">328</i>&nbsp;        }
+<i class="no-highlight">329</i>&nbsp;    }
+<i class="no-highlight">330</i>&nbsp;
+<i class="no-highlight">331</i>&nbsp;    private EmailWrapper generateSessionLinksRecoveryEmailForNonExistentStudent(String recoveryEmailAddress) {
+<b class="fc"><i class="no-highlight">332</i>&nbsp;        String recoveryUrl = Config.getFrontEndAppUrl(Const.WebPageURIs.SESSIONS_LINK_RECOVERY_PAGE).toAbsoluteString();</b>
+<b class="fc"><i class="no-highlight">333</i>&nbsp;        String emailBody = Templates.populateTemplate(</b>
+<i class="no-highlight">334</i>&nbsp;                EmailTemplates.SESSION_LINKS_RECOVERY_EMAIL_NOT_FOUND,
+<b class="fc"><i class="no-highlight">335</i>&nbsp;                &quot;${userEmail}&quot;, SanitizationHelper.sanitizeForHtml(recoveryEmailAddress),</b>
+<i class="no-highlight">336</i>&nbsp;                &quot;${supportEmail}&quot;, Config.SUPPORT_EMAIL,
+<b class="fc"><i class="no-highlight">337</i>&nbsp;                &quot;${teammateHomePageLink}&quot;, Config.getFrontEndAppUrl(&quot;/&quot;).toAbsoluteString(),</b>
+<i class="no-highlight">338</i>&nbsp;                &quot;${sessionsRecoveryLink}&quot;, recoveryUrl);
+<b class="fc"><i class="no-highlight">339</i>&nbsp;        EmailWrapper email = getEmptyEmailAddressedToEmail(recoveryEmailAddress);</b>
+<b class="fc"><i class="no-highlight">340</i>&nbsp;        email.setType(EmailType.SESSION_LINKS_RECOVERY);</b>
+<b class="fc"><i class="no-highlight">341</i>&nbsp;        email.setSubjectFromType();</b>
+<b class="fc"><i class="no-highlight">342</i>&nbsp;        email.setContent(emailBody);</b>
+<b class="fc"><i class="no-highlight">343</i>&nbsp;        return email;</b>
+<i class="no-highlight">344</i>&nbsp;    }
+<i class="no-highlight">345</i>&nbsp;
+<i class="no-highlight">346</i>&nbsp;    private EmailWrapper generateSessionLinksRecoveryEmailForExistingStudent(String recoveryEmailAddress,
+<i class="no-highlight">347</i>&nbsp;                                                                             List&lt;StudentAttributes&gt; studentsForEmail) {
+<i class="no-highlight">348</i>&nbsp;        String emailBody;
+<i class="no-highlight">349</i>&nbsp;
+<b class="fc"><i class="no-highlight">350</i>&nbsp;        Instant endTime = Instant.now();</b>
+<b class="fc"><i class="no-highlight">351</i>&nbsp;        Instant startTime = endTime.minus(SESSION_LINK_RECOVERY_DURATION);</b>
+<b class="fc"><i class="no-highlight">352</i>&nbsp;        Map&lt;String, StringBuilder&gt; linkFragmentsMap = new HashMap&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">353</i>&nbsp;        String studentName = null;</b>
+<i class="no-highlight">354</i>&nbsp;
+<b class="fc"><i class="no-highlight">355</i>&nbsp;        List&lt;FeedbackSessionAttributes&gt; sessions = fsLogic.getAllFeedbackSessionsWithinTimeRange(startTime, endTime);</b>
+<i class="no-highlight">356</i>&nbsp;
+<b class="fc"><i class="no-highlight">357</i>&nbsp;        for (FeedbackSessionAttributes session : sessions) {</b>
+<b class="fc"><i class="no-highlight">358</i>&nbsp;            RequestTracer.checkRemainingTime();</b>
+<b class="fc"><i class="no-highlight">359</i>&nbsp;            String courseId = session.getCourseId();</b>
+<b class="fc"><i class="no-highlight">360</i>&nbsp;            CourseAttributes course = coursesLogic.getCourse(courseId);</b>
+<b class="fc"><i class="no-highlight">361</i>&nbsp;            List&lt;StudentAttributes&gt; students = studentsForEmail.stream().filter(</b>
+<b class="fc"><i class="no-highlight">362</i>&nbsp;                    each -&gt; each.getCourse().equals(courseId)).collect(Collectors.toList());</b>
+<i class="no-highlight">363</i>&nbsp;            StringBuilder linksFragmentValue;
+<b class="fc"><i class="no-highlight">364</i>&nbsp;            if (linkFragmentsMap.containsKey(courseId)) {</b>
+<b class="fc"><i class="no-highlight">365</i>&nbsp;                linksFragmentValue = linkFragmentsMap.get(courseId);</b>
+<i class="no-highlight">366</i>&nbsp;            } else {
+<b class="fc"><i class="no-highlight">367</i>&nbsp;                linksFragmentValue = new StringBuilder(5000);</b>
+<i class="no-highlight">368</i>&nbsp;            }
+<i class="no-highlight">369</i>&nbsp;
+<b class="fc"><i class="no-highlight">370</i>&nbsp;            if (students.size() != 1) {</b>
+<b class="fc"><i class="no-highlight">371</i>&nbsp;                continue;</b>
+<i class="no-highlight">372</i>&nbsp;            }
+<i class="no-highlight">373</i>&nbsp;
+<b class="fc"><i class="no-highlight">374</i>&nbsp;            StudentAttributes student = students.get(0);</b>
+<b class="fc"><i class="no-highlight">375</i>&nbsp;            studentName = student.getName();</b>
+<b class="fc"><i class="no-highlight">376</i>&nbsp;            String submitUrlHtml = &quot;&quot;;</b>
+<b class="fc"><i class="no-highlight">377</i>&nbsp;            String reportUrlHtml = &quot;&quot;;</b>
+<i class="no-highlight">378</i>&nbsp;
+<b class="fc"><i class="no-highlight">379</i>&nbsp;            if (session.isOpened() || session.isClosed()) {</b>
+<b class="fc"><i class="no-highlight">380</i>&nbsp;                String submitUrl = Config.getFrontEndAppUrl(Const.WebPageURIs.SESSION_SUBMISSION_PAGE)</b>
+<b class="fc"><i class="no-highlight">381</i>&nbsp;                        .withCourseId(course.getId())</b>
+<b class="fc"><i class="no-highlight">382</i>&nbsp;                        .withSessionName(session.getFeedbackSessionName())</b>
+<b class="fc"><i class="no-highlight">383</i>&nbsp;                        .withRegistrationKey(student.getKey())</b>
+<b class="fc"><i class="no-highlight">384</i>&nbsp;                        .toAbsoluteString();</b>
+<b class="fc"><i class="no-highlight">385</i>&nbsp;                submitUrlHtml = &quot;[&lt;a href=\&quot;&quot; + submitUrl + &quot;\&quot;&gt;submission link&lt;/a&gt;]&quot;;</b>
+<i class="no-highlight">386</i>&nbsp;            }
+<i class="no-highlight">387</i>&nbsp;
+<b class="fc"><i class="no-highlight">388</i>&nbsp;            if (session.isPublished()) {</b>
+<b class="fc"><i class="no-highlight">389</i>&nbsp;                String reportUrl = Config.getFrontEndAppUrl(Const.WebPageURIs.SESSION_RESULTS_PAGE)</b>
+<b class="fc"><i class="no-highlight">390</i>&nbsp;                        .withCourseId(course.getId())</b>
+<b class="fc"><i class="no-highlight">391</i>&nbsp;                        .withSessionName(session.getFeedbackSessionName())</b>
+<b class="fc"><i class="no-highlight">392</i>&nbsp;                        .withRegistrationKey(student.getKey())</b>
+<b class="fc"><i class="no-highlight">393</i>&nbsp;                        .toAbsoluteString();</b>
+<b class="fc"><i class="no-highlight">394</i>&nbsp;                reportUrlHtml = &quot;[&lt;a href=\&quot;&quot; + reportUrl + &quot;\&quot;&gt;result link&lt;/a&gt;]&quot;;</b>
+<i class="no-highlight">395</i>&nbsp;            }
+<i class="no-highlight">396</i>&nbsp;
+<b class="fc"><i class="no-highlight">397</i>&nbsp;            linksFragmentValue.append(Templates.populateTemplate(</b>
+<i class="no-highlight">398</i>&nbsp;                    EmailTemplates.FRAGMENT_SESSION_LINKS_RECOVERY_ACCESS_LINKS_BY_SESSION,
+<b class="fc"><i class="no-highlight">399</i>&nbsp;                    &quot;${sessionName}&quot;, session.getFeedbackSessionName(),</b>
+<i class="no-highlight">400</i>&nbsp;                    &quot;${submitUrl}&quot;, submitUrlHtml,
+<i class="no-highlight">401</i>&nbsp;                    &quot;${reportUrl}&quot;, reportUrlHtml));
+<i class="no-highlight">402</i>&nbsp;
+<b class="fc"><i class="no-highlight">403</i>&nbsp;            linkFragmentsMap.putIfAbsent(courseId, linksFragmentValue);</b>
+<b class="fc"><i class="no-highlight">404</i>&nbsp;        }</b>
+<i class="no-highlight">405</i>&nbsp;
+<b class="fc"><i class="no-highlight">406</i>&nbsp;        String recoveryUrl = Config.getFrontEndAppUrl(Const.WebPageURIs.SESSIONS_LINK_RECOVERY_PAGE).toAbsoluteString();</b>
+<b class="fc"><i class="no-highlight">407</i>&nbsp;        if (linkFragmentsMap.isEmpty()) {</b>
+<b class="fc"><i class="no-highlight">408</i>&nbsp;            emailBody = Templates.populateTemplate(</b>
+<i class="no-highlight">409</i>&nbsp;                    EmailTemplates.SESSION_LINKS_RECOVERY_ACCESS_LINKS_NONE,
+<b class="fc"><i class="no-highlight">410</i>&nbsp;                    &quot;${teammateHomePageLink}&quot;, Config.getFrontEndAppUrl(&quot;/&quot;).toAbsoluteString(),</b>
+<b class="fc"><i class="no-highlight">411</i>&nbsp;                    &quot;${userEmail}&quot;, SanitizationHelper.sanitizeForHtml(recoveryEmailAddress),</b>
+<i class="no-highlight">412</i>&nbsp;                    &quot;${supportEmail}&quot;, Config.SUPPORT_EMAIL,
+<i class="no-highlight">413</i>&nbsp;                    &quot;${sessionsRecoveryLink}&quot;, recoveryUrl);
+<i class="no-highlight">414</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">415</i>&nbsp;            StringBuilder courseFragments = new StringBuilder(10000);</b>
+<b class="fc"><i class="no-highlight">416</i>&nbsp;            linkFragmentsMap.forEach((courseId, linksFragments) -&gt; {</b>
+<b class="fc"><i class="no-highlight">417</i>&nbsp;                String courseBody = Templates.populateTemplate(</b>
+<i class="no-highlight">418</i>&nbsp;                        EmailTemplates.FRAGMENT_SESSION_LINKS_RECOVERY_ACCESS_LINKS_BY_COURSE,
+<b class="fc"><i class="no-highlight">419</i>&nbsp;                        &quot;${sessionFragment}&quot;, linksFragments.toString(),</b>
+<b class="fc"><i class="no-highlight">420</i>&nbsp;                        &quot;${courseName}&quot;, coursesLogic.getCourse(courseId).getName());</b>
+<b class="fc"><i class="no-highlight">421</i>&nbsp;                courseFragments.append(courseBody);</b>
+<i class="no-highlight">422</i>&nbsp;            });
+<b class="fc"><i class="no-highlight">423</i>&nbsp;            emailBody = Templates.populateTemplate(</b>
+<i class="no-highlight">424</i>&nbsp;                    EmailTemplates.SESSION_LINKS_RECOVERY_ACCESS_LINKS,
+<b class="fc"><i class="no-highlight">425</i>&nbsp;                    &quot;${userName}&quot;, SanitizationHelper.sanitizeForHtml(studentName),</b>
+<b class="fc"><i class="no-highlight">426</i>&nbsp;                    &quot;${linksFragment}&quot;, courseFragments.toString(),</b>
+<b class="fc"><i class="no-highlight">427</i>&nbsp;                    &quot;${userEmail}&quot;, SanitizationHelper.sanitizeForHtml(recoveryEmailAddress),</b>
+<b class="fc"><i class="no-highlight">428</i>&nbsp;                    &quot;${teammateHomePageLink}&quot;, Config.getFrontEndAppUrl(&quot;/&quot;).toAbsoluteString(),</b>
+<i class="no-highlight">429</i>&nbsp;                    &quot;${supportEmail}&quot;, Config.SUPPORT_EMAIL,
+<i class="no-highlight">430</i>&nbsp;                    &quot;${sessionsRecoveryLink}&quot;, recoveryUrl);
+<i class="no-highlight">431</i>&nbsp;        }
+<i class="no-highlight">432</i>&nbsp;
+<b class="fc"><i class="no-highlight">433</i>&nbsp;        EmailWrapper email = getEmptyEmailAddressedToEmail(recoveryEmailAddress);</b>
+<b class="fc"><i class="no-highlight">434</i>&nbsp;        email.setType(EmailType.SESSION_LINKS_RECOVERY);</b>
+<b class="fc"><i class="no-highlight">435</i>&nbsp;        email.setSubjectFromType();</b>
+<b class="fc"><i class="no-highlight">436</i>&nbsp;        email.setContent(emailBody);</b>
+<b class="fc"><i class="no-highlight">437</i>&nbsp;        return email;</b>
+<i class="no-highlight">438</i>&nbsp;    }
+<i class="no-highlight">439</i>&nbsp;
+<i class="no-highlight">440</i>&nbsp;    /**
+<i class="no-highlight">441</i>&nbsp;     * Generates the feedback session closing emails for the given {@code session}.
+<i class="no-highlight">442</i>&nbsp;     */
+<i class="no-highlight">443</i>&nbsp;    public List&lt;EmailWrapper&gt; generateFeedbackSessionClosingEmails(FeedbackSessionAttributes session) {
+<b class="fc"><i class="no-highlight">444</i>&nbsp;        return generateFeedbackSessionClosingOrClosedEmails(session, EmailType.FEEDBACK_CLOSING);</b>
+<i class="no-highlight">445</i>&nbsp;    }
+<i class="no-highlight">446</i>&nbsp;
+<i class="no-highlight">447</i>&nbsp;    /**
+<i class="no-highlight">448</i>&nbsp;     * Generates the feedback session closed emails for the given {@code session}.
+<i class="no-highlight">449</i>&nbsp;     */
+<i class="no-highlight">450</i>&nbsp;    public List&lt;EmailWrapper&gt; generateFeedbackSessionClosedEmails(FeedbackSessionAttributes session) {
+<b class="fc"><i class="no-highlight">451</i>&nbsp;        return generateFeedbackSessionClosingOrClosedEmails(session, EmailType.FEEDBACK_CLOSED);</b>
+<i class="no-highlight">452</i>&nbsp;    }
+<i class="no-highlight">453</i>&nbsp;
+<i class="no-highlight">454</i>&nbsp;    private List&lt;EmailWrapper&gt; generateFeedbackSessionClosingOrClosedEmails(
+<i class="no-highlight">455</i>&nbsp;            FeedbackSessionAttributes session, EmailType emailType) {
+<b class="fc"><i class="no-highlight">456</i>&nbsp;        List&lt;StudentAttributes&gt; students = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">457</i>&nbsp;        List&lt;InstructorAttributes&gt; instructors = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">458</i>&nbsp;        boolean isEmailNeededForStudents = fsLogic.isFeedbackSessionForUserTypeToAnswer(session, false);</b>
+<b class="fc"><i class="no-highlight">459</i>&nbsp;        boolean isEmailNeededForInstructors = fsLogic.isFeedbackSessionForUserTypeToAnswer(session, true);</b>
+<i class="no-highlight">460</i>&nbsp;
+<b class="fc"><i class="no-highlight">461</i>&nbsp;        if (isEmailNeededForStudents) {</b>
+<b class="fc"><i class="no-highlight">462</i>&nbsp;            List&lt;StudentAttributes&gt; studentsForCourse = studentsLogic.getStudentsForCourse(session.getCourseId());</b>
+<i class="no-highlight">463</i>&nbsp;
+<b class="fc"><i class="no-highlight">464</i>&nbsp;            for (StudentAttributes student : studentsForCourse) {</b>
+<i class="no-highlight">465</i>&nbsp;                try {
+<b class="fc"><i class="no-highlight">466</i>&nbsp;                    if (!fsLogic.isFeedbackSessionAttemptedByUser(session, student.getEmail(), false)) {</b>
+<b class="fc"><i class="no-highlight">467</i>&nbsp;                        students.add(student);</b>
+<i class="no-highlight">468</i>&nbsp;                    }
+<b class="nc"><i class="no-highlight">469</i>&nbsp;                } catch (EntityDoesNotExistException e) {</b>
+<b class="nc"><i class="no-highlight">470</i>&nbsp;                    log.severe(&quot;Course &quot; + session.getCourseId() + &quot; does not exist or &quot;</b>
+<b class="nc"><i class="no-highlight">471</i>&nbsp;                            + &quot;session &quot; + session.getFeedbackSessionName() + &quot; does not exist&quot;);</b>
+<i class="no-highlight">472</i>&nbsp;                    // Course or session cannot be found for one student =&gt; it will be the case for all students
+<i class="no-highlight">473</i>&nbsp;                    // Do not waste time looping through all students
+<b class="nc"><i class="no-highlight">474</i>&nbsp;                    break;</b>
+<b class="fc"><i class="no-highlight">475</i>&nbsp;                }</b>
+<b class="fc"><i class="no-highlight">476</i>&nbsp;            }</b>
+<i class="no-highlight">477</i>&nbsp;        }
+<i class="no-highlight">478</i>&nbsp;
+<b class="fc"><i class="no-highlight">479</i>&nbsp;        if (isEmailNeededForInstructors) {</b>
+<b class="fc"><i class="no-highlight">480</i>&nbsp;            List&lt;InstructorAttributes&gt; instructorsForCourse =</b>
+<b class="fc"><i class="no-highlight">481</i>&nbsp;                    instructorsLogic.getInstructorsForCourse(session.getCourseId());</b>
+<i class="no-highlight">482</i>&nbsp;
+<b class="fc"><i class="no-highlight">483</i>&nbsp;            for (InstructorAttributes instructor : instructorsForCourse) {</b>
+<i class="no-highlight">484</i>&nbsp;                try {
+<b class="fc"><i class="no-highlight">485</i>&nbsp;                    if (!fsLogic.isFeedbackSessionAttemptedByUser(session, instructor.getEmail(), true)) {</b>
+<b class="fc"><i class="no-highlight">486</i>&nbsp;                        instructors.add(instructor);</b>
+<i class="no-highlight">487</i>&nbsp;                    }
+<b class="nc"><i class="no-highlight">488</i>&nbsp;                } catch (EntityDoesNotExistException e) {</b>
+<b class="nc"><i class="no-highlight">489</i>&nbsp;                    log.severe(&quot;Course &quot; + session.getCourseId() + &quot; does not exist or &quot;</b>
+<b class="nc"><i class="no-highlight">490</i>&nbsp;                            + &quot;session &quot; + session.getFeedbackSessionName() + &quot; does not exist&quot;);</b>
+<i class="no-highlight">491</i>&nbsp;                    // Course or session cannot be found for one instructor =&gt; it will be the case for all instructors
+<i class="no-highlight">492</i>&nbsp;                    // Do not waste time looping through all instructors
+<b class="nc"><i class="no-highlight">493</i>&nbsp;                    break;</b>
+<b class="fc"><i class="no-highlight">494</i>&nbsp;                }</b>
+<b class="fc"><i class="no-highlight">495</i>&nbsp;            }</b>
+<i class="no-highlight">496</i>&nbsp;        }
+<i class="no-highlight">497</i>&nbsp;
+<i class="no-highlight">498</i>&nbsp;        String status;
+<i class="no-highlight">499</i>&nbsp;        String action;
+<b class="fc"><i class="no-highlight">500</i>&nbsp;        if (emailType == EmailType.FEEDBACK_CLOSED) {</b>
+<b class="fc"><i class="no-highlight">501</i>&nbsp;            status = FEEDBACK_STATUS_SESSION_CLOSED;</b>
+<b class="fc"><i class="no-highlight">502</i>&nbsp;            action = FEEDBACK_ACTION_VIEW;</b>
+<i class="no-highlight">503</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">504</i>&nbsp;            status = FEEDBACK_STATUS_SESSION_CLOSING;</b>
+<b class="fc"><i class="no-highlight">505</i>&nbsp;            action = FEEDBACK_ACTION_SUBMIT_EDIT_OR_VIEW;</b>
+<i class="no-highlight">506</i>&nbsp;        }
+<i class="no-highlight">507</i>&nbsp;
+<b class="fc"><i class="no-highlight">508</i>&nbsp;        String template = EmailTemplates.USER_FEEDBACK_SESSION.replace(&quot;${status}&quot;, status);</b>
+<b class="fc"><i class="no-highlight">509</i>&nbsp;        CourseAttributes course = coursesLogic.getCourse(session.getCourseId());</b>
+<b class="fc"><i class="no-highlight">510</i>&nbsp;        List&lt;InstructorAttributes&gt; instructorsToNotify = isEmailNeededForStudents</b>
+<b class="fc"><i class="no-highlight">511</i>&nbsp;                ? instructorsLogic.getCoOwnersForCourse(session.getCourseId())</b>
+<b class="fc"><i class="no-highlight">512</i>&nbsp;                : new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">513</i>&nbsp;        return generateFeedbackSessionEmailBases(course, session, students, instructors, instructorsToNotify, template,</b>
+<i class="no-highlight">514</i>&nbsp;                emailType, action);
+<i class="no-highlight">515</i>&nbsp;    }
+<i class="no-highlight">516</i>&nbsp;
+<i class="no-highlight">517</i>&nbsp;    /**
+<i class="no-highlight">518</i>&nbsp;     * Generates the feedback session published emails for the given {@code session}.
+<i class="no-highlight">519</i>&nbsp;     */
+<i class="no-highlight">520</i>&nbsp;    public List&lt;EmailWrapper&gt; generateFeedbackSessionPublishedEmails(FeedbackSessionAttributes session) {
+<b class="fc"><i class="no-highlight">521</i>&nbsp;        return generateFeedbackSessionPublishedOrUnpublishedEmails(session, EmailType.FEEDBACK_PUBLISHED);</b>
+<i class="no-highlight">522</i>&nbsp;    }
+<i class="no-highlight">523</i>&nbsp;
+<i class="no-highlight">524</i>&nbsp;    /**
+<i class="no-highlight">525</i>&nbsp;     * Generates the feedback session published emails for the given {@code students} and
+<i class="no-highlight">526</i>&nbsp;     * {@code instructors} in {@code session}.
+<i class="no-highlight">527</i>&nbsp;     */
+<i class="no-highlight">528</i>&nbsp;    public List&lt;EmailWrapper&gt; generateFeedbackSessionPublishedEmails(FeedbackSessionAttributes session,
+<i class="no-highlight">529</i>&nbsp;            List&lt;StudentAttributes&gt; students, List&lt;InstructorAttributes&gt; instructors,
+<i class="no-highlight">530</i>&nbsp;            List&lt;InstructorAttributes&gt; instructorsToNotify) {
+<b class="fc"><i class="no-highlight">531</i>&nbsp;        return generateFeedbackSessionPublishedOrUnpublishedEmails(</b>
+<i class="no-highlight">532</i>&nbsp;                session, students, instructors, instructorsToNotify, EmailType.FEEDBACK_PUBLISHED);
+<i class="no-highlight">533</i>&nbsp;    }
+<i class="no-highlight">534</i>&nbsp;
+<i class="no-highlight">535</i>&nbsp;    /**
+<i class="no-highlight">536</i>&nbsp;     * Generates the feedback session unpublished emails for the given {@code session}.
+<i class="no-highlight">537</i>&nbsp;     */
+<i class="no-highlight">538</i>&nbsp;    public List&lt;EmailWrapper&gt; generateFeedbackSessionUnpublishedEmails(FeedbackSessionAttributes session) {
+<b class="fc"><i class="no-highlight">539</i>&nbsp;        return generateFeedbackSessionPublishedOrUnpublishedEmails(session, EmailType.FEEDBACK_UNPUBLISHED);</b>
+<i class="no-highlight">540</i>&nbsp;    }
+<i class="no-highlight">541</i>&nbsp;
+<i class="no-highlight">542</i>&nbsp;    private List&lt;EmailWrapper&gt; generateFeedbackSessionPublishedOrUnpublishedEmails(
+<i class="no-highlight">543</i>&nbsp;            FeedbackSessionAttributes session, EmailType emailType) {
+<b class="fc"><i class="no-highlight">544</i>&nbsp;        boolean isEmailNeededForStudents = fsLogic.isFeedbackSessionViewableToUserType(session, false);</b>
+<b class="fc"><i class="no-highlight">545</i>&nbsp;        boolean isEmailNeededForInstructors = fsLogic.isFeedbackSessionViewableToUserType(session, true);</b>
+<b class="fc"><i class="no-highlight">546</i>&nbsp;        List&lt;InstructorAttributes&gt; instructorsToNotify = isEmailNeededForStudents</b>
+<b class="fc"><i class="no-highlight">547</i>&nbsp;                ? instructorsLogic.getCoOwnersForCourse(session.getCourseId())</b>
+<b class="fc"><i class="no-highlight">548</i>&nbsp;                : new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">549</i>&nbsp;        List&lt;StudentAttributes&gt; students = isEmailNeededForStudents</b>
+<b class="fc"><i class="no-highlight">550</i>&nbsp;                ? studentsLogic.getStudentsForCourse(session.getCourseId())</b>
+<b class="fc"><i class="no-highlight">551</i>&nbsp;                : new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">552</i>&nbsp;        List&lt;InstructorAttributes&gt; instructors = isEmailNeededForInstructors</b>
+<b class="fc"><i class="no-highlight">553</i>&nbsp;                ? instructorsLogic.getInstructorsForCourse(session.getCourseId())</b>
+<b class="fc"><i class="no-highlight">554</i>&nbsp;                : new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">555</i>&nbsp;
+<b class="fc"><i class="no-highlight">556</i>&nbsp;        return generateFeedbackSessionPublishedOrUnpublishedEmails(</b>
+<i class="no-highlight">557</i>&nbsp;                session, students, instructors, instructorsToNotify, emailType);
+<i class="no-highlight">558</i>&nbsp;    }
+<i class="no-highlight">559</i>&nbsp;
+<i class="no-highlight">560</i>&nbsp;    private List&lt;EmailWrapper&gt; generateFeedbackSessionPublishedOrUnpublishedEmails(
+<i class="no-highlight">561</i>&nbsp;            FeedbackSessionAttributes session, List&lt;StudentAttributes&gt; students,
+<i class="no-highlight">562</i>&nbsp;            List&lt;InstructorAttributes&gt; instructors, List&lt;InstructorAttributes&gt; instructorsToNotify, EmailType emailType) {
+<b class="fc"><i class="no-highlight">563</i>&nbsp;        CourseAttributes course = coursesLogic.getCourse(session.getCourseId());</b>
+<i class="no-highlight">564</i>&nbsp;        String template;
+<i class="no-highlight">565</i>&nbsp;        String action;
+<b class="fc"><i class="no-highlight">566</i>&nbsp;        if (emailType == EmailType.FEEDBACK_PUBLISHED) {</b>
+<b class="fc"><i class="no-highlight">567</i>&nbsp;            template = EmailTemplates.USER_FEEDBACK_SESSION_PUBLISHED;</b>
+<b class="fc"><i class="no-highlight">568</i>&nbsp;            action = FEEDBACK_ACTION_VIEW;</b>
+<i class="no-highlight">569</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">570</i>&nbsp;            template = EmailTemplates.USER_FEEDBACK_SESSION_UNPUBLISHED;</b>
+<b class="fc"><i class="no-highlight">571</i>&nbsp;            action = FEEDBACK_ACTION_SUBMIT_EDIT_OR_VIEW;</b>
+<i class="no-highlight">572</i>&nbsp;        }
+<i class="no-highlight">573</i>&nbsp;
+<b class="fc"><i class="no-highlight">574</i>&nbsp;        return generateFeedbackSessionEmailBases(course, session, students, instructors, instructorsToNotify, template,</b>
+<i class="no-highlight">575</i>&nbsp;                emailType, action);
+<i class="no-highlight">576</i>&nbsp;    }
+<i class="no-highlight">577</i>&nbsp;
+<i class="no-highlight">578</i>&nbsp;    private List&lt;EmailWrapper&gt; generateFeedbackSessionEmailBases(
+<i class="no-highlight">579</i>&nbsp;            CourseAttributes course, FeedbackSessionAttributes session, List&lt;StudentAttributes&gt; students,
+<i class="no-highlight">580</i>&nbsp;            List&lt;InstructorAttributes&gt; instructors, List&lt;InstructorAttributes&gt; instructorsToNotify, String template,
+<i class="no-highlight">581</i>&nbsp;            EmailType type, String feedbackAction) {
+<b class="fc"><i class="no-highlight">582</i>&nbsp;        StringBuilder studentAdditionalContactBuilder = new StringBuilder();</b>
+<b class="fc"><i class="no-highlight">583</i>&nbsp;        StringBuilder instructorAdditionalContactBuilder = new StringBuilder();</b>
+<b class="fc"><i class="no-highlight">584</i>&nbsp;        if (type == EmailType.FEEDBACK_CLOSING || type == EmailType.FEEDBACK_SESSION_REMINDER) {</b>
+<b class="fc"><i class="no-highlight">585</i>&nbsp;            studentAdditionalContactBuilder.append(HTML_NO_ACTION_REQUIRED);</b>
+<b class="fc"><i class="no-highlight">586</i>&nbsp;            instructorAdditionalContactBuilder.append(HTML_NO_ACTION_REQUIRED);</b>
+<i class="no-highlight">587</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">588</i>&nbsp;        studentAdditionalContactBuilder.append(getAdditionalContactInformationFragment(course, false));</b>
+<b class="fc"><i class="no-highlight">589</i>&nbsp;        instructorAdditionalContactBuilder.append(getAdditionalContactInformationFragment(course, true));</b>
+<i class="no-highlight">590</i>&nbsp;
+<b class="fc"><i class="no-highlight">591</i>&nbsp;        List&lt;EmailWrapper&gt; emails = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">592</i>&nbsp;        for (StudentAttributes student : students) {</b>
+<b class="fc"><i class="no-highlight">593</i>&nbsp;            emails.add(generateFeedbackSessionEmailBaseForStudents(course, session, student,</b>
+<b class="fc"><i class="no-highlight">594</i>&nbsp;                    template, type, feedbackAction, studentAdditionalContactBuilder.toString()));</b>
+<b class="fc"><i class="no-highlight">595</i>&nbsp;        }</b>
+<b class="fc"><i class="no-highlight">596</i>&nbsp;        for (InstructorAttributes instructor : instructors) {</b>
+<b class="fc"><i class="no-highlight">597</i>&nbsp;            emails.add(generateFeedbackSessionEmailBaseForInstructors(course, session, instructor,</b>
+<b class="fc"><i class="no-highlight">598</i>&nbsp;                    template, type, feedbackAction, instructorAdditionalContactBuilder.toString()));</b>
+<b class="fc"><i class="no-highlight">599</i>&nbsp;        }</b>
+<b class="fc"><i class="no-highlight">600</i>&nbsp;        for (InstructorAttributes instructor : instructorsToNotify) {</b>
+<b class="fc"><i class="no-highlight">601</i>&nbsp;            emails.add(generateFeedbackSessionEmailBaseForNotifiedInstructors(course, session, instructor,</b>
+<b class="fc"><i class="no-highlight">602</i>&nbsp;                    template, type, feedbackAction, studentAdditionalContactBuilder.toString()));</b>
+<b class="fc"><i class="no-highlight">603</i>&nbsp;        }</b>
+<b class="fc"><i class="no-highlight">604</i>&nbsp;        return emails;</b>
+<i class="no-highlight">605</i>&nbsp;    }
+<i class="no-highlight">606</i>&nbsp;
+<i class="no-highlight">607</i>&nbsp;    private EmailWrapper generateFeedbackSessionEmailBaseForStudents(
+<i class="no-highlight">608</i>&nbsp;            CourseAttributes course, FeedbackSessionAttributes session, StudentAttributes student, String template,
+<i class="no-highlight">609</i>&nbsp;            EmailType type, String feedbackAction, String additionalContactInformation) {
+<b class="fc"><i class="no-highlight">610</i>&nbsp;        String submitUrl = Config.getFrontEndAppUrl(Const.WebPageURIs.SESSION_SUBMISSION_PAGE)</b>
+<b class="fc"><i class="no-highlight">611</i>&nbsp;                .withCourseId(course.getId())</b>
+<b class="fc"><i class="no-highlight">612</i>&nbsp;                .withSessionName(session.getFeedbackSessionName())</b>
+<b class="fc"><i class="no-highlight">613</i>&nbsp;                .withRegistrationKey(student.getKey())</b>
+<b class="fc"><i class="no-highlight">614</i>&nbsp;                .toAbsoluteString();</b>
+<i class="no-highlight">615</i>&nbsp;
+<b class="fc"><i class="no-highlight">616</i>&nbsp;        String reportUrl = Config.getFrontEndAppUrl(Const.WebPageURIs.SESSION_RESULTS_PAGE)</b>
+<b class="fc"><i class="no-highlight">617</i>&nbsp;                .withCourseId(course.getId())</b>
+<b class="fc"><i class="no-highlight">618</i>&nbsp;                .withSessionName(session.getFeedbackSessionName())</b>
+<b class="fc"><i class="no-highlight">619</i>&nbsp;                .withRegistrationKey(student.getKey())</b>
+<b class="fc"><i class="no-highlight">620</i>&nbsp;                .toAbsoluteString();</b>
+<i class="no-highlight">621</i>&nbsp;
+<b class="fc"><i class="no-highlight">622</i>&nbsp;        Instant endTime = TimeHelper.getMidnightAdjustedInstantBasedOnZone(</b>
+<b class="fc"><i class="no-highlight">623</i>&nbsp;                session.getEndTime(), session.getTimeZone(), false);</b>
+<b class="fc"><i class="no-highlight">624</i>&nbsp;        String emailBody = Templates.populateTemplate(template,</b>
+<b class="fc"><i class="no-highlight">625</i>&nbsp;                &quot;${userName}&quot;, SanitizationHelper.sanitizeForHtml(student.getName()),</b>
+<b class="fc"><i class="no-highlight">626</i>&nbsp;                &quot;${courseName}&quot;, SanitizationHelper.sanitizeForHtml(course.getName()),</b>
+<b class="fc"><i class="no-highlight">627</i>&nbsp;                &quot;${courseId}&quot;, SanitizationHelper.sanitizeForHtml(course.getId()),</b>
+<b class="fc"><i class="no-highlight">628</i>&nbsp;                &quot;${feedbackSessionName}&quot;, SanitizationHelper.sanitizeForHtml(session.getFeedbackSessionName()),</b>
+<b class="fc"><i class="no-highlight">629</i>&nbsp;                &quot;${deadline}&quot;, SanitizationHelper.sanitizeForHtml(</b>
+<b class="fc"><i class="no-highlight">630</i>&nbsp;                        TimeHelper.formatInstant(endTime, session.getTimeZone(), DATETIME_DISPLAY_FORMAT)),</b>
+<i class="no-highlight">631</i>&nbsp;                &quot;${instructorPreamble}&quot;, &quot;&quot;,
+<b class="fc"><i class="no-highlight">632</i>&nbsp;                &quot;${sessionInstructions}&quot;, session.getInstructionsString(),</b>
+<i class="no-highlight">633</i>&nbsp;                &quot;${submitUrl}&quot;, submitUrl,
+<i class="no-highlight">634</i>&nbsp;                &quot;${reportUrl}&quot;, reportUrl,
+<i class="no-highlight">635</i>&nbsp;                &quot;${feedbackAction}&quot;, feedbackAction,
+<i class="no-highlight">636</i>&nbsp;                &quot;${additionalContactInformation}&quot;, additionalContactInformation);
+<i class="no-highlight">637</i>&nbsp;
+<b class="fc"><i class="no-highlight">638</i>&nbsp;        EmailWrapper email = getEmptyEmailAddressedToEmail(student.getEmail());</b>
+<b class="fc"><i class="no-highlight">639</i>&nbsp;        email.setType(type);</b>
+<b class="fc"><i class="no-highlight">640</i>&nbsp;        email.setSubjectFromType(course.getName(), session.getFeedbackSessionName());</b>
+<b class="fc"><i class="no-highlight">641</i>&nbsp;        email.setContent(emailBody);</b>
+<b class="fc"><i class="no-highlight">642</i>&nbsp;        return email;</b>
+<i class="no-highlight">643</i>&nbsp;    }
+<i class="no-highlight">644</i>&nbsp;
+<i class="no-highlight">645</i>&nbsp;    private EmailWrapper generateFeedbackSessionEmailBaseForInstructors(
+<i class="no-highlight">646</i>&nbsp;            CourseAttributes course, FeedbackSessionAttributes session, InstructorAttributes instructor,
+<i class="no-highlight">647</i>&nbsp;            String template, EmailType type, String feedbackAction, String additionalContactInformation) {
+<b class="fc"><i class="no-highlight">648</i>&nbsp;        String submitUrl = Config.getFrontEndAppUrl(Const.WebPageURIs.SESSION_SUBMISSION_PAGE)</b>
+<b class="fc"><i class="no-highlight">649</i>&nbsp;                .withCourseId(course.getId())</b>
+<b class="fc"><i class="no-highlight">650</i>&nbsp;                .withSessionName(session.getFeedbackSessionName())</b>
+<b class="fc"><i class="no-highlight">651</i>&nbsp;                .withRegistrationKey(instructor.getKey())</b>
+<b class="fc"><i class="no-highlight">652</i>&nbsp;                .withEntityType(Const.EntityType.INSTRUCTOR)</b>
+<b class="fc"><i class="no-highlight">653</i>&nbsp;                .toAbsoluteString();</b>
+<i class="no-highlight">654</i>&nbsp;
+<b class="fc"><i class="no-highlight">655</i>&nbsp;        String reportUrl = Config.getFrontEndAppUrl(Const.WebPageURIs.SESSION_RESULTS_PAGE)</b>
+<b class="fc"><i class="no-highlight">656</i>&nbsp;                .withCourseId(course.getId())</b>
+<b class="fc"><i class="no-highlight">657</i>&nbsp;                .withSessionName(session.getFeedbackSessionName())</b>
+<b class="fc"><i class="no-highlight">658</i>&nbsp;                .withRegistrationKey(instructor.getKey())</b>
+<b class="fc"><i class="no-highlight">659</i>&nbsp;                .withEntityType(Const.EntityType.INSTRUCTOR)</b>
+<b class="fc"><i class="no-highlight">660</i>&nbsp;                .toAbsoluteString();</b>
+<i class="no-highlight">661</i>&nbsp;
+<b class="fc"><i class="no-highlight">662</i>&nbsp;        Instant endTime = TimeHelper.getMidnightAdjustedInstantBasedOnZone(</b>
+<b class="fc"><i class="no-highlight">663</i>&nbsp;                session.getEndTime(), session.getTimeZone(), false);</b>
+<b class="fc"><i class="no-highlight">664</i>&nbsp;        String emailBody = Templates.populateTemplate(template,</b>
+<b class="fc"><i class="no-highlight">665</i>&nbsp;                &quot;${userName}&quot;, SanitizationHelper.sanitizeForHtml(instructor.getName()),</b>
+<b class="fc"><i class="no-highlight">666</i>&nbsp;                &quot;${courseName}&quot;, SanitizationHelper.sanitizeForHtml(course.getName()),</b>
+<b class="fc"><i class="no-highlight">667</i>&nbsp;                &quot;${courseId}&quot;, SanitizationHelper.sanitizeForHtml(course.getId()),</b>
+<b class="fc"><i class="no-highlight">668</i>&nbsp;                &quot;${feedbackSessionName}&quot;, SanitizationHelper.sanitizeForHtml(session.getFeedbackSessionName()),</b>
+<b class="fc"><i class="no-highlight">669</i>&nbsp;                &quot;${deadline}&quot;, SanitizationHelper.sanitizeForHtml(</b>
+<b class="fc"><i class="no-highlight">670</i>&nbsp;                        TimeHelper.formatInstant(endTime, session.getTimeZone(), DATETIME_DISPLAY_FORMAT)),</b>
+<i class="no-highlight">671</i>&nbsp;                &quot;${instructorPreamble}&quot;, &quot;&quot;,
+<b class="fc"><i class="no-highlight">672</i>&nbsp;                &quot;${sessionInstructions}&quot;, session.getInstructionsString(),</b>
+<i class="no-highlight">673</i>&nbsp;                &quot;${submitUrl}&quot;, submitUrl,
+<i class="no-highlight">674</i>&nbsp;                &quot;${reportUrl}&quot;, reportUrl,
+<i class="no-highlight">675</i>&nbsp;                &quot;${feedbackAction}&quot;, feedbackAction,
+<i class="no-highlight">676</i>&nbsp;                &quot;${additionalContactInformation}&quot;, additionalContactInformation);
+<i class="no-highlight">677</i>&nbsp;
+<b class="fc"><i class="no-highlight">678</i>&nbsp;        EmailWrapper email = getEmptyEmailAddressedToEmail(instructor.getEmail());</b>
+<b class="fc"><i class="no-highlight">679</i>&nbsp;        email.setType(type);</b>
+<b class="fc"><i class="no-highlight">680</i>&nbsp;        email.setSubjectFromType(course.getName(), session.getFeedbackSessionName());</b>
+<b class="fc"><i class="no-highlight">681</i>&nbsp;        email.setContent(emailBody);</b>
+<b class="fc"><i class="no-highlight">682</i>&nbsp;        return email;</b>
+<i class="no-highlight">683</i>&nbsp;    }
+<i class="no-highlight">684</i>&nbsp;
+<i class="no-highlight">685</i>&nbsp;    private EmailWrapper generateFeedbackSessionEmailBaseForNotifiedInstructors(
+<i class="no-highlight">686</i>&nbsp;            CourseAttributes course, FeedbackSessionAttributes session, InstructorAttributes instructor,
+<i class="no-highlight">687</i>&nbsp;            String template, EmailType type, String feedbackAction, String additionalContactInformation) {
+<b class="fc"><i class="no-highlight">688</i>&nbsp;        Instant endTime = TimeHelper.getMidnightAdjustedInstantBasedOnZone(</b>
+<b class="fc"><i class="no-highlight">689</i>&nbsp;                session.getEndTime(), session.getTimeZone(), false);</b>
+<b class="fc"><i class="no-highlight">690</i>&nbsp;        String emailBody = Templates.populateTemplate(template,</b>
+<b class="fc"><i class="no-highlight">691</i>&nbsp;                &quot;${userName}&quot;, SanitizationHelper.sanitizeForHtml(instructor.getName()),</b>
+<b class="fc"><i class="no-highlight">692</i>&nbsp;                &quot;${courseName}&quot;, SanitizationHelper.sanitizeForHtml(course.getName()),</b>
+<b class="fc"><i class="no-highlight">693</i>&nbsp;                &quot;${courseId}&quot;, SanitizationHelper.sanitizeForHtml(course.getId()),</b>
+<b class="fc"><i class="no-highlight">694</i>&nbsp;                &quot;${feedbackSessionName}&quot;, SanitizationHelper.sanitizeForHtml(session.getFeedbackSessionName()),</b>
+<b class="fc"><i class="no-highlight">695</i>&nbsp;                &quot;${deadline}&quot;, SanitizationHelper.sanitizeForHtml(</b>
+<b class="fc"><i class="no-highlight">696</i>&nbsp;                        TimeHelper.formatInstant(endTime, session.getTimeZone(), DATETIME_DISPLAY_FORMAT)),</b>
+<b class="fc"><i class="no-highlight">697</i>&nbsp;                &quot;${instructorPreamble}&quot;, fillUpInstructorPreamble(course),</b>
+<b class="fc"><i class="no-highlight">698</i>&nbsp;                &quot;${sessionInstructions}&quot;, session.getInstructionsString(),</b>
+<i class="no-highlight">699</i>&nbsp;                &quot;${submitUrl}&quot;, &quot;{in the actual email sent to the students, this will be the unique link}&quot;,
+<i class="no-highlight">700</i>&nbsp;                &quot;${reportUrl}&quot;, &quot;{in the actual email sent to the students, this will be the unique link}&quot;,
+<i class="no-highlight">701</i>&nbsp;                &quot;${feedbackAction}&quot;, feedbackAction,
+<i class="no-highlight">702</i>&nbsp;                &quot;${additionalContactInformation}&quot;, additionalContactInformation);
+<i class="no-highlight">703</i>&nbsp;
+<b class="fc"><i class="no-highlight">704</i>&nbsp;        EmailWrapper email = getEmptyEmailAddressedToEmail(instructor.getEmail());</b>
+<b class="fc"><i class="no-highlight">705</i>&nbsp;        email.setType(type);</b>
+<b class="fc"><i class="no-highlight">706</i>&nbsp;        email.setIsCopy(true);</b>
+<b class="fc"><i class="no-highlight">707</i>&nbsp;        email.setSubjectFromType(course.getName(), session.getFeedbackSessionName());</b>
+<b class="fc"><i class="no-highlight">708</i>&nbsp;        email.setContent(emailBody);</b>
+<b class="fc"><i class="no-highlight">709</i>&nbsp;        return email;</b>
+<i class="no-highlight">710</i>&nbsp;    }
+<i class="no-highlight">711</i>&nbsp;
+<i class="no-highlight">712</i>&nbsp;    private boolean isYetToJoinCourse(StudentAttributes student) {
+<b class="fc"><i class="no-highlight">713</i>&nbsp;        return student.getGoogleId() == null || student.getGoogleId().isEmpty();</b>
+<i class="no-highlight">714</i>&nbsp;    }
+<i class="no-highlight">715</i>&nbsp;
+<i class="no-highlight">716</i>&nbsp;    private boolean isYetToJoinCourse(InstructorAttributes instructor) {
+<b class="fc"><i class="no-highlight">717</i>&nbsp;        return instructor.getGoogleId() == null || instructor.getGoogleId().isEmpty();</b>
+<i class="no-highlight">718</i>&nbsp;    }
+<i class="no-highlight">719</i>&nbsp;
+<i class="no-highlight">720</i>&nbsp;    /**
+<i class="no-highlight">721</i>&nbsp;     * Generates the new instructor account join email for the given {@code instructor}.
+<i class="no-highlight">722</i>&nbsp;     */
+<i class="no-highlight">723</i>&nbsp;    public EmailWrapper generateNewInstructorAccountJoinEmail(
+<i class="no-highlight">724</i>&nbsp;            String instructorEmail, String instructorName, String joinUrl) {
+<i class="no-highlight">725</i>&nbsp;
+<b class="fc"><i class="no-highlight">726</i>&nbsp;        String emailBody = Templates.populateTemplate(EmailTemplates.NEW_INSTRUCTOR_ACCOUNT_WELCOME,</b>
+<b class="fc"><i class="no-highlight">727</i>&nbsp;                &quot;${userName}&quot;, SanitizationHelper.sanitizeForHtml(instructorName),</b>
+<i class="no-highlight">728</i>&nbsp;                &quot;${joinUrl}&quot;, joinUrl);
+<i class="no-highlight">729</i>&nbsp;
+<b class="fc"><i class="no-highlight">730</i>&nbsp;        EmailWrapper email = getEmptyEmailAddressedToEmail(instructorEmail);</b>
+<b class="fc"><i class="no-highlight">731</i>&nbsp;        email.setBcc(Config.SUPPORT_EMAIL);</b>
+<b class="fc"><i class="no-highlight">732</i>&nbsp;        email.setType(EmailType.NEW_INSTRUCTOR_ACCOUNT);</b>
+<b class="fc"><i class="no-highlight">733</i>&nbsp;        email.setSubjectFromType(SanitizationHelper.sanitizeForHtml(instructorName));</b>
+<b class="fc"><i class="no-highlight">734</i>&nbsp;        email.setContent(emailBody);</b>
+<b class="fc"><i class="no-highlight">735</i>&nbsp;        return email;</b>
+<i class="no-highlight">736</i>&nbsp;    }
+<i class="no-highlight">737</i>&nbsp;
+<i class="no-highlight">738</i>&nbsp;    /**
+<i class="no-highlight">739</i>&nbsp;     * Generates the course join email for the given {@code student} in {@code course}.
+<i class="no-highlight">740</i>&nbsp;     */
+<i class="no-highlight">741</i>&nbsp;    public EmailWrapper generateStudentCourseJoinEmail(CourseAttributes course, StudentAttributes student) {
+<i class="no-highlight">742</i>&nbsp;
+<b class="fc"><i class="no-highlight">743</i>&nbsp;        String emailBody = Templates.populateTemplate(</b>
+<b class="fc"><i class="no-highlight">744</i>&nbsp;                fillUpStudentJoinFragment(student),</b>
+<b class="fc"><i class="no-highlight">745</i>&nbsp;                &quot;${userName}&quot;, SanitizationHelper.sanitizeForHtml(student.getName()),</b>
+<b class="fc"><i class="no-highlight">746</i>&nbsp;                &quot;${courseName}&quot;, SanitizationHelper.sanitizeForHtml(course.getName()),</b>
+<b class="fc"><i class="no-highlight">747</i>&nbsp;                &quot;${coOwnersEmails}&quot;, generateCoOwnersEmailsLine(course.getId()),</b>
+<i class="no-highlight">748</i>&nbsp;                &quot;${supportEmail}&quot;, Config.SUPPORT_EMAIL);
+<i class="no-highlight">749</i>&nbsp;
+<b class="fc"><i class="no-highlight">750</i>&nbsp;        EmailWrapper email = getEmptyEmailAddressedToEmail(student.getEmail());</b>
+<b class="fc"><i class="no-highlight">751</i>&nbsp;        email.setType(EmailType.STUDENT_COURSE_JOIN);</b>
+<b class="fc"><i class="no-highlight">752</i>&nbsp;        email.setSubjectFromType(course.getName(), course.getId());</b>
+<b class="fc"><i class="no-highlight">753</i>&nbsp;        email.setContent(emailBody);</b>
+<b class="fc"><i class="no-highlight">754</i>&nbsp;        return email;</b>
+<i class="no-highlight">755</i>&nbsp;    }
+<i class="no-highlight">756</i>&nbsp;
+<i class="no-highlight">757</i>&nbsp;    /**
+<i class="no-highlight">758</i>&nbsp;     * Generates the course re-join email for the given {@code student} in {@code course}.
+<i class="no-highlight">759</i>&nbsp;     */
+<i class="no-highlight">760</i>&nbsp;    public EmailWrapper generateStudentCourseRejoinEmailAfterGoogleIdReset(
+<i class="no-highlight">761</i>&nbsp;            CourseAttributes course, StudentAttributes student) {
+<i class="no-highlight">762</i>&nbsp;
+<b class="fc"><i class="no-highlight">763</i>&nbsp;        String emailBody = Templates.populateTemplate(</b>
+<b class="fc"><i class="no-highlight">764</i>&nbsp;                fillUpStudentRejoinAfterGoogleIdResetFragment(student),</b>
+<b class="fc"><i class="no-highlight">765</i>&nbsp;                &quot;${userName}&quot;, SanitizationHelper.sanitizeForHtml(student.getName()),</b>
+<b class="fc"><i class="no-highlight">766</i>&nbsp;                &quot;${courseName}&quot;, SanitizationHelper.sanitizeForHtml(course.getName()),</b>
+<b class="fc"><i class="no-highlight">767</i>&nbsp;                &quot;${coOwnersEmails}&quot;, generateCoOwnersEmailsLine(course.getId()),</b>
+<i class="no-highlight">768</i>&nbsp;                &quot;${supportEmail}&quot;, Config.SUPPORT_EMAIL);
+<i class="no-highlight">769</i>&nbsp;
+<b class="fc"><i class="no-highlight">770</i>&nbsp;        EmailWrapper email = getEmptyEmailAddressedToEmail(student.getEmail());</b>
+<b class="fc"><i class="no-highlight">771</i>&nbsp;        email.setType(EmailType.STUDENT_COURSE_REJOIN_AFTER_GOOGLE_ID_RESET);</b>
+<b class="fc"><i class="no-highlight">772</i>&nbsp;        email.setSubjectFromType(course.getName(), course.getId());</b>
+<b class="fc"><i class="no-highlight">773</i>&nbsp;        email.setContent(emailBody);</b>
+<b class="fc"><i class="no-highlight">774</i>&nbsp;        return email;</b>
+<i class="no-highlight">775</i>&nbsp;    }
+<i class="no-highlight">776</i>&nbsp;
+<i class="no-highlight">777</i>&nbsp;    /**
+<i class="no-highlight">778</i>&nbsp;     * Generates the course join email for the given {@code instructor} in {@code course}.
+<i class="no-highlight">779</i>&nbsp;     * Also specifies contact information of {@code inviter}.
+<i class="no-highlight">780</i>&nbsp;     */
+<i class="no-highlight">781</i>&nbsp;    public EmailWrapper generateInstructorCourseJoinEmail(AccountAttributes inviter,
+<i class="no-highlight">782</i>&nbsp;            InstructorAttributes instructor, CourseAttributes course) {
+<i class="no-highlight">783</i>&nbsp;
+<b class="fc"><i class="no-highlight">784</i>&nbsp;        String emailBody = Templates.populateTemplate(</b>
+<b class="fc"><i class="no-highlight">785</i>&nbsp;                fillUpInstructorJoinFragment(instructor),</b>
+<b class="fc"><i class="no-highlight">786</i>&nbsp;                &quot;${userName}&quot;, SanitizationHelper.sanitizeForHtml(instructor.getName()),</b>
+<b class="fc"><i class="no-highlight">787</i>&nbsp;                &quot;${courseName}&quot;, SanitizationHelper.sanitizeForHtml(course.getName()),</b>
+<b class="fc"><i class="no-highlight">788</i>&nbsp;                &quot;${inviterName}&quot;, SanitizationHelper.sanitizeForHtml(inviter.getName()),</b>
+<b class="fc"><i class="no-highlight">789</i>&nbsp;                &quot;${inviterEmail}&quot;, SanitizationHelper.sanitizeForHtml(inviter.getEmail()),</b>
+<i class="no-highlight">790</i>&nbsp;                &quot;${supportEmail}&quot;, Config.SUPPORT_EMAIL);
+<i class="no-highlight">791</i>&nbsp;
+<b class="fc"><i class="no-highlight">792</i>&nbsp;        EmailWrapper email = getEmptyEmailAddressedToEmail(instructor.getEmail());</b>
+<b class="fc"><i class="no-highlight">793</i>&nbsp;        email.setType(EmailType.INSTRUCTOR_COURSE_JOIN);</b>
+<b class="fc"><i class="no-highlight">794</i>&nbsp;        email.setSubjectFromType(course.getName(), course.getId());</b>
+<b class="fc"><i class="no-highlight">795</i>&nbsp;        email.setContent(emailBody);</b>
+<b class="fc"><i class="no-highlight">796</i>&nbsp;        return email;</b>
+<i class="no-highlight">797</i>&nbsp;    }
+<i class="no-highlight">798</i>&nbsp;
+<i class="no-highlight">799</i>&nbsp;    /**
+<i class="no-highlight">800</i>&nbsp;     * Generates the course re-join email for the given {@code instructor} in {@code course}.
+<i class="no-highlight">801</i>&nbsp;     */
+<i class="no-highlight">802</i>&nbsp;    public EmailWrapper generateInstructorCourseRejoinEmailAfterGoogleIdReset(
+<i class="no-highlight">803</i>&nbsp;            InstructorAttributes instructor, CourseAttributes course) {
+<i class="no-highlight">804</i>&nbsp;
+<b class="fc"><i class="no-highlight">805</i>&nbsp;        String emailBody = Templates.populateTemplate(</b>
+<b class="fc"><i class="no-highlight">806</i>&nbsp;                fillUpInstructorRejoinAfterGoogleIdResetFragment(instructor),</b>
+<b class="fc"><i class="no-highlight">807</i>&nbsp;                &quot;${userName}&quot;, SanitizationHelper.sanitizeForHtml(instructor.getName()),</b>
+<b class="fc"><i class="no-highlight">808</i>&nbsp;                &quot;${courseName}&quot;, SanitizationHelper.sanitizeForHtml(course.getName()),</b>
+<i class="no-highlight">809</i>&nbsp;                &quot;${supportEmail}&quot;, Config.SUPPORT_EMAIL);
+<i class="no-highlight">810</i>&nbsp;
+<b class="fc"><i class="no-highlight">811</i>&nbsp;        EmailWrapper email = getEmptyEmailAddressedToEmail(instructor.getEmail());</b>
+<b class="fc"><i class="no-highlight">812</i>&nbsp;        email.setType(EmailType.INSTRUCTOR_COURSE_REJOIN_AFTER_GOOGLE_ID_RESET);</b>
+<b class="fc"><i class="no-highlight">813</i>&nbsp;        email.setSubjectFromType(course.getName(), course.getId());</b>
+<b class="fc"><i class="no-highlight">814</i>&nbsp;        email.setContent(emailBody);</b>
+<b class="fc"><i class="no-highlight">815</i>&nbsp;        return email;</b>
+<i class="no-highlight">816</i>&nbsp;    }
+<i class="no-highlight">817</i>&nbsp;
+<i class="no-highlight">818</i>&nbsp;    /**
+<i class="no-highlight">819</i>&nbsp;     * Generates the course registered email for the user with the given details in {@code course}.
+<i class="no-highlight">820</i>&nbsp;     */
+<i class="no-highlight">821</i>&nbsp;    public EmailWrapper generateUserCourseRegisteredEmail(
+<i class="no-highlight">822</i>&nbsp;            String name, String emailAddress, String googleId, boolean isInstructor, CourseAttributes course) {
+<b class="fc"><i class="no-highlight">823</i>&nbsp;        String emailBody = Templates.populateTemplate(EmailTemplates.USER_COURSE_REGISTER,</b>
+<b class="fc"><i class="no-highlight">824</i>&nbsp;                &quot;${userName}&quot;, SanitizationHelper.sanitizeForHtml(name),</b>
+<b class="fc"><i class="no-highlight">825</i>&nbsp;                &quot;${userType}&quot;, isInstructor ? &quot;an instructor&quot; : &quot;a student&quot;,</b>
+<b class="fc"><i class="no-highlight">826</i>&nbsp;                &quot;${courseId}&quot;, SanitizationHelper.sanitizeForHtml(course.getId()),</b>
+<b class="fc"><i class="no-highlight">827</i>&nbsp;                &quot;${courseName}&quot;, SanitizationHelper.sanitizeForHtml(course.getName()),</b>
+<b class="fc"><i class="no-highlight">828</i>&nbsp;                &quot;${googleId}&quot;, SanitizationHelper.sanitizeForHtml(googleId),</b>
+<b class="fc"><i class="no-highlight">829</i>&nbsp;                &quot;${appUrl}&quot;, isInstructor</b>
+<b class="fc"><i class="no-highlight">830</i>&nbsp;                        ? Config.getFrontEndAppUrl(Const.WebPageURIs.INSTRUCTOR_HOME_PAGE).toAbsoluteString()</b>
+<b class="fc"><i class="no-highlight">831</i>&nbsp;                        : Config.getFrontEndAppUrl(Const.WebPageURIs.STUDENT_HOME_PAGE).toAbsoluteString(),</b>
+<i class="no-highlight">832</i>&nbsp;                &quot;${supportEmail}&quot;, Config.SUPPORT_EMAIL);
+<i class="no-highlight">833</i>&nbsp;
+<b class="fc"><i class="no-highlight">834</i>&nbsp;        EmailWrapper email = getEmptyEmailAddressedToEmail(emailAddress);</b>
+<b class="fc"><i class="no-highlight">835</i>&nbsp;        email.setType(EmailType.USER_COURSE_REGISTER);</b>
+<b class="fc"><i class="no-highlight">836</i>&nbsp;        email.setSubjectFromType(course.getName(), course.getId());</b>
+<b class="fc"><i class="no-highlight">837</i>&nbsp;        email.setContent(emailBody);</b>
+<b class="fc"><i class="no-highlight">838</i>&nbsp;        return email;</b>
+<i class="no-highlight">839</i>&nbsp;    }
+<i class="no-highlight">840</i>&nbsp;
+<i class="no-highlight">841</i>&nbsp;    private String fillUpStudentJoinFragment(StudentAttributes student) {
+<b class="fc"><i class="no-highlight">842</i>&nbsp;        String joinUrl = Config.getFrontEndAppUrl(student.getRegistrationUrl()).toAbsoluteString();</b>
+<i class="no-highlight">843</i>&nbsp;
+<b class="fc"><i class="no-highlight">844</i>&nbsp;        return Templates.populateTemplate(EmailTemplates.USER_COURSE_JOIN,</b>
+<i class="no-highlight">845</i>&nbsp;                &quot;${joinFragment}&quot;, EmailTemplates.FRAGMENT_STUDENT_COURSE_JOIN,
+<i class="no-highlight">846</i>&nbsp;                &quot;${joinUrl}&quot;, joinUrl);
+<i class="no-highlight">847</i>&nbsp;    }
+<i class="no-highlight">848</i>&nbsp;
+<i class="no-highlight">849</i>&nbsp;    private String fillUpStudentRejoinAfterGoogleIdResetFragment(StudentAttributes student) {
+<b class="fc"><i class="no-highlight">850</i>&nbsp;        String joinUrl = Config.getFrontEndAppUrl(student.getRegistrationUrl()).toAbsoluteString();</b>
+<i class="no-highlight">851</i>&nbsp;
+<b class="fc"><i class="no-highlight">852</i>&nbsp;        return Templates.populateTemplate(EmailTemplates.USER_COURSE_JOIN,</b>
+<i class="no-highlight">853</i>&nbsp;                &quot;${joinFragment}&quot;, EmailTemplates.FRAGMENT_STUDENT_COURSE_REJOIN_AFTER_GOOGLE_ID_RESET,
+<i class="no-highlight">854</i>&nbsp;                &quot;${joinUrl}&quot;, joinUrl,
+<i class="no-highlight">855</i>&nbsp;                &quot;${supportEmail}&quot;, Config.SUPPORT_EMAIL);
+<i class="no-highlight">856</i>&nbsp;    }
+<i class="no-highlight">857</i>&nbsp;
+<i class="no-highlight">858</i>&nbsp;    private String getInstructorCourseJoinUrl(InstructorAttributes instructor) {
+<b class="fc"><i class="no-highlight">859</i>&nbsp;        return Config.getFrontEndAppUrl(instructor.getRegistrationUrl()).toAbsoluteString();</b>
+<i class="no-highlight">860</i>&nbsp;    }
+<i class="no-highlight">861</i>&nbsp;
+<i class="no-highlight">862</i>&nbsp;    private String fillUpInstructorJoinFragment(InstructorAttributes instructor) {
+<b class="fc"><i class="no-highlight">863</i>&nbsp;        return Templates.populateTemplate(EmailTemplates.USER_COURSE_JOIN,</b>
+<i class="no-highlight">864</i>&nbsp;                &quot;${joinFragment}&quot;, EmailTemplates.FRAGMENT_INSTRUCTOR_COURSE_JOIN,
+<b class="fc"><i class="no-highlight">865</i>&nbsp;                &quot;${joinUrl}&quot;, getInstructorCourseJoinUrl(instructor));</b>
+<i class="no-highlight">866</i>&nbsp;    }
+<i class="no-highlight">867</i>&nbsp;
+<i class="no-highlight">868</i>&nbsp;    private String fillUpInstructorRejoinAfterGoogleIdResetFragment(InstructorAttributes instructor) {
+<b class="fc"><i class="no-highlight">869</i>&nbsp;        String joinUrl = Config.getFrontEndAppUrl(instructor.getRegistrationUrl()).toAbsoluteString();</b>
+<i class="no-highlight">870</i>&nbsp;
+<b class="fc"><i class="no-highlight">871</i>&nbsp;        return Templates.populateTemplate(EmailTemplates.USER_COURSE_JOIN,</b>
+<i class="no-highlight">872</i>&nbsp;                &quot;${joinFragment}&quot;, EmailTemplates.FRAGMENT_INSTRUCTOR_COURSE_REJOIN_AFTER_GOOGLE_ID_RESET,
+<i class="no-highlight">873</i>&nbsp;                &quot;${joinUrl}&quot;, joinUrl,
+<i class="no-highlight">874</i>&nbsp;                &quot;${supportEmail}&quot;, Config.SUPPORT_EMAIL);
+<i class="no-highlight">875</i>&nbsp;    }
+<i class="no-highlight">876</i>&nbsp;
+<i class="no-highlight">877</i>&nbsp;    private String fillUpInstructorPreamble(CourseAttributes course) {
+<b class="fc"><i class="no-highlight">878</i>&nbsp;        return Templates.populateTemplate(EmailTemplates.FRAGMENT_INSTRUCTOR_COPY_PREAMBLE,</b>
+<b class="fc"><i class="no-highlight">879</i>&nbsp;                &quot;${courseId}&quot;, SanitizationHelper.sanitizeForHtml(course.getId()),</b>
+<b class="fc"><i class="no-highlight">880</i>&nbsp;                &quot;${courseName}&quot;, SanitizationHelper.sanitizeForHtml(course.getName()));</b>
+<i class="no-highlight">881</i>&nbsp;    }
+<i class="no-highlight">882</i>&nbsp;
+<i class="no-highlight">883</i>&nbsp;    /**
+<i class="no-highlight">884</i>&nbsp;     * Generates the logs compilation email for the given {@code logs}.
+<i class="no-highlight">885</i>&nbsp;     */
+<i class="no-highlight">886</i>&nbsp;    public EmailWrapper generateCompiledLogsEmail(List&lt;ErrorLogEntry&gt; logs) {
+<b class="fc"><i class="no-highlight">887</i>&nbsp;        StringBuilder emailBody = new StringBuilder();</b>
+<b class="fc"><i class="no-highlight">888</i>&nbsp;        for (int i = 0; i &lt; logs.size(); i++) {</b>
+<b class="fc"><i class="no-highlight">889</i>&nbsp;            emailBody.append(generateSevereErrorLogLine(i, logs.get(i).getMessage(),</b>
+<b class="fc"><i class="no-highlight">890</i>&nbsp;                    logs.get(i).getSeverity(), logs.get(i).getTraceId()));</b>
+<i class="no-highlight">891</i>&nbsp;        }
+<i class="no-highlight">892</i>&nbsp;
+<b class="fc"><i class="no-highlight">893</i>&nbsp;        EmailWrapper email = getEmptyEmailAddressedToEmail(Config.SUPPORT_EMAIL);</b>
+<b class="fc"><i class="no-highlight">894</i>&nbsp;        email.setType(EmailType.SEVERE_LOGS_COMPILATION);</b>
+<b class="fc"><i class="no-highlight">895</i>&nbsp;        email.setSubjectFromType(Config.APP_VERSION);</b>
+<b class="fc"><i class="no-highlight">896</i>&nbsp;        email.setContent(emailBody.toString());</b>
+<b class="fc"><i class="no-highlight">897</i>&nbsp;        return email;</b>
+<i class="no-highlight">898</i>&nbsp;    }
+<i class="no-highlight">899</i>&nbsp;
+<i class="no-highlight">900</i>&nbsp;    private String generateSevereErrorLogLine(int index, String logMessage, String logLevel, String traceId) {
+<b class="fc"><i class="no-highlight">901</i>&nbsp;        return Templates.populateTemplate(</b>
+<i class="no-highlight">902</i>&nbsp;                EmailTemplates.SEVERE_ERROR_LOG_LINE,
+<b class="fc"><i class="no-highlight">903</i>&nbsp;                &quot;${index}&quot;, String.valueOf(index),</b>
+<i class="no-highlight">904</i>&nbsp;                &quot;${errorType}&quot;, logLevel,
+<i class="no-highlight">905</i>&nbsp;                &quot;${errorMessage}&quot;, logMessage,
+<i class="no-highlight">906</i>&nbsp;                &quot;${traceId}&quot;, traceId);
+<i class="no-highlight">907</i>&nbsp;    }
+<i class="no-highlight">908</i>&nbsp;
+<i class="no-highlight">909</i>&nbsp;    private EmailWrapper getEmptyEmailAddressedToEmail(String recipient) {
+<b class="fc"><i class="no-highlight">910</i>&nbsp;        EmailWrapper email = new EmailWrapper();</b>
+<b class="fc"><i class="no-highlight">911</i>&nbsp;        email.setRecipient(recipient);</b>
+<b class="fc"><i class="no-highlight">912</i>&nbsp;        email.setSenderEmail(Config.EMAIL_SENDEREMAIL);</b>
+<b class="fc"><i class="no-highlight">913</i>&nbsp;        email.setSenderName(Config.EMAIL_SENDERNAME);</b>
+<b class="fc"><i class="no-highlight">914</i>&nbsp;        email.setReplyTo(Config.EMAIL_REPLYTO);</b>
+<b class="fc"><i class="no-highlight">915</i>&nbsp;        return email;</b>
+<i class="no-highlight">916</i>&nbsp;    }
+<i class="no-highlight">917</i>&nbsp;
+<i class="no-highlight">918</i>&nbsp;    private String generateCoOwnersEmailsLine(String courseId) {
+<b class="fc"><i class="no-highlight">919</i>&nbsp;        List&lt;InstructorAttributes&gt; coOwners = instructorsLogic.getCoOwnersForCourse(courseId);</b>
+<b class="fc"><i class="no-highlight">920</i>&nbsp;        if (coOwners.isEmpty()) {</b>
+<b class="fc"><i class="no-highlight">921</i>&nbsp;            return &quot;(No contactable instructors found)&quot;;</b>
+<i class="no-highlight">922</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">923</i>&nbsp;        StringBuilder coOwnersEmailsLine = new StringBuilder();</b>
+<b class="fc"><i class="no-highlight">924</i>&nbsp;        for (InstructorAttributes coOwner : coOwners) {</b>
+<b class="fc"><i class="no-highlight">925</i>&nbsp;            coOwnersEmailsLine</b>
+<b class="fc"><i class="no-highlight">926</i>&nbsp;                    .append(SanitizationHelper.sanitizeForHtml(coOwner.getName()))</b>
+<b class="fc"><i class="no-highlight">927</i>&nbsp;                    .append(&quot; (&quot;)</b>
+<b class="fc"><i class="no-highlight">928</i>&nbsp;                    .append(coOwner.getEmail())</b>
+<b class="fc"><i class="no-highlight">929</i>&nbsp;                    .append(&quot;), &quot;);</b>
+<b class="fc"><i class="no-highlight">930</i>&nbsp;        }</b>
+<b class="fc"><i class="no-highlight">931</i>&nbsp;        return coOwnersEmailsLine.substring(0, coOwnersEmailsLine.length() - 2);</b>
+<i class="no-highlight">932</i>&nbsp;    }
+<i class="no-highlight">933</i>&nbsp;
+<i class="no-highlight">934</i>&nbsp;    /**
+<i class="no-highlight">935</i>&nbsp;     * Generates additional contact information for User Email Templates.
+<i class="no-highlight">936</i>&nbsp;     * @return The contact information after replacing the placeholders.
+<i class="no-highlight">937</i>&nbsp;     */
+<i class="no-highlight">938</i>&nbsp;    private String getAdditionalContactInformationFragment(CourseAttributes course, boolean isInstructor) {
+<b class="fc"><i class="no-highlight">939</i>&nbsp;        String particulars = isInstructor ? &quot;instructor data (e.g. wrong permission, misspelled name)&quot;</b>
+<b class="fc"><i class="no-highlight">940</i>&nbsp;                : &quot;team/student data (e.g. wrong team, misspelled name)&quot;;</b>
+<b class="fc"><i class="no-highlight">941</i>&nbsp;        return Templates.populateTemplate(EmailTemplates.FRAGMENT_SESSION_ADDITIONAL_CONTACT_INFORMATION,</b>
+<i class="no-highlight">942</i>&nbsp;                &quot;${particulars}&quot;, particulars,
+<b class="fc"><i class="no-highlight">943</i>&nbsp;                &quot;${coOwnersEmails}&quot;, generateCoOwnersEmailsLine(course.getId()),</b>
+<i class="no-highlight">944</i>&nbsp;                &quot;${supportEmail}&quot;, Config.SUPPORT_EMAIL);
+<i class="no-highlight">945</i>&nbsp;    }
+<i class="no-highlight">946</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-25 11:18</div>
+</div>
+</body>
+</html>

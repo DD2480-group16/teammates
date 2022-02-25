@@ -1,0 +1,156 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > FeedbackMsqResponseDetails</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.common.datatransfer.questions</a>
+</div>
+
+<h1>Coverage Summary for Class: FeedbackMsqResponseDetails (teammates.common.datatransfer.questions)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FeedbackMsqResponseDetails</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.common.datatransfer.questions;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.util.ArrayList;
+<i class="no-highlight">4</i>&nbsp;import java.util.List;
+<i class="no-highlight">5</i>&nbsp;
+<i class="no-highlight">6</i>&nbsp;import teammates.common.util.StringHelper;
+<i class="no-highlight">7</i>&nbsp;
+<i class="no-highlight">8</i>&nbsp;/**
+<i class="no-highlight">9</i>&nbsp; * Contains specific structure and processing logic for MCQ feedback responses.
+<i class="no-highlight">10</i>&nbsp; */
+<i class="no-highlight">11</i>&nbsp;public class FeedbackMsqResponseDetails extends FeedbackResponseDetails {
+<i class="no-highlight">12</i>&nbsp;    private List&lt;String&gt; answers; // answers contain the &quot;other&quot; answer, if any
+<i class="no-highlight">13</i>&nbsp;    private boolean isOther;
+<i class="no-highlight">14</i>&nbsp;    private String otherFieldContent; //content of other field if &quot;other&quot; is selected as the answer
+<i class="no-highlight">15</i>&nbsp;
+<i class="no-highlight">16</i>&nbsp;    public FeedbackMsqResponseDetails() {
+<b class="fc"><i class="no-highlight">17</i>&nbsp;        super(FeedbackQuestionType.MSQ);</b>
+<b class="fc"><i class="no-highlight">18</i>&nbsp;        this.answers = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">19</i>&nbsp;        isOther = false;</b>
+<b class="fc"><i class="no-highlight">20</i>&nbsp;        otherFieldContent = &quot;&quot;;</b>
+<i class="no-highlight">21</i>&nbsp;    }
+<i class="no-highlight">22</i>&nbsp;
+<i class="no-highlight">23</i>&nbsp;    @Override
+<i class="no-highlight">24</i>&nbsp;    public String getAnswerString() {
+<b class="fc"><i class="no-highlight">25</i>&nbsp;        return StringHelper.toString(answers, &quot;, &quot;);</b>
+<i class="no-highlight">26</i>&nbsp;    }
+<i class="no-highlight">27</i>&nbsp;
+<i class="no-highlight">28</i>&nbsp;    public List&lt;String&gt; getAnswers() {
+<b class="fc"><i class="no-highlight">29</i>&nbsp;        return answers;</b>
+<i class="no-highlight">30</i>&nbsp;    }
+<i class="no-highlight">31</i>&nbsp;
+<i class="no-highlight">32</i>&nbsp;    public void setAnswers(List&lt;String&gt; answers) {
+<b class="fc"><i class="no-highlight">33</i>&nbsp;        this.answers = answers;</b>
+<i class="no-highlight">34</i>&nbsp;    }
+<i class="no-highlight">35</i>&nbsp;
+<i class="no-highlight">36</i>&nbsp;    public boolean isOther() {
+<b class="fc"><i class="no-highlight">37</i>&nbsp;        return isOther;</b>
+<i class="no-highlight">38</i>&nbsp;    }
+<i class="no-highlight">39</i>&nbsp;
+<i class="no-highlight">40</i>&nbsp;    public void setOther(boolean other) {
+<b class="fc"><i class="no-highlight">41</i>&nbsp;        isOther = other;</b>
+<i class="no-highlight">42</i>&nbsp;    }
+<i class="no-highlight">43</i>&nbsp;
+<i class="no-highlight">44</i>&nbsp;    public String getOtherFieldContent() {
+<b class="fc"><i class="no-highlight">45</i>&nbsp;        return otherFieldContent;</b>
+<i class="no-highlight">46</i>&nbsp;    }
+<i class="no-highlight">47</i>&nbsp;
+<i class="no-highlight">48</i>&nbsp;    public void setOtherFieldContent(String otherFieldContent) {
+<b class="fc"><i class="no-highlight">49</i>&nbsp;        this.otherFieldContent = otherFieldContent;</b>
+<i class="no-highlight">50</i>&nbsp;    }
+<i class="no-highlight">51</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-25 11:18</div>
+</div>
+</body>
+</html>

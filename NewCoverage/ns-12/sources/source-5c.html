@@ -1,0 +1,250 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > QueryLogsAction</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.ui.webapi</a>
+</div>
+
+<h1>Coverage Summary for Class: QueryLogsAction (teammates.ui.webapi)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">QueryLogsAction</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    91.8%
+  </span>
+  <span class="absValue">
+    (78/85)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.ui.webapi;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.time.Instant;
+<i class="no-highlight">4</i>&nbsp;
+<i class="no-highlight">5</i>&nbsp;import teammates.common.datatransfer.QueryLogsResults;
+<i class="no-highlight">6</i>&nbsp;import teammates.common.datatransfer.logs.GeneralLogEntry;
+<i class="no-highlight">7</i>&nbsp;import teammates.common.datatransfer.logs.LogSeverity;
+<i class="no-highlight">8</i>&nbsp;import teammates.common.datatransfer.logs.QueryLogsParams;
+<i class="no-highlight">9</i>&nbsp;import teammates.common.datatransfer.logs.RequestLogUser;
+<i class="no-highlight">10</i>&nbsp;import teammates.common.datatransfer.logs.SourceLocation;
+<i class="no-highlight">11</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">12</i>&nbsp;import teammates.ui.output.GeneralLogsData;
+<i class="no-highlight">13</i>&nbsp;
+<i class="no-highlight">14</i>&nbsp;/**
+<i class="no-highlight">15</i>&nbsp; * Queries the logs.
+<i class="no-highlight">16</i>&nbsp; */
+<b class="fc"><i class="no-highlight">17</i>&nbsp;public class QueryLogsAction extends AdminOnlyAction {</b>
+<i class="no-highlight">18</i>&nbsp;    private static final int DEFAULT_PAGE_SIZE = 50;
+<i class="no-highlight">19</i>&nbsp;
+<i class="no-highlight">20</i>&nbsp;    private static final long TWENTY_FOUR_HOURS_IN_MILLIS = 1000L * 60 * 60 * 24;
+<i class="no-highlight">21</i>&nbsp;
+<i class="no-highlight">22</i>&nbsp;    @Override
+<i class="no-highlight">23</i>&nbsp;    AuthType getMinAuthLevel() {
+<b class="fc"><i class="no-highlight">24</i>&nbsp;        return AuthType.LOGGED_IN;</b>
+<i class="no-highlight">25</i>&nbsp;    }
+<i class="no-highlight">26</i>&nbsp;
+<i class="no-highlight">27</i>&nbsp;    @Override
+<i class="no-highlight">28</i>&nbsp;    void checkSpecificAccessControl() throws UnauthorizedAccessException {
+<b class="fc"><i class="no-highlight">29</i>&nbsp;        if (!userInfo.isMaintainer &amp;&amp; !userInfo.isAdmin) {</b>
+<b class="fc"><i class="no-highlight">30</i>&nbsp;            throw new UnauthorizedAccessException(&quot;Only Maintainers or Admin are allowed to access this resource.&quot;);</b>
+<i class="no-highlight">31</i>&nbsp;        }
+<i class="no-highlight">32</i>&nbsp;    }
+<i class="no-highlight">33</i>&nbsp;
+<i class="no-highlight">34</i>&nbsp;    @Override
+<i class="no-highlight">35</i>&nbsp;    public JsonResult execute() {
+<b class="fc"><i class="no-highlight">36</i>&nbsp;        long endTime = Instant.now().toEpochMilli();</b>
+<i class="no-highlight">37</i>&nbsp;        try {
+<b class="fc"><i class="no-highlight">38</i>&nbsp;            String endTimeStr = getRequestParamValue(Const.ParamsNames.QUERY_LOGS_ENDTIME);</b>
+<b class="fc"><i class="no-highlight">39</i>&nbsp;            if (endTimeStr != null) {</b>
+<b class="fc"><i class="no-highlight">40</i>&nbsp;                endTime = Long.parseLong(endTimeStr);</b>
+<i class="no-highlight">41</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">42</i>&nbsp;        } catch (NumberFormatException e) {</b>
+<b class="fc"><i class="no-highlight">43</i>&nbsp;            throw new InvalidHttpParameterException(&quot;Invalid end time.&quot;, e);</b>
+<b class="fc"><i class="no-highlight">44</i>&nbsp;        }</b>
+<i class="no-highlight">45</i>&nbsp;
+<b class="fc"><i class="no-highlight">46</i>&nbsp;        long startTime = Instant.ofEpochMilli(endTime).minusMillis(TWENTY_FOUR_HOURS_IN_MILLIS).toEpochMilli();</b>
+<i class="no-highlight">47</i>&nbsp;        try {
+<b class="fc"><i class="no-highlight">48</i>&nbsp;            String startTimeStr = getRequestParamValue(Const.ParamsNames.QUERY_LOGS_STARTTIME);</b>
+<b class="fc"><i class="no-highlight">49</i>&nbsp;            if (startTimeStr != null) {</b>
+<b class="fc"><i class="no-highlight">50</i>&nbsp;                startTime = Long.parseLong(startTimeStr);</b>
+<i class="no-highlight">51</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">52</i>&nbsp;        } catch (NumberFormatException e) {</b>
+<b class="fc"><i class="no-highlight">53</i>&nbsp;            throw new InvalidHttpParameterException(&quot;Invalid start time.&quot;, e);</b>
+<b class="fc"><i class="no-highlight">54</i>&nbsp;        }</b>
+<i class="no-highlight">55</i>&nbsp;
+<b class="fc"><i class="no-highlight">56</i>&nbsp;        if (endTime &lt; startTime) {</b>
+<b class="fc"><i class="no-highlight">57</i>&nbsp;            throw new InvalidHttpParameterException(&quot;The end time should be after the start time.&quot;);</b>
+<i class="no-highlight">58</i>&nbsp;        }
+<i class="no-highlight">59</i>&nbsp;
+<b class="fc"><i class="no-highlight">60</i>&nbsp;        String severityStr = getRequestParamValue(Const.ParamsNames.QUERY_LOGS_SEVERITY);</b>
+<b class="fc"><i class="no-highlight">61</i>&nbsp;        LogSeverity severity = null;</b>
+<b class="fc"><i class="no-highlight">62</i>&nbsp;        if (severityStr != null) {</b>
+<i class="no-highlight">63</i>&nbsp;            try {
+<b class="nc"><i class="no-highlight">64</i>&nbsp;                severity = LogSeverity.valueOf(severityStr);</b>
+<b class="nc"><i class="no-highlight">65</i>&nbsp;            } catch (IllegalArgumentException e) {</b>
+<b class="nc"><i class="no-highlight">66</i>&nbsp;                throw new InvalidHttpParameterException(&quot;Invalid log severity.&quot;, e);</b>
+<b class="nc"><i class="no-highlight">67</i>&nbsp;            }</b>
+<i class="no-highlight">68</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">69</i>&nbsp;        String minSeverityStr = getRequestParamValue(Const.ParamsNames.QUERY_LOGS_MIN_SEVERITY);</b>
+<b class="fc"><i class="no-highlight">70</i>&nbsp;        LogSeverity minSeverity = null;</b>
+<b class="fc"><i class="no-highlight">71</i>&nbsp;        if (minSeverityStr != null) {</b>
+<i class="no-highlight">72</i>&nbsp;            try {
+<b class="fc"><i class="no-highlight">73</i>&nbsp;                minSeverity = LogSeverity.valueOf(minSeverityStr);</b>
+<b class="nc"><i class="no-highlight">74</i>&nbsp;            } catch (IllegalArgumentException e) {</b>
+<b class="nc"><i class="no-highlight">75</i>&nbsp;                throw new InvalidHttpParameterException(&quot;Invalid log minimum severity.&quot;, e);</b>
+<b class="fc"><i class="no-highlight">76</i>&nbsp;            }</b>
+<i class="no-highlight">77</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">78</i>&nbsp;        if (severity == null &amp;&amp; minSeverity == null) {</b>
+<i class="no-highlight">79</i>&nbsp;            // default to logs with INFO level or higher
+<b class="nc"><i class="no-highlight">80</i>&nbsp;            minSeverity = LogSeverity.INFO;</b>
+<i class="no-highlight">81</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">82</i>&nbsp;        String traceId = getRequestParamValue(Const.ParamsNames.QUERY_LOGS_TRACE);</b>
+<b class="fc"><i class="no-highlight">83</i>&nbsp;        String actionClass = getRequestParamValue(Const.ParamsNames.QUERY_LOGS_ACTION_CLASS);</b>
+<b class="fc"><i class="no-highlight">84</i>&nbsp;        String logEvent = getRequestParamValue(Const.ParamsNames.QUERY_LOGS_EVENT);</b>
+<b class="fc"><i class="no-highlight">85</i>&nbsp;        String sourceLocationFile = getRequestParamValue(Const.ParamsNames.QUERY_LOGS_SOURCE_LOCATION_FILE);</b>
+<b class="fc"><i class="no-highlight">86</i>&nbsp;        String sourceLocationFunction = getRequestParamValue(Const.ParamsNames.QUERY_LOGS_SOURCE_LOCATION_FUNCTION);</b>
+<b class="fc"><i class="no-highlight">87</i>&nbsp;        String exceptionClass = getRequestParamValue(Const.ParamsNames.QUERY_LOGS_EXCEPTION_CLASS);</b>
+<b class="fc"><i class="no-highlight">88</i>&nbsp;        String latency = getRequestParamValue(Const.ParamsNames.QUERY_LOGS_LATENCY);</b>
+<b class="fc"><i class="no-highlight">89</i>&nbsp;        String status = getRequestParamValue(Const.ParamsNames.QUERY_LOGS_STATUS);</b>
+<b class="fc"><i class="no-highlight">90</i>&nbsp;        String version = getRequestParamValue(Const.ParamsNames.QUERY_LOGS_VERSION);</b>
+<b class="fc"><i class="no-highlight">91</i>&nbsp;        String order = getRequestParamValue(Const.ParamsNames.QUERY_LOGS_ORDER);</b>
+<b class="fc"><i class="no-highlight">92</i>&nbsp;        String googleId = null;</b>
+<b class="fc"><i class="no-highlight">93</i>&nbsp;        String regkey = null;</b>
+<b class="fc"><i class="no-highlight">94</i>&nbsp;        String email = null;</b>
+<b class="fc"><i class="no-highlight">95</i>&nbsp;        String extraFilters = null;</b>
+<i class="no-highlight">96</i>&nbsp;
+<b class="fc"><i class="no-highlight">97</i>&nbsp;        if (userInfo.isAdmin) {</b>
+<b class="fc"><i class="no-highlight">98</i>&nbsp;            googleId = getRequestParamValue(Const.ParamsNames.STUDENT_ID);</b>
+<b class="fc"><i class="no-highlight">99</i>&nbsp;            regkey = getRequestParamValue(Const.ParamsNames.REGKEY);</b>
+<b class="fc"><i class="no-highlight">100</i>&nbsp;            email = getRequestParamValue(Const.ParamsNames.QUERY_LOGS_EMAIL);</b>
+<b class="fc"><i class="no-highlight">101</i>&nbsp;            extraFilters = getRequestParamValue(Const.ParamsNames.QUERY_LOGS_EXTRA_FILTERS);</b>
+<i class="no-highlight">102</i>&nbsp;        }
+<i class="no-highlight">103</i>&nbsp;
+<b class="fc"><i class="no-highlight">104</i>&nbsp;        RequestLogUser userInfoParams = new RequestLogUser();</b>
+<b class="fc"><i class="no-highlight">105</i>&nbsp;        userInfoParams.setGoogleId(googleId);</b>
+<b class="fc"><i class="no-highlight">106</i>&nbsp;        userInfoParams.setRegkey(regkey);</b>
+<b class="fc"><i class="no-highlight">107</i>&nbsp;        userInfoParams.setEmail(email);</b>
+<i class="no-highlight">108</i>&nbsp;
+<b class="fc"><i class="no-highlight">109</i>&nbsp;        QueryLogsParams queryLogsParams = QueryLogsParams.builder(startTime, endTime)</b>
+<b class="fc"><i class="no-highlight">110</i>&nbsp;                .withSeverityLevel(severity)</b>
+<b class="fc"><i class="no-highlight">111</i>&nbsp;                .withMinSeverity(minSeverity)</b>
+<b class="fc"><i class="no-highlight">112</i>&nbsp;                .withTraceId(traceId)</b>
+<b class="fc"><i class="no-highlight">113</i>&nbsp;                .withActionClass(actionClass)</b>
+<b class="fc"><i class="no-highlight">114</i>&nbsp;                .withUserInfo(userInfoParams)</b>
+<b class="fc"><i class="no-highlight">115</i>&nbsp;                .withLogEvent(logEvent)</b>
+<b class="fc"><i class="no-highlight">116</i>&nbsp;                .withSourceLocation(new SourceLocation(sourceLocationFile, null, sourceLocationFunction))</b>
+<b class="fc"><i class="no-highlight">117</i>&nbsp;                .withExceptionClass(exceptionClass)</b>
+<b class="fc"><i class="no-highlight">118</i>&nbsp;                .withLatency(latency)</b>
+<b class="fc"><i class="no-highlight">119</i>&nbsp;                .withStatus(status)</b>
+<b class="fc"><i class="no-highlight">120</i>&nbsp;                .withVersion(version)</b>
+<b class="fc"><i class="no-highlight">121</i>&nbsp;                .withExtraFilters(extraFilters)</b>
+<b class="fc"><i class="no-highlight">122</i>&nbsp;                .withOrder(order)</b>
+<b class="fc"><i class="no-highlight">123</i>&nbsp;                .withPageSize(DEFAULT_PAGE_SIZE)</b>
+<b class="fc"><i class="no-highlight">124</i>&nbsp;                .build();</b>
+<i class="no-highlight">125</i>&nbsp;
+<b class="fc"><i class="no-highlight">126</i>&nbsp;        QueryLogsResults queryResults = logsProcessor.queryLogs(queryLogsParams);</b>
+<b class="fc"><i class="no-highlight">127</i>&nbsp;        removeSensitiveFields(queryResults);</b>
+<b class="fc"><i class="no-highlight">128</i>&nbsp;        GeneralLogsData generalLogsData = new GeneralLogsData(queryResults);</b>
+<b class="fc"><i class="no-highlight">129</i>&nbsp;        return new JsonResult(generalLogsData);</b>
+<i class="no-highlight">130</i>&nbsp;    }
+<i class="no-highlight">131</i>&nbsp;
+<i class="no-highlight">132</i>&nbsp;    private void removeSensitiveFields(QueryLogsResults queryResults) {
+<b class="fc"><i class="no-highlight">133</i>&nbsp;        if (userInfo.isAdmin) {</b>
+<i class="no-highlight">134</i>&nbsp;            return;
+<i class="no-highlight">135</i>&nbsp;        }
+<i class="no-highlight">136</i>&nbsp;
+<b class="fc"><i class="no-highlight">137</i>&nbsp;        for (GeneralLogEntry logEntry : queryResults.getLogEntries()) {</b>
+<b class="fc"><i class="no-highlight">138</i>&nbsp;            if (logEntry.getDetails() != null) {</b>
+<b class="fc"><i class="no-highlight">139</i>&nbsp;                logEntry.getDetails().hideSensitiveInformation();</b>
+<i class="no-highlight">140</i>&nbsp;            }
+<i class="no-highlight">141</i>&nbsp;            // Always remove text payload message for non-admin maintainers
+<b class="fc"><i class="no-highlight">142</i>&nbsp;            logEntry.setMessage(null);</b>
+<b class="fc"><i class="no-highlight">143</i>&nbsp;        }</b>
+<i class="no-highlight">144</i>&nbsp;    }
+<i class="no-highlight">145</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-25 11:18</div>
+</div>
+</body>
+</html>

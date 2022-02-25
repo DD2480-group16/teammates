@@ -1,0 +1,236 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > GetFeedbackQuestionsAction</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.ui.webapi</a>
+</div>
+
+<h1>Coverage Summary for Class: GetFeedbackQuestionsAction (teammates.ui.webapi)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GetFeedbackQuestionsAction</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    78.4%
+  </span>
+  <span class="absValue">
+    (40/51)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">GetFeedbackQuestionsAction$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    78.8%
+  </span>
+  <span class="absValue">
+    (41/52)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.ui.webapi;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.util.List;
+<i class="no-highlight">4</i>&nbsp;
+<i class="no-highlight">5</i>&nbsp;import teammates.common.datatransfer.attributes.FeedbackQuestionAttributes;
+<i class="no-highlight">6</i>&nbsp;import teammates.common.datatransfer.attributes.FeedbackSessionAttributes;
+<i class="no-highlight">7</i>&nbsp;import teammates.common.datatransfer.attributes.InstructorAttributes;
+<i class="no-highlight">8</i>&nbsp;import teammates.common.datatransfer.attributes.StudentAttributes;
+<i class="no-highlight">9</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">10</i>&nbsp;import teammates.common.util.StringHelper;
+<i class="no-highlight">11</i>&nbsp;import teammates.ui.output.FeedbackQuestionData;
+<i class="no-highlight">12</i>&nbsp;import teammates.ui.output.FeedbackQuestionsData;
+<i class="no-highlight">13</i>&nbsp;import teammates.ui.request.Intent;
+<i class="no-highlight">14</i>&nbsp;
+<i class="no-highlight">15</i>&nbsp;/**
+<i class="no-highlight">16</i>&nbsp; * Get a list of feedback questions for a feedback session.
+<i class="no-highlight">17</i>&nbsp; */
+<b class="fc"><i class="no-highlight">18</i>&nbsp;class GetFeedbackQuestionsAction extends BasicFeedbackSubmissionAction {</b>
+<i class="no-highlight">19</i>&nbsp;
+<i class="no-highlight">20</i>&nbsp;    @Override
+<i class="no-highlight">21</i>&nbsp;    AuthType getMinAuthLevel() {
+<b class="fc"><i class="no-highlight">22</i>&nbsp;        return AuthType.PUBLIC;</b>
+<i class="no-highlight">23</i>&nbsp;    }
+<i class="no-highlight">24</i>&nbsp;
+<i class="no-highlight">25</i>&nbsp;    @Override
+<i class="no-highlight">26</i>&nbsp;    void checkSpecificAccessControl() throws UnauthorizedAccessException {
+<b class="fc"><i class="no-highlight">27</i>&nbsp;        String courseId = getNonNullRequestParamValue(Const.ParamsNames.COURSE_ID);</b>
+<b class="fc"><i class="no-highlight">28</i>&nbsp;        String feedbackSessionName = getNonNullRequestParamValue(Const.ParamsNames.FEEDBACK_SESSION_NAME);</b>
+<b class="fc"><i class="no-highlight">29</i>&nbsp;        FeedbackSessionAttributes feedbackSession = getNonNullFeedbackSession(feedbackSessionName, courseId);</b>
+<b class="fc"><i class="no-highlight">30</i>&nbsp;        Intent intent = Intent.valueOf(getNonNullRequestParamValue(Const.ParamsNames.INTENT));</b>
+<i class="no-highlight">31</i>&nbsp;
+<b class="fc"><i class="no-highlight">32</i>&nbsp;        switch (intent) {</b>
+<i class="no-highlight">33</i>&nbsp;        case STUDENT_SUBMISSION:
+<b class="nc"><i class="no-highlight">34</i>&nbsp;            StudentAttributes studentAttributes = getStudentOfCourseFromRequest(courseId);</b>
+<b class="nc"><i class="no-highlight">35</i>&nbsp;            checkAccessControlForStudentFeedbackSubmission(studentAttributes, feedbackSession);</b>
+<b class="nc"><i class="no-highlight">36</i>&nbsp;            break;</b>
+<i class="no-highlight">37</i>&nbsp;        case FULL_DETAIL:
+<b class="fc"><i class="no-highlight">38</i>&nbsp;            gateKeeper.verifyLoggedInUserPrivileges(userInfo);</b>
+<b class="fc"><i class="no-highlight">39</i>&nbsp;            gateKeeper.verifyAccessible(logic.getInstructorForGoogleId(courseId, userInfo.getId()), feedbackSession);</b>
+<b class="fc"><i class="no-highlight">40</i>&nbsp;            break;</b>
+<i class="no-highlight">41</i>&nbsp;        case INSTRUCTOR_SUBMISSION:
+<b class="nc"><i class="no-highlight">42</i>&nbsp;            InstructorAttributes instructorAttributes = getInstructorOfCourseFromRequest(courseId);</b>
+<b class="nc"><i class="no-highlight">43</i>&nbsp;            checkAccessControlForInstructorFeedbackSubmission(instructorAttributes, feedbackSession);</b>
+<b class="nc"><i class="no-highlight">44</i>&nbsp;            break;</b>
+<i class="no-highlight">45</i>&nbsp;        case INSTRUCTOR_RESULT:
+<b class="fc"><i class="no-highlight">46</i>&nbsp;            gateKeeper.verifyLoggedInUserPrivileges(userInfo);</b>
+<b class="fc"><i class="no-highlight">47</i>&nbsp;            gateKeeper.verifyAccessible(logic.getInstructorForGoogleId(courseId, userInfo.getId()),</b>
+<i class="no-highlight">48</i>&nbsp;                    feedbackSession, Const.InstructorPermissions.CAN_VIEW_SESSION_IN_SECTIONS);
+<b class="fc"><i class="no-highlight">49</i>&nbsp;            break;</b>
+<i class="no-highlight">50</i>&nbsp;        case STUDENT_RESULT:
+<b class="nc"><i class="no-highlight">51</i>&nbsp;            throw new InvalidHttpParameterException(&quot;Invalid intent for this action&quot;);</b>
+<i class="no-highlight">52</i>&nbsp;        default:
+<b class="nc"><i class="no-highlight">53</i>&nbsp;            throw new InvalidHttpParameterException(&quot;Unknown intent &quot; + intent);</b>
+<i class="no-highlight">54</i>&nbsp;        }
+<i class="no-highlight">55</i>&nbsp;    }
+<i class="no-highlight">56</i>&nbsp;
+<i class="no-highlight">57</i>&nbsp;    @Override
+<i class="no-highlight">58</i>&nbsp;    public JsonResult execute() {
+<b class="fc"><i class="no-highlight">59</i>&nbsp;        String courseId = getNonNullRequestParamValue(Const.ParamsNames.COURSE_ID);</b>
+<b class="fc"><i class="no-highlight">60</i>&nbsp;        String feedbackSessionName = getNonNullRequestParamValue(Const.ParamsNames.FEEDBACK_SESSION_NAME);</b>
+<b class="fc"><i class="no-highlight">61</i>&nbsp;        Intent intent = Intent.valueOf(getNonNullRequestParamValue(Const.ParamsNames.INTENT));</b>
+<i class="no-highlight">62</i>&nbsp;
+<i class="no-highlight">63</i>&nbsp;        List&lt;FeedbackQuestionAttributes&gt; questions;
+<b class="fc"><i class="no-highlight">64</i>&nbsp;        switch (intent) {</b>
+<i class="no-highlight">65</i>&nbsp;        case STUDENT_SUBMISSION:
+<b class="fc"><i class="no-highlight">66</i>&nbsp;            questions = logic.getFeedbackQuestionsForStudents(feedbackSessionName, courseId);</b>
+<b class="fc"><i class="no-highlight">67</i>&nbsp;            StudentAttributes studentAttributes = getStudentOfCourseFromRequest(courseId);</b>
+<b class="fc"><i class="no-highlight">68</i>&nbsp;            questions.forEach(question -&gt;</b>
+<b class="fc"><i class="no-highlight">69</i>&nbsp;                    logic.populateFieldsToGenerateInQuestion(question,</b>
+<b class="fc"><i class="no-highlight">70</i>&nbsp;                            studentAttributes.getEmail(), studentAttributes.getTeam()));</b>
+<b class="fc"><i class="no-highlight">71</i>&nbsp;            break;</b>
+<i class="no-highlight">72</i>&nbsp;        case INSTRUCTOR_SUBMISSION:
+<b class="fc"><i class="no-highlight">73</i>&nbsp;            InstructorAttributes instructor = getInstructorOfCourseFromRequest(courseId);</b>
+<b class="fc"><i class="no-highlight">74</i>&nbsp;            questions = logic.getFeedbackQuestionsForInstructors(feedbackSessionName, courseId, instructor.getEmail());</b>
+<b class="fc"><i class="no-highlight">75</i>&nbsp;            questions.forEach(question -&gt;</b>
+<b class="fc"><i class="no-highlight">76</i>&nbsp;                    logic.populateFieldsToGenerateInQuestion(question,</b>
+<b class="fc"><i class="no-highlight">77</i>&nbsp;                            instructor.getEmail(), null));</b>
+<b class="fc"><i class="no-highlight">78</i>&nbsp;            break;</b>
+<i class="no-highlight">79</i>&nbsp;        case FULL_DETAIL:
+<i class="no-highlight">80</i>&nbsp;        case INSTRUCTOR_RESULT:
+<b class="fc"><i class="no-highlight">81</i>&nbsp;            questions = logic.getFeedbackQuestionsForSession(feedbackSessionName, courseId);</b>
+<b class="fc"><i class="no-highlight">82</i>&nbsp;            break;</b>
+<i class="no-highlight">83</i>&nbsp;        case STUDENT_RESULT:
+<b class="nc"><i class="no-highlight">84</i>&nbsp;            throw new InvalidHttpParameterException(&quot;Invalid intent for this action&quot;);</b>
+<i class="no-highlight">85</i>&nbsp;        default:
+<b class="nc"><i class="no-highlight">86</i>&nbsp;            throw new InvalidHttpParameterException(&quot;Unknown intent &quot; + intent);</b>
+<i class="no-highlight">87</i>&nbsp;        }
+<i class="no-highlight">88</i>&nbsp;
+<b class="fc"><i class="no-highlight">89</i>&nbsp;        String moderatedPerson = getRequestParamValue(Const.ParamsNames.FEEDBACK_SESSION_MODERATED_PERSON);</b>
+<b class="fc"><i class="no-highlight">90</i>&nbsp;        if (!StringHelper.isEmpty(moderatedPerson)) {</b>
+<i class="no-highlight">91</i>&nbsp;            // filter out unmodifiable questions
+<b class="nc"><i class="no-highlight">92</i>&nbsp;            questions.removeIf(question -&gt; !canInstructorSeeQuestion(question));</b>
+<i class="no-highlight">93</i>&nbsp;        }
+<i class="no-highlight">94</i>&nbsp;
+<b class="fc"><i class="no-highlight">95</i>&nbsp;        FeedbackQuestionsData response = new FeedbackQuestionsData(questions);</b>
+<b class="fc"><i class="no-highlight">96</i>&nbsp;        response.normalizeQuestionNumber();</b>
+<b class="fc"><i class="no-highlight">97</i>&nbsp;        if (intent.equals(Intent.STUDENT_SUBMISSION)) {</b>
+<b class="fc"><i class="no-highlight">98</i>&nbsp;            for (FeedbackQuestionData questionData : response.getQuestions()) {</b>
+<b class="fc"><i class="no-highlight">99</i>&nbsp;                questionData.hideInformationForStudent();</b>
+<b class="fc"><i class="no-highlight">100</i>&nbsp;            }</b>
+<i class="no-highlight">101</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">102</i>&nbsp;        return new JsonResult(response);</b>
+<i class="no-highlight">103</i>&nbsp;    }
+<i class="no-highlight">104</i>&nbsp;
+<i class="no-highlight">105</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-25 11:18</div>
+</div>
+</body>
+</html>

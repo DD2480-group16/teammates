@@ -1,0 +1,334 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > NationalityHelper</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.common.util</a>
+</div>
+
+<h1>Coverage Summary for Class: NationalityHelper (teammates.common.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NationalityHelper</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.common.util;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.util.Arrays;
+<i class="no-highlight">4</i>&nbsp;import java.util.List;
+<i class="no-highlight">5</i>&nbsp;
+<i class="no-highlight">6</i>&nbsp;/**
+<i class="no-highlight">7</i>&nbsp; * This is a helper class to hold nationality-related functions.
+<i class="no-highlight">8</i>&nbsp; */
+<i class="no-highlight">9</i>&nbsp;public final class NationalityHelper {
+<i class="no-highlight">10</i>&nbsp;
+<i class="no-highlight">11</i>&nbsp;    /**
+<i class="no-highlight">12</i>&nbsp;     * This list of nationalities was created for the dropdown list and contains
+<i class="no-highlight">13</i>&nbsp;     * 198 nationalities and an &#39;Other&#39; option.
+<i class="no-highlight">14</i>&nbsp;     * reference : &quot;https://mytaskhelper.com/forums/5-faq-s/topics/98-nationality-dropdown-list&quot;
+<i class="no-highlight">15</i>&nbsp;     */
+<b class="fc"><i class="no-highlight">16</i>&nbsp;    private static final String[] NATIONALITIES = {</b>
+<i class="no-highlight">17</i>&nbsp;            &quot;Afghan&quot;,
+<i class="no-highlight">18</i>&nbsp;            &quot;Albanian&quot;,
+<i class="no-highlight">19</i>&nbsp;            &quot;Algerian&quot;,
+<i class="no-highlight">20</i>&nbsp;            &quot;American&quot;,
+<i class="no-highlight">21</i>&nbsp;            &quot;Andorran&quot;,
+<i class="no-highlight">22</i>&nbsp;            &quot;Angolan&quot;,
+<i class="no-highlight">23</i>&nbsp;            &quot;Antiguans&quot;,
+<i class="no-highlight">24</i>&nbsp;            &quot;Argentinean&quot;,
+<i class="no-highlight">25</i>&nbsp;            &quot;Armenian&quot;,
+<i class="no-highlight">26</i>&nbsp;            &quot;Australian&quot;,
+<i class="no-highlight">27</i>&nbsp;            &quot;Austrian&quot;,
+<i class="no-highlight">28</i>&nbsp;            &quot;Azerbaijani&quot;,
+<i class="no-highlight">29</i>&nbsp;            &quot;Bahamian&quot;,
+<i class="no-highlight">30</i>&nbsp;            &quot;Bahraini&quot;,
+<i class="no-highlight">31</i>&nbsp;            &quot;Bangladeshi&quot;,
+<i class="no-highlight">32</i>&nbsp;            &quot;Barbadian&quot;,
+<i class="no-highlight">33</i>&nbsp;            &quot;Barbudans&quot;,
+<i class="no-highlight">34</i>&nbsp;            &quot;Batswana&quot;,
+<i class="no-highlight">35</i>&nbsp;            &quot;Belarusian&quot;,
+<i class="no-highlight">36</i>&nbsp;            &quot;Belgian&quot;,
+<i class="no-highlight">37</i>&nbsp;            &quot;Belizean&quot;,
+<i class="no-highlight">38</i>&nbsp;            &quot;Beninese&quot;,
+<i class="no-highlight">39</i>&nbsp;            &quot;Bhutanese&quot;,
+<i class="no-highlight">40</i>&nbsp;            &quot;Bolivian&quot;,
+<i class="no-highlight">41</i>&nbsp;            &quot;Bosnian&quot;,
+<i class="no-highlight">42</i>&nbsp;            &quot;Brazilian&quot;,
+<i class="no-highlight">43</i>&nbsp;            &quot;British&quot;,
+<i class="no-highlight">44</i>&nbsp;            &quot;Bruneian&quot;,
+<i class="no-highlight">45</i>&nbsp;            &quot;Bulgarian&quot;,
+<i class="no-highlight">46</i>&nbsp;            &quot;Burkinabe&quot;,
+<i class="no-highlight">47</i>&nbsp;            &quot;Burmese&quot;,
+<i class="no-highlight">48</i>&nbsp;            &quot;Burundian&quot;,
+<i class="no-highlight">49</i>&nbsp;            &quot;Cambodian&quot;,
+<i class="no-highlight">50</i>&nbsp;            &quot;Cameroonian&quot;,
+<i class="no-highlight">51</i>&nbsp;            &quot;Canadian&quot;,
+<i class="no-highlight">52</i>&nbsp;            &quot;Cape Verdean&quot;,
+<i class="no-highlight">53</i>&nbsp;            &quot;Central African&quot;,
+<i class="no-highlight">54</i>&nbsp;            &quot;Chadian&quot;,
+<i class="no-highlight">55</i>&nbsp;            &quot;Chilean&quot;,
+<i class="no-highlight">56</i>&nbsp;            &quot;Chinese&quot;,
+<i class="no-highlight">57</i>&nbsp;            &quot;Colombian&quot;,
+<i class="no-highlight">58</i>&nbsp;            &quot;Comoran&quot;,
+<i class="no-highlight">59</i>&nbsp;            &quot;Congolese&quot;,
+<i class="no-highlight">60</i>&nbsp;            &quot;Congolese&quot;,
+<i class="no-highlight">61</i>&nbsp;            &quot;Costa Rican&quot;,
+<i class="no-highlight">62</i>&nbsp;            &quot;Croatian&quot;,
+<i class="no-highlight">63</i>&nbsp;            &quot;Cuban&quot;,
+<i class="no-highlight">64</i>&nbsp;            &quot;Cypriot&quot;,
+<i class="no-highlight">65</i>&nbsp;            &quot;Czech&quot;,
+<i class="no-highlight">66</i>&nbsp;            &quot;Danish&quot;,
+<i class="no-highlight">67</i>&nbsp;            &quot;Djibouti&quot;,
+<i class="no-highlight">68</i>&nbsp;            &quot;Dominican&quot;,
+<i class="no-highlight">69</i>&nbsp;            &quot;Dutch&quot;,
+<i class="no-highlight">70</i>&nbsp;            &quot;Dutchman&quot;,
+<i class="no-highlight">71</i>&nbsp;            &quot;Dutchwoman&quot;,
+<i class="no-highlight">72</i>&nbsp;            &quot;East Timorese&quot;,
+<i class="no-highlight">73</i>&nbsp;            &quot;Ecuadorean&quot;,
+<i class="no-highlight">74</i>&nbsp;            &quot;Egyptian&quot;,
+<i class="no-highlight">75</i>&nbsp;            &quot;Emirian&quot;,
+<i class="no-highlight">76</i>&nbsp;            &quot;Equatorial Guinean&quot;,
+<i class="no-highlight">77</i>&nbsp;            &quot;Eritrean&quot;,
+<i class="no-highlight">78</i>&nbsp;            &quot;Estonian&quot;,
+<i class="no-highlight">79</i>&nbsp;            &quot;Ethiopian&quot;,
+<i class="no-highlight">80</i>&nbsp;            &quot;Fijian&quot;,
+<i class="no-highlight">81</i>&nbsp;            &quot;Filipino&quot;,
+<i class="no-highlight">82</i>&nbsp;            &quot;Finnish&quot;,
+<i class="no-highlight">83</i>&nbsp;            &quot;French&quot;,
+<i class="no-highlight">84</i>&nbsp;            &quot;Gabonese&quot;,
+<i class="no-highlight">85</i>&nbsp;            &quot;Gambian&quot;,
+<i class="no-highlight">86</i>&nbsp;            &quot;Georgian&quot;,
+<i class="no-highlight">87</i>&nbsp;            &quot;German&quot;,
+<i class="no-highlight">88</i>&nbsp;            &quot;Ghanaian&quot;,
+<i class="no-highlight">89</i>&nbsp;            &quot;Greek&quot;,
+<i class="no-highlight">90</i>&nbsp;            &quot;Grenadian&quot;,
+<i class="no-highlight">91</i>&nbsp;            &quot;Guatemalan&quot;,
+<i class="no-highlight">92</i>&nbsp;            &quot;Guinea-Bissauan&quot;,
+<i class="no-highlight">93</i>&nbsp;            &quot;Guinean&quot;,
+<i class="no-highlight">94</i>&nbsp;            &quot;Guyanese&quot;,
+<i class="no-highlight">95</i>&nbsp;            &quot;Haitian&quot;,
+<i class="no-highlight">96</i>&nbsp;            &quot;Herzegovinian&quot;,
+<i class="no-highlight">97</i>&nbsp;            &quot;Honduran&quot;,
+<i class="no-highlight">98</i>&nbsp;            &quot;Hungarian&quot;,
+<i class="no-highlight">99</i>&nbsp;            &quot;I-Kiribati&quot;,
+<i class="no-highlight">100</i>&nbsp;            &quot;Icelander&quot;,
+<i class="no-highlight">101</i>&nbsp;            &quot;Indian&quot;,
+<i class="no-highlight">102</i>&nbsp;            &quot;Indonesian&quot;,
+<i class="no-highlight">103</i>&nbsp;            &quot;Iranian&quot;,
+<i class="no-highlight">104</i>&nbsp;            &quot;Iraqi&quot;,
+<i class="no-highlight">105</i>&nbsp;            &quot;Irish&quot;,
+<i class="no-highlight">106</i>&nbsp;            &quot;Irish&quot;,
+<i class="no-highlight">107</i>&nbsp;            &quot;Israeli&quot;,
+<i class="no-highlight">108</i>&nbsp;            &quot;Italian&quot;,
+<i class="no-highlight">109</i>&nbsp;            &quot;Ivorian&quot;,
+<i class="no-highlight">110</i>&nbsp;            &quot;Jamaican&quot;,
+<i class="no-highlight">111</i>&nbsp;            &quot;Japanese&quot;,
+<i class="no-highlight">112</i>&nbsp;            &quot;Jordanian&quot;,
+<i class="no-highlight">113</i>&nbsp;            &quot;Kazakhstani&quot;,
+<i class="no-highlight">114</i>&nbsp;            &quot;Kenyan&quot;,
+<i class="no-highlight">115</i>&nbsp;            &quot;Kittian and Nevisian&quot;,
+<i class="no-highlight">116</i>&nbsp;            &quot;Kuwaiti&quot;,
+<i class="no-highlight">117</i>&nbsp;            &quot;Kyrgyz&quot;,
+<i class="no-highlight">118</i>&nbsp;            &quot;Laotian&quot;,
+<i class="no-highlight">119</i>&nbsp;            &quot;Latvian&quot;,
+<i class="no-highlight">120</i>&nbsp;            &quot;Lebanese&quot;,
+<i class="no-highlight">121</i>&nbsp;            &quot;Liberian&quot;,
+<i class="no-highlight">122</i>&nbsp;            &quot;Libyan&quot;,
+<i class="no-highlight">123</i>&nbsp;            &quot;Liechtensteiner&quot;,
+<i class="no-highlight">124</i>&nbsp;            &quot;Lithuanian&quot;,
+<i class="no-highlight">125</i>&nbsp;            &quot;Luxembourger&quot;,
+<i class="no-highlight">126</i>&nbsp;            &quot;Macedonian&quot;,
+<i class="no-highlight">127</i>&nbsp;            &quot;Malagasy&quot;,
+<i class="no-highlight">128</i>&nbsp;            &quot;Malawian&quot;,
+<i class="no-highlight">129</i>&nbsp;            &quot;Malaysian&quot;,
+<i class="no-highlight">130</i>&nbsp;            &quot;Maldivan&quot;,
+<i class="no-highlight">131</i>&nbsp;            &quot;Malian&quot;,
+<i class="no-highlight">132</i>&nbsp;            &quot;Maltese&quot;,
+<i class="no-highlight">133</i>&nbsp;            &quot;Marshallese&quot;,
+<i class="no-highlight">134</i>&nbsp;            &quot;Mauritanian&quot;,
+<i class="no-highlight">135</i>&nbsp;            &quot;Mauritian&quot;,
+<i class="no-highlight">136</i>&nbsp;            &quot;Mexican&quot;,
+<i class="no-highlight">137</i>&nbsp;            &quot;Micronesian&quot;,
+<i class="no-highlight">138</i>&nbsp;            &quot;Moldovan&quot;,
+<i class="no-highlight">139</i>&nbsp;            &quot;Monacan&quot;,
+<i class="no-highlight">140</i>&nbsp;            &quot;Mongolian&quot;,
+<i class="no-highlight">141</i>&nbsp;            &quot;Moroccan&quot;,
+<i class="no-highlight">142</i>&nbsp;            &quot;Mosotho&quot;,
+<i class="no-highlight">143</i>&nbsp;            &quot;Motswana&quot;,
+<i class="no-highlight">144</i>&nbsp;            &quot;Mozambican&quot;,
+<i class="no-highlight">145</i>&nbsp;            &quot;Namibian&quot;,
+<i class="no-highlight">146</i>&nbsp;            &quot;Nauruan&quot;,
+<i class="no-highlight">147</i>&nbsp;            &quot;Nepalese&quot;,
+<i class="no-highlight">148</i>&nbsp;            &quot;Netherlander&quot;,
+<i class="no-highlight">149</i>&nbsp;            &quot;New Zealander&quot;,
+<i class="no-highlight">150</i>&nbsp;            &quot;Ni-Vanuatu&quot;,
+<i class="no-highlight">151</i>&nbsp;            &quot;Nicaraguan&quot;,
+<i class="no-highlight">152</i>&nbsp;            &quot;Nigerian&quot;,
+<i class="no-highlight">153</i>&nbsp;            &quot;Nigerien&quot;,
+<i class="no-highlight">154</i>&nbsp;            &quot;North Korean&quot;,
+<i class="no-highlight">155</i>&nbsp;            &quot;Northern Irish&quot;,
+<i class="no-highlight">156</i>&nbsp;            &quot;Norwegian&quot;,
+<i class="no-highlight">157</i>&nbsp;            &quot;Omani&quot;,
+<i class="no-highlight">158</i>&nbsp;            &quot;Pakistani&quot;,
+<i class="no-highlight">159</i>&nbsp;            &quot;Palauan&quot;,
+<i class="no-highlight">160</i>&nbsp;            &quot;Panamanian&quot;,
+<i class="no-highlight">161</i>&nbsp;            &quot;Papua New Guinean&quot;,
+<i class="no-highlight">162</i>&nbsp;            &quot;Paraguayan&quot;,
+<i class="no-highlight">163</i>&nbsp;            &quot;Peruvian&quot;,
+<i class="no-highlight">164</i>&nbsp;            &quot;Polish&quot;,
+<i class="no-highlight">165</i>&nbsp;            &quot;Portuguese&quot;,
+<i class="no-highlight">166</i>&nbsp;            &quot;Qatari&quot;,
+<i class="no-highlight">167</i>&nbsp;            &quot;Romanian&quot;,
+<i class="no-highlight">168</i>&nbsp;            &quot;Russian&quot;,
+<i class="no-highlight">169</i>&nbsp;            &quot;Rwandan&quot;,
+<i class="no-highlight">170</i>&nbsp;            &quot;Saint Lucian&quot;,
+<i class="no-highlight">171</i>&nbsp;            &quot;Salvadoran&quot;,
+<i class="no-highlight">172</i>&nbsp;            &quot;Samoan&quot;,
+<i class="no-highlight">173</i>&nbsp;            &quot;San Marinese&quot;,
+<i class="no-highlight">174</i>&nbsp;            &quot;Sao Tomean&quot;,
+<i class="no-highlight">175</i>&nbsp;            &quot;Saudi&quot;,
+<i class="no-highlight">176</i>&nbsp;            &quot;Scottish&quot;,
+<i class="no-highlight">177</i>&nbsp;            &quot;Senegalese&quot;,
+<i class="no-highlight">178</i>&nbsp;            &quot;Serbian&quot;,
+<i class="no-highlight">179</i>&nbsp;            &quot;Seychellois&quot;,
+<i class="no-highlight">180</i>&nbsp;            &quot;Sierra Leonean&quot;,
+<i class="no-highlight">181</i>&nbsp;            &quot;Singaporean&quot;,
+<i class="no-highlight">182</i>&nbsp;            &quot;Slovakian&quot;,
+<i class="no-highlight">183</i>&nbsp;            &quot;Solomon Islander&quot;,
+<i class="no-highlight">184</i>&nbsp;            &quot;Somali&quot;,
+<i class="no-highlight">185</i>&nbsp;            &quot;South African&quot;,
+<i class="no-highlight">186</i>&nbsp;            &quot;South Korean&quot;,
+<i class="no-highlight">187</i>&nbsp;            &quot;Spanish&quot;,
+<i class="no-highlight">188</i>&nbsp;            &quot;Sri Lankan&quot;,
+<i class="no-highlight">189</i>&nbsp;            &quot;Sudanese&quot;,
+<i class="no-highlight">190</i>&nbsp;            &quot;Surinamer&quot;,
+<i class="no-highlight">191</i>&nbsp;            &quot;Swazi&quot;,
+<i class="no-highlight">192</i>&nbsp;            &quot;Swedish&quot;,
+<i class="no-highlight">193</i>&nbsp;            &quot;Swiss&quot;,
+<i class="no-highlight">194</i>&nbsp;            &quot;Syrian&quot;,
+<i class="no-highlight">195</i>&nbsp;            &quot;Taiwanese&quot;,
+<i class="no-highlight">196</i>&nbsp;            &quot;Tajik&quot;,
+<i class="no-highlight">197</i>&nbsp;            &quot;Tanzanian&quot;,
+<i class="no-highlight">198</i>&nbsp;            &quot;Thai&quot;,
+<i class="no-highlight">199</i>&nbsp;            &quot;Togolese&quot;,
+<i class="no-highlight">200</i>&nbsp;            &quot;Tongan&quot;,
+<i class="no-highlight">201</i>&nbsp;            &quot;Tobagonian&quot;,
+<i class="no-highlight">202</i>&nbsp;            &quot;Tunisian&quot;,
+<i class="no-highlight">203</i>&nbsp;            &quot;Turkish&quot;,
+<i class="no-highlight">204</i>&nbsp;            &quot;Tuvaluan&quot;,
+<i class="no-highlight">205</i>&nbsp;            &quot;Ugandan&quot;,
+<i class="no-highlight">206</i>&nbsp;            &quot;Ukrainian&quot;,
+<i class="no-highlight">207</i>&nbsp;            &quot;Uruguayan&quot;,
+<i class="no-highlight">208</i>&nbsp;            &quot;Uzbekistani&quot;,
+<i class="no-highlight">209</i>&nbsp;            &quot;Venezuelan&quot;,
+<i class="no-highlight">210</i>&nbsp;            &quot;Vietnamese&quot;,
+<i class="no-highlight">211</i>&nbsp;            &quot;Welsh&quot;,
+<i class="no-highlight">212</i>&nbsp;            &quot;Yemenite&quot;,
+<i class="no-highlight">213</i>&nbsp;            &quot;Zambian&quot;,
+<i class="no-highlight">214</i>&nbsp;            &quot;Zimbabwean&quot;,
+<i class="no-highlight">215</i>&nbsp;            &quot;Other&quot;,
+<i class="no-highlight">216</i>&nbsp;    };
+<i class="no-highlight">217</i>&nbsp;
+<i class="no-highlight">218</i>&nbsp;    private NationalityHelper() {
+<i class="no-highlight">219</i>&nbsp;        // utility class
+<i class="no-highlight">220</i>&nbsp;    }
+<i class="no-highlight">221</i>&nbsp;
+<i class="no-highlight">222</i>&nbsp;    /**
+<i class="no-highlight">223</i>&nbsp;     * Returns with the nationalities list.
+<i class="no-highlight">224</i>&nbsp;     */
+<i class="no-highlight">225</i>&nbsp;    public static List&lt;String&gt; getNationalities() {
+<b class="fc"><i class="no-highlight">226</i>&nbsp;        return Arrays.asList(NATIONALITIES);</b>
+<i class="no-highlight">227</i>&nbsp;    }
+<i class="no-highlight">228</i>&nbsp;
+<i class="no-highlight">229</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-25 11:18</div>
+</div>
+</body>
+</html>

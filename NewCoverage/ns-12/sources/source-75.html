@@ -1,0 +1,178 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > UpdateInstructorPrivilegeAction</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.ui.webapi</a>
+</div>
+
+<h1>Coverage Summary for Class: UpdateInstructorPrivilegeAction (teammates.ui.webapi)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UpdateInstructorPrivilegeAction</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    82.8%
+  </span>
+  <span class="absValue">
+    (24/29)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.ui.webapi;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import org.apache.http.HttpStatus;
+<i class="no-highlight">4</i>&nbsp;
+<i class="no-highlight">5</i>&nbsp;import teammates.common.datatransfer.InstructorPrivileges;
+<i class="no-highlight">6</i>&nbsp;import teammates.common.datatransfer.attributes.InstructorAttributes;
+<i class="no-highlight">7</i>&nbsp;import teammates.common.exception.EntityDoesNotExistException;
+<i class="no-highlight">8</i>&nbsp;import teammates.common.exception.InstructorUpdateException;
+<i class="no-highlight">9</i>&nbsp;import teammates.common.exception.InvalidParametersException;
+<i class="no-highlight">10</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">11</i>&nbsp;import teammates.common.util.Logger;
+<i class="no-highlight">12</i>&nbsp;import teammates.ui.output.InstructorPrivilegeData;
+<i class="no-highlight">13</i>&nbsp;import teammates.ui.request.InstructorPrivilegeUpdateRequest;
+<i class="no-highlight">14</i>&nbsp;import teammates.ui.request.InvalidHttpRequestBodyException;
+<i class="no-highlight">15</i>&nbsp;
+<i class="no-highlight">16</i>&nbsp;/**
+<i class="no-highlight">17</i>&nbsp; * Update instructor privilege by instructors with instructor modify permission.
+<i class="no-highlight">18</i>&nbsp; */
+<b class="fc"><i class="no-highlight">19</i>&nbsp;class UpdateInstructorPrivilegeAction extends Action {</b>
+<i class="no-highlight">20</i>&nbsp;
+<b class="fc"><i class="no-highlight">21</i>&nbsp;    private static final Logger log = Logger.getLogger();</b>
+<i class="no-highlight">22</i>&nbsp;
+<i class="no-highlight">23</i>&nbsp;    @Override
+<i class="no-highlight">24</i>&nbsp;    AuthType getMinAuthLevel() {
+<b class="fc"><i class="no-highlight">25</i>&nbsp;        return AuthType.LOGGED_IN;</b>
+<i class="no-highlight">26</i>&nbsp;    }
+<i class="no-highlight">27</i>&nbsp;
+<i class="no-highlight">28</i>&nbsp;    @Override
+<i class="no-highlight">29</i>&nbsp;    void checkSpecificAccessControl() throws UnauthorizedAccessException {
+<b class="fc"><i class="no-highlight">30</i>&nbsp;        String courseId = getNonNullRequestParamValue(Const.ParamsNames.COURSE_ID);</b>
+<b class="fc"><i class="no-highlight">31</i>&nbsp;        InstructorAttributes instructor = logic.getInstructorForGoogleId(courseId, userInfo.getId());</b>
+<i class="no-highlight">32</i>&nbsp;
+<b class="fc"><i class="no-highlight">33</i>&nbsp;        gateKeeper.verifyAccessible(</b>
+<b class="fc"><i class="no-highlight">34</i>&nbsp;                instructor, logic.getCourse(courseId), Const.InstructorPermissions.CAN_MODIFY_INSTRUCTOR);</b>
+<i class="no-highlight">35</i>&nbsp;    }
+<i class="no-highlight">36</i>&nbsp;
+<i class="no-highlight">37</i>&nbsp;    @Override
+<i class="no-highlight">38</i>&nbsp;    public JsonResult execute() throws InvalidHttpRequestBodyException {
+<b class="fc"><i class="no-highlight">39</i>&nbsp;        String courseId = getNonNullRequestParamValue(Const.ParamsNames.COURSE_ID);</b>
+<i class="no-highlight">40</i>&nbsp;
+<b class="fc"><i class="no-highlight">41</i>&nbsp;        String emailOfInstructorToUpdate = getNonNullRequestParamValue(Const.ParamsNames.INSTRUCTOR_EMAIL);</b>
+<b class="fc"><i class="no-highlight">42</i>&nbsp;        InstructorAttributes instructorToUpdate = logic.getInstructorForEmail(courseId, emailOfInstructorToUpdate);</b>
+<i class="no-highlight">43</i>&nbsp;
+<b class="fc"><i class="no-highlight">44</i>&nbsp;        if (instructorToUpdate == null) {</b>
+<b class="fc"><i class="no-highlight">45</i>&nbsp;            throw new EntityNotFoundException(&quot;Instructor does not exist.&quot;);</b>
+<i class="no-highlight">46</i>&nbsp;        }
+<i class="no-highlight">47</i>&nbsp;
+<b class="fc"><i class="no-highlight">48</i>&nbsp;        InstructorPrivilegeUpdateRequest request = getAndValidateRequestBody(InstructorPrivilegeUpdateRequest.class);</b>
+<b class="fc"><i class="no-highlight">49</i>&nbsp;        InstructorPrivileges newPrivileges = request.getPrivileges();</b>
+<b class="fc"><i class="no-highlight">50</i>&nbsp;        newPrivileges.validatePrivileges();</b>
+<i class="no-highlight">51</i>&nbsp;
+<b class="fc"><i class="no-highlight">52</i>&nbsp;        instructorToUpdate.setPrivileges(newPrivileges);</b>
+<b class="fc"><i class="no-highlight">53</i>&nbsp;        logic.updateToEnsureValidityOfInstructorsForTheCourse(courseId, instructorToUpdate);</b>
+<i class="no-highlight">54</i>&nbsp;
+<i class="no-highlight">55</i>&nbsp;        try {
+<b class="fc"><i class="no-highlight">56</i>&nbsp;            instructorToUpdate = logic.updateInstructor(</b>
+<i class="no-highlight">57</i>&nbsp;                    InstructorAttributes
+<b class="fc"><i class="no-highlight">58</i>&nbsp;                            .updateOptionsWithEmailBuilder(instructorToUpdate.getCourseId(), instructorToUpdate.getEmail())</b>
+<b class="fc"><i class="no-highlight">59</i>&nbsp;                            .withPrivileges(instructorToUpdate.getPrivileges())</b>
+<b class="fc"><i class="no-highlight">60</i>&nbsp;                            .build());</b>
+<b class="nc"><i class="no-highlight">61</i>&nbsp;        } catch (InstructorUpdateException | InvalidParametersException e) {</b>
+<i class="no-highlight">62</i>&nbsp;            // Should not happen as only privilege is updated
+<b class="nc"><i class="no-highlight">63</i>&nbsp;            log.severe(&quot;Unexpected error&quot;, e);</b>
+<b class="nc"><i class="no-highlight">64</i>&nbsp;            return new JsonResult(e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR);</b>
+<b class="nc"><i class="no-highlight">65</i>&nbsp;        } catch (EntityDoesNotExistException ednee) {</b>
+<b class="nc"><i class="no-highlight">66</i>&nbsp;            throw new EntityNotFoundException(ednee);</b>
+<b class="fc"><i class="no-highlight">67</i>&nbsp;        }</b>
+<i class="no-highlight">68</i>&nbsp;
+<b class="fc"><i class="no-highlight">69</i>&nbsp;        InstructorPrivilegeData response = new InstructorPrivilegeData(instructorToUpdate.getPrivileges());</b>
+<b class="fc"><i class="no-highlight">70</i>&nbsp;        return new JsonResult(response);</b>
+<i class="no-highlight">71</i>&nbsp;    }
+<i class="no-highlight">72</i>&nbsp;
+<i class="no-highlight">73</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-25 11:18</div>
+</div>
+</body>
+</html>

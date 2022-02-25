@@ -1,0 +1,198 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > JoinCourseAction</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.ui.webapi</a>
+</div>
+
+<h1>Coverage Summary for Class: JoinCourseAction (teammates.ui.webapi)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">JoinCourseAction</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    82.4%
+  </span>
+  <span class="absValue">
+    (28/34)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.ui.webapi;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import org.apache.http.HttpStatus;
+<i class="no-highlight">4</i>&nbsp;
+<i class="no-highlight">5</i>&nbsp;import teammates.common.datatransfer.attributes.CourseAttributes;
+<i class="no-highlight">6</i>&nbsp;import teammates.common.datatransfer.attributes.InstructorAttributes;
+<i class="no-highlight">7</i>&nbsp;import teammates.common.datatransfer.attributes.StudentAttributes;
+<i class="no-highlight">8</i>&nbsp;import teammates.common.exception.EntityAlreadyExistsException;
+<i class="no-highlight">9</i>&nbsp;import teammates.common.exception.EntityDoesNotExistException;
+<i class="no-highlight">10</i>&nbsp;import teammates.common.exception.InvalidParametersException;
+<i class="no-highlight">11</i>&nbsp;import teammates.common.util.Const;
+<i class="no-highlight">12</i>&nbsp;import teammates.common.util.EmailWrapper;
+<i class="no-highlight">13</i>&nbsp;import teammates.common.util.Logger;
+<i class="no-highlight">14</i>&nbsp;
+<i class="no-highlight">15</i>&nbsp;/**
+<i class="no-highlight">16</i>&nbsp; * Action: joins a course for a student/instructor.
+<i class="no-highlight">17</i>&nbsp; */
+<b class="fc"><i class="no-highlight">18</i>&nbsp;class JoinCourseAction extends Action {</b>
+<i class="no-highlight">19</i>&nbsp;
+<b class="fc"><i class="no-highlight">20</i>&nbsp;    private static final Logger log = Logger.getLogger();</b>
+<i class="no-highlight">21</i>&nbsp;
+<i class="no-highlight">22</i>&nbsp;    @Override
+<i class="no-highlight">23</i>&nbsp;    AuthType getMinAuthLevel() {
+<b class="fc"><i class="no-highlight">24</i>&nbsp;        return AuthType.LOGGED_IN;</b>
+<i class="no-highlight">25</i>&nbsp;    }
+<i class="no-highlight">26</i>&nbsp;
+<i class="no-highlight">27</i>&nbsp;    @Override
+<i class="no-highlight">28</i>&nbsp;    void checkSpecificAccessControl() {
+<i class="no-highlight">29</i>&nbsp;        // Any user can use a join link as long as its parameters are valid
+<i class="no-highlight">30</i>&nbsp;    }
+<i class="no-highlight">31</i>&nbsp;
+<i class="no-highlight">32</i>&nbsp;    @Override
+<i class="no-highlight">33</i>&nbsp;    public JsonResult execute() throws InvalidOperationException {
+<b class="fc"><i class="no-highlight">34</i>&nbsp;        String regKey = getNonNullRequestParamValue(Const.ParamsNames.REGKEY);</b>
+<b class="fc"><i class="no-highlight">35</i>&nbsp;        String entityType = getNonNullRequestParamValue(Const.ParamsNames.ENTITY_TYPE);</b>
+<b class="fc"><i class="no-highlight">36</i>&nbsp;        switch (entityType) {</b>
+<i class="no-highlight">37</i>&nbsp;        case Const.EntityType.STUDENT:
+<b class="fc"><i class="no-highlight">38</i>&nbsp;            return joinCourseForStudent(regKey);</b>
+<i class="no-highlight">39</i>&nbsp;        case Const.EntityType.INSTRUCTOR:
+<b class="fc"><i class="no-highlight">40</i>&nbsp;            return joinCourseForInstructor(regKey);</b>
+<i class="no-highlight">41</i>&nbsp;        default:
+<b class="fc"><i class="no-highlight">42</i>&nbsp;            throw new InvalidHttpParameterException(&quot;Error: invalid entity type&quot;);</b>
+<i class="no-highlight">43</i>&nbsp;        }
+<i class="no-highlight">44</i>&nbsp;    }
+<i class="no-highlight">45</i>&nbsp;
+<i class="no-highlight">46</i>&nbsp;    private JsonResult joinCourseForStudent(String regkey) throws InvalidOperationException {
+<i class="no-highlight">47</i>&nbsp;        StudentAttributes student;
+<i class="no-highlight">48</i>&nbsp;
+<i class="no-highlight">49</i>&nbsp;        try {
+<b class="fc"><i class="no-highlight">50</i>&nbsp;            student = logic.joinCourseForStudent(regkey, userInfo.id);</b>
+<b class="fc"><i class="no-highlight">51</i>&nbsp;        } catch (EntityDoesNotExistException ednee) {</b>
+<b class="fc"><i class="no-highlight">52</i>&nbsp;            throw new EntityNotFoundException(ednee);</b>
+<b class="fc"><i class="no-highlight">53</i>&nbsp;        } catch (EntityAlreadyExistsException eaee) {</b>
+<b class="fc"><i class="no-highlight">54</i>&nbsp;            throw new InvalidOperationException(eaee);</b>
+<b class="nc"><i class="no-highlight">55</i>&nbsp;        } catch (InvalidParametersException ipe) {</b>
+<i class="no-highlight">56</i>&nbsp;            // There should not be any invalid parameter here
+<b class="nc"><i class="no-highlight">57</i>&nbsp;            log.severe(&quot;Unexpected error&quot;, ipe);</b>
+<b class="nc"><i class="no-highlight">58</i>&nbsp;            return new JsonResult(ipe.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR);</b>
+<b class="fc"><i class="no-highlight">59</i>&nbsp;        }</b>
+<i class="no-highlight">60</i>&nbsp;
+<b class="fc"><i class="no-highlight">61</i>&nbsp;        sendJoinEmail(student.getCourse(), student.getName(), student.getEmail(), false);</b>
+<i class="no-highlight">62</i>&nbsp;
+<b class="fc"><i class="no-highlight">63</i>&nbsp;        return new JsonResult(&quot;Student successfully joined course&quot;);</b>
+<i class="no-highlight">64</i>&nbsp;    }
+<i class="no-highlight">65</i>&nbsp;
+<i class="no-highlight">66</i>&nbsp;    private JsonResult joinCourseForInstructor(String regkey) throws InvalidOperationException {
+<i class="no-highlight">67</i>&nbsp;        InstructorAttributes instructor;
+<i class="no-highlight">68</i>&nbsp;
+<i class="no-highlight">69</i>&nbsp;        try {
+<b class="fc"><i class="no-highlight">70</i>&nbsp;            instructor = logic.joinCourseForInstructor(regkey, userInfo.id);</b>
+<b class="fc"><i class="no-highlight">71</i>&nbsp;        } catch (EntityDoesNotExistException ednee) {</b>
+<b class="fc"><i class="no-highlight">72</i>&nbsp;            throw new EntityNotFoundException(ednee);</b>
+<b class="fc"><i class="no-highlight">73</i>&nbsp;        } catch (EntityAlreadyExistsException eaee) {</b>
+<b class="fc"><i class="no-highlight">74</i>&nbsp;            throw new InvalidOperationException(eaee);</b>
+<b class="nc"><i class="no-highlight">75</i>&nbsp;        } catch (InvalidParametersException ipe) {</b>
+<i class="no-highlight">76</i>&nbsp;            // There should not be any invalid parameter here
+<b class="nc"><i class="no-highlight">77</i>&nbsp;            log.severe(&quot;Unexpected error&quot;, ipe);</b>
+<b class="nc"><i class="no-highlight">78</i>&nbsp;            return new JsonResult(ipe.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR);</b>
+<b class="fc"><i class="no-highlight">79</i>&nbsp;        }</b>
+<i class="no-highlight">80</i>&nbsp;
+<b class="fc"><i class="no-highlight">81</i>&nbsp;        sendJoinEmail(instructor.getCourseId(), instructor.getName(), instructor.getEmail(), true);</b>
+<i class="no-highlight">82</i>&nbsp;
+<b class="fc"><i class="no-highlight">83</i>&nbsp;        return new JsonResult(&quot;Instructor successfully joined course&quot;);</b>
+<i class="no-highlight">84</i>&nbsp;    }
+<i class="no-highlight">85</i>&nbsp;
+<i class="no-highlight">86</i>&nbsp;    private void sendJoinEmail(String courseId, String userName, String userEmail, boolean isInstructor) {
+<b class="fc"><i class="no-highlight">87</i>&nbsp;        CourseAttributes course = logic.getCourse(courseId);</b>
+<b class="fc"><i class="no-highlight">88</i>&nbsp;        EmailWrapper email = emailGenerator.generateUserCourseRegisteredEmail(</b>
+<i class="no-highlight">89</i>&nbsp;                userName, userEmail, userInfo.id, isInstructor, course);
+<b class="fc"><i class="no-highlight">90</i>&nbsp;        emailSender.sendEmail(email);</b>
+<i class="no-highlight">91</i>&nbsp;    }
+<i class="no-highlight">92</i>&nbsp;
+<i class="no-highlight">93</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-25 11:18</div>
+</div>
+</body>
+</html>

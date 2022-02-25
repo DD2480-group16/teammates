@@ -1,0 +1,220 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Templates</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.common.util</a>
+</div>
+
+<h1>Coverage Summary for Class: Templates (teammates.common.util)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Templates</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Templates$EmailTemplates</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    98.1%
+  </span>
+  <span class="absValue">
+    (52/53)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (3/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    98.3%
+  </span>
+  <span class="absValue">
+    (59/60)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.common.util;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;/**
+<i class="no-highlight">4</i>&nbsp; * Contains utility methods for creating strings from given templates.
+<i class="no-highlight">5</i>&nbsp; */
+<b class="fc"><i class="no-highlight">6</i>&nbsp;public final class Templates {</b>
+<i class="no-highlight">7</i>&nbsp;
+<b class="fc"><i class="no-highlight">8</i>&nbsp;    public static final String INSTRUCTOR_SAMPLE_DATA = FileHelper.readResourceFile(&quot;InstructorSampleData.json&quot;);</b>
+<i class="no-highlight">9</i>&nbsp;
+<i class="no-highlight">10</i>&nbsp;    private Templates() {
+<i class="no-highlight">11</i>&nbsp;        // utility class
+<i class="no-highlight">12</i>&nbsp;    }
+<i class="no-highlight">13</i>&nbsp;
+<i class="no-highlight">14</i>&nbsp;    /**
+<i class="no-highlight">15</i>&nbsp;     * Populates the HTML templates by replacing variables in the template string
+<i class="no-highlight">16</i>&nbsp;     * with the given value strings.
+<i class="no-highlight">17</i>&nbsp;     * @param template The template html to be populated
+<i class="no-highlight">18</i>&nbsp;     * @param keyValuePairs Array of a variable, even number of key-value pairs:
+<i class="no-highlight">19</i>&nbsp;     *                   { &quot;key1&quot;, &quot;val1&quot;, &quot;key2&quot;, &quot;val2&quot;, ... }
+<i class="no-highlight">20</i>&nbsp;     * @return The populated template
+<i class="no-highlight">21</i>&nbsp;     */
+<i class="no-highlight">22</i>&nbsp;    public static String populateTemplate(String template, String... keyValuePairs) {
+<b class="fc"><i class="no-highlight">23</i>&nbsp;        assert keyValuePairs.length % 2 == 0 : &quot;The number of elements in keyValuePairs passed in must be even&quot;;</b>
+<b class="fc"><i class="no-highlight">24</i>&nbsp;        String populatedTemplate = template;</b>
+<b class="fc"><i class="no-highlight">25</i>&nbsp;        for (int i = 0; i &lt; keyValuePairs.length; i += 2) {</b>
+<b class="fc"><i class="no-highlight">26</i>&nbsp;            populatedTemplate = populatedTemplate.replace(keyValuePairs[i], keyValuePairs[i + 1]);</b>
+<i class="no-highlight">27</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">28</i>&nbsp;        return populatedTemplate;</b>
+<i class="no-highlight">29</i>&nbsp;    }
+<i class="no-highlight">30</i>&nbsp;
+<i class="no-highlight">31</i>&nbsp;    /**
+<i class="no-highlight">32</i>&nbsp;     * Collection of templates of emails to be sent by the system.
+<i class="no-highlight">33</i>&nbsp;     */
+<b class="nc"><i class="no-highlight">34</i>&nbsp;    public static class EmailTemplates {</b>
+<b class="fc"><i class="no-highlight">35</i>&nbsp;        public static final String USER_COURSE_JOIN =</b>
+<b class="fc"><i class="no-highlight">36</i>&nbsp;                FileHelper.readResourceFile(&quot;userEmailTemplate-courseJoin.html&quot;);</b>
+<b class="fc"><i class="no-highlight">37</i>&nbsp;        public static final String USER_COURSE_REGISTER =</b>
+<b class="fc"><i class="no-highlight">38</i>&nbsp;                FileHelper.readResourceFile(&quot;userEmailTemplate-userRegisterForCourse.html&quot;);</b>
+<b class="fc"><i class="no-highlight">39</i>&nbsp;        public static final String FRAGMENT_STUDENT_COURSE_JOIN =</b>
+<b class="fc"><i class="no-highlight">40</i>&nbsp;                FileHelper.readResourceFile(&quot;studentEmailFragment-courseJoin.html&quot;);</b>
+<b class="fc"><i class="no-highlight">41</i>&nbsp;        public static final String FRAGMENT_STUDENT_COURSE_REJOIN_AFTER_GOOGLE_ID_RESET =</b>
+<b class="fc"><i class="no-highlight">42</i>&nbsp;                FileHelper.readResourceFile(&quot;studentEmailFragment-googleIdReset.html&quot;);</b>
+<b class="fc"><i class="no-highlight">43</i>&nbsp;        public static final String FRAGMENT_STUDENT_COURSE_REJOIN_AFTER_REGKEY_RESET =</b>
+<b class="fc"><i class="no-highlight">44</i>&nbsp;                FileHelper.readResourceFile(&quot;studentEmailFragment-registrationKeyReset.html&quot;);</b>
+<b class="fc"><i class="no-highlight">45</i>&nbsp;        public static final String FRAGMENT_INSTRUCTOR_COPY_PREAMBLE =</b>
+<b class="fc"><i class="no-highlight">46</i>&nbsp;                FileHelper.readResourceFile(&quot;instructorEmailFragment-instructorCopyPreamble.html&quot;);</b>
+<b class="fc"><i class="no-highlight">47</i>&nbsp;        public static final String FRAGMENT_INSTRUCTOR_COURSE_JOIN =</b>
+<b class="fc"><i class="no-highlight">48</i>&nbsp;                FileHelper.readResourceFile(&quot;instructorEmailFragment-courseJoin.html&quot;);</b>
+<b class="fc"><i class="no-highlight">49</i>&nbsp;        public static final String FRAGMENT_INSTRUCTOR_COURSE_REJOIN_AFTER_GOOGLE_ID_RESET =</b>
+<b class="fc"><i class="no-highlight">50</i>&nbsp;                FileHelper.readResourceFile(&quot;instructorEmailFragment-googleIdReset.html&quot;);</b>
+<b class="fc"><i class="no-highlight">51</i>&nbsp;        public static final String FRAGMENT_INSTRUCTOR_COURSE_REJOIN_AFTER_REGKEY_RESET =</b>
+<b class="fc"><i class="no-highlight">52</i>&nbsp;                FileHelper.readResourceFile(&quot;instructorEmailFragment-registrationKeyReset.html&quot;);</b>
+<b class="fc"><i class="no-highlight">53</i>&nbsp;        public static final String USER_FEEDBACK_SESSION =</b>
+<b class="fc"><i class="no-highlight">54</i>&nbsp;                FileHelper.readResourceFile(&quot;userEmailTemplate-feedbackSession.html&quot;);</b>
+<b class="fc"><i class="no-highlight">55</i>&nbsp;        public static final String USER_FEEDBACK_SESSION_PUBLISHED =</b>
+<b class="fc"><i class="no-highlight">56</i>&nbsp;                FileHelper.readResourceFile(&quot;userEmailTemplate-feedbackSessionPublished.html&quot;);</b>
+<b class="fc"><i class="no-highlight">57</i>&nbsp;        public static final String FRAGMENT_SESSION_LINKS_RECOVERY_ACCESS_LINKS_BY_SESSION =</b>
+<b class="fc"><i class="no-highlight">58</i>&nbsp;                FileHelper.readResourceFile(&quot;sessionLinksRecoveryEmailTemplateFragment-sessionAccessLinksBySession.html&quot;);</b>
+<b class="fc"><i class="no-highlight">59</i>&nbsp;        public static final String FRAGMENT_SESSION_LINKS_RECOVERY_ACCESS_LINKS_BY_COURSE =</b>
+<b class="fc"><i class="no-highlight">60</i>&nbsp;                FileHelper.readResourceFile(&quot;sessionLinksRecoveryEmailTemplateFragment-sessionAccessLinksByCourse.html&quot;);</b>
+<b class="fc"><i class="no-highlight">61</i>&nbsp;        public static final String SESSION_LINKS_RECOVERY_ACCESS_LINKS =</b>
+<b class="fc"><i class="no-highlight">62</i>&nbsp;                FileHelper.readResourceFile(&quot;sessionLinksRecoveryEmailTemplate-feedbackSessionAccessLinks.html&quot;);</b>
+<b class="fc"><i class="no-highlight">63</i>&nbsp;        public static final String SESSION_LINKS_RECOVERY_ACCESS_LINKS_NONE =</b>
+<b class="fc"><i class="no-highlight">64</i>&nbsp;                FileHelper.readResourceFile(&quot;sessionLinksRecoveryEmailTemplate-feedbackSessionAccessLinksNone.html&quot;);</b>
+<b class="fc"><i class="no-highlight">65</i>&nbsp;        public static final String SESSION_LINKS_RECOVERY_EMAIL_NOT_FOUND =</b>
+<b class="fc"><i class="no-highlight">66</i>&nbsp;                FileHelper.readResourceFile(&quot;sessionLinksRecoveryEmailTemplate-emailNotFound.html&quot;);</b>
+<b class="fc"><i class="no-highlight">67</i>&nbsp;        public static final String USER_FEEDBACK_SESSION_UNPUBLISHED =</b>
+<b class="fc"><i class="no-highlight">68</i>&nbsp;                FileHelper.readResourceFile(&quot;userEmailTemplate-feedbackSessionUnpublished.html&quot;);</b>
+<b class="fc"><i class="no-highlight">69</i>&nbsp;        public static final String FRAGMENT_SINGLE_FEEDBACK_SESSION_LINKS =</b>
+<b class="fc"><i class="no-highlight">70</i>&nbsp;                FileHelper.readResourceFile(&quot;userEmailTemplateFragment-feedbackSessionResendAllLinks.html&quot;);</b>
+<b class="fc"><i class="no-highlight">71</i>&nbsp;        public static final String USER_FEEDBACK_SESSION_RESEND_ALL_LINKS =</b>
+<b class="fc"><i class="no-highlight">72</i>&nbsp;                FileHelper.readResourceFile(&quot;userEmailTemplate-feedbackSessionResendAllLinks.html&quot;);</b>
+<b class="fc"><i class="no-highlight">73</i>&nbsp;        public static final String USER_REGKEY_REGENERATION_RESEND_ALL_COURSE_LINKS =</b>
+<b class="fc"><i class="no-highlight">74</i>&nbsp;                FileHelper.readResourceFile(&quot;userEmailTemplate-regenerateLinksResendAllCourseLinks.html&quot;);</b>
+<b class="fc"><i class="no-highlight">75</i>&nbsp;        public static final String SEVERE_ERROR_LOG_LINE =</b>
+<b class="fc"><i class="no-highlight">76</i>&nbsp;                FileHelper.readResourceFile(&quot;severeErrorLogLine.html&quot;);</b>
+<b class="fc"><i class="no-highlight">77</i>&nbsp;        public static final String NEW_INSTRUCTOR_ACCOUNT_WELCOME =</b>
+<b class="fc"><i class="no-highlight">78</i>&nbsp;                FileHelper.readResourceFile(&quot;newInstructorAccountWelcome.html&quot;);</b>
+<b class="fc"><i class="no-highlight">79</i>&nbsp;        public static final String FRAGMENT_SESSION_ADDITIONAL_CONTACT_INFORMATION =</b>
+<b class="fc"><i class="no-highlight">80</i>&nbsp;                FileHelper.readResourceFile(&quot;userEmailFragment-sessionAdditionalContactInformationFragment.html&quot;);</b>
+<b class="fc"><i class="no-highlight">81</i>&nbsp;        public static final String OWNER_FEEDBACK_SESSION_OPENING_SOON =</b>
+<b class="fc"><i class="no-highlight">82</i>&nbsp;                FileHelper.readResourceFile(&quot;ownerEmailTemplate-sessionOpeningSoon.html&quot;);</b>
+<b class="fc"><i class="no-highlight">83</i>&nbsp;        public static final String FRAGMENT_OPENING_SOON_EDIT_DETAILS =</b>
+<b class="fc"><i class="no-highlight">84</i>&nbsp;                FileHelper.readResourceFile(&quot;ownerEmailFragment-editDetails.html&quot;);</b>
+<b class="fc"><i class="no-highlight">85</i>&nbsp;        public static final String FRAGMENT_OPENING_SOON_JOIN_COURSE_BEFORE_EDIT_DETAILS =</b>
+<b class="fc"><i class="no-highlight">86</i>&nbsp;                FileHelper.readResourceFile(&quot;ownerEmailFragment-joinCourseBeforeEditDetails.html&quot;);</b>
+<i class="no-highlight">87</i>&nbsp;    }
+<i class="no-highlight">88</i>&nbsp;
+<i class="no-highlight">89</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-25 11:18</div>
+</div>
+</body>
+</html>

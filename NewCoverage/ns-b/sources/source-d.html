@@ -1,0 +1,503 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > StudentsDb</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.storage.api</a>
+</div>
+
+<h1>Coverage Summary for Class: StudentsDb (teammates.storage.api)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">StudentsDb</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (34/34)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    91.4%
+  </span>
+  <span class="absValue">
+    (128/140)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.storage.api;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import static com.googlecode.objectify.ObjectifyService.ofy;
+<i class="no-highlight">4</i>&nbsp;
+<i class="no-highlight">5</i>&nbsp;import java.util.ArrayList;
+<i class="no-highlight">6</i>&nbsp;import java.util.Collections;
+<i class="no-highlight">7</i>&nbsp;import java.util.List;
+<i class="no-highlight">8</i>&nbsp;import java.util.stream.Collectors;
+<i class="no-highlight">9</i>&nbsp;
+<i class="no-highlight">10</i>&nbsp;import com.googlecode.objectify.Key;
+<i class="no-highlight">11</i>&nbsp;import com.googlecode.objectify.cmd.LoadType;
+<i class="no-highlight">12</i>&nbsp;import com.googlecode.objectify.cmd.Query;
+<i class="no-highlight">13</i>&nbsp;
+<i class="no-highlight">14</i>&nbsp;import teammates.common.datatransfer.AttributesDeletionQuery;
+<i class="no-highlight">15</i>&nbsp;import teammates.common.datatransfer.attributes.InstructorAttributes;
+<i class="no-highlight">16</i>&nbsp;import teammates.common.datatransfer.attributes.StudentAttributes;
+<i class="no-highlight">17</i>&nbsp;import teammates.common.exception.EntityAlreadyExistsException;
+<i class="no-highlight">18</i>&nbsp;import teammates.common.exception.EntityDoesNotExistException;
+<i class="no-highlight">19</i>&nbsp;import teammates.common.exception.InvalidParametersException;
+<i class="no-highlight">20</i>&nbsp;import teammates.common.exception.SearchServiceException;
+<i class="no-highlight">21</i>&nbsp;import teammates.common.util.Logger;
+<i class="no-highlight">22</i>&nbsp;import teammates.storage.entity.CourseStudent;
+<i class="no-highlight">23</i>&nbsp;import teammates.storage.search.SearchManagerFactory;
+<i class="no-highlight">24</i>&nbsp;import teammates.storage.search.StudentSearchManager;
+<i class="no-highlight">25</i>&nbsp;
+<i class="no-highlight">26</i>&nbsp;/**
+<i class="no-highlight">27</i>&nbsp; * Handles CRUD operations for students.
+<i class="no-highlight">28</i>&nbsp; *
+<i class="no-highlight">29</i>&nbsp; * @see CourseStudent
+<i class="no-highlight">30</i>&nbsp; * @see StudentAttributes
+<i class="no-highlight">31</i>&nbsp; */
+<b class="fc"><i class="no-highlight">32</i>&nbsp;public final class StudentsDb extends EntitiesDb&lt;CourseStudent, StudentAttributes&gt; {</b>
+<i class="no-highlight">33</i>&nbsp;
+<b class="fc"><i class="no-highlight">34</i>&nbsp;    private static final Logger log = Logger.getLogger();</b>
+<i class="no-highlight">35</i>&nbsp;
+<i class="no-highlight">36</i>&nbsp;    private static final int MAX_KEY_REGENERATION_TRIES = 10;
+<i class="no-highlight">37</i>&nbsp;
+<b class="fc"><i class="no-highlight">38</i>&nbsp;    private static final StudentsDb instance = new StudentsDb();</b>
+<i class="no-highlight">39</i>&nbsp;
+<b class="fc"><i class="no-highlight">40</i>&nbsp;    private StudentsDb() {</b>
+<i class="no-highlight">41</i>&nbsp;        // prevent initialization
+<i class="no-highlight">42</i>&nbsp;    }
+<i class="no-highlight">43</i>&nbsp;
+<i class="no-highlight">44</i>&nbsp;    public static StudentsDb inst() {
+<b class="fc"><i class="no-highlight">45</i>&nbsp;        return instance;</b>
+<i class="no-highlight">46</i>&nbsp;    }
+<i class="no-highlight">47</i>&nbsp;
+<i class="no-highlight">48</i>&nbsp;    private StudentSearchManager getSearchManager() {
+<b class="fc"><i class="no-highlight">49</i>&nbsp;        return SearchManagerFactory.getStudentSearchManager();</b>
+<i class="no-highlight">50</i>&nbsp;    }
+<i class="no-highlight">51</i>&nbsp;
+<i class="no-highlight">52</i>&nbsp;    /**
+<i class="no-highlight">53</i>&nbsp;     * Creates or updates search document for the given student.
+<i class="no-highlight">54</i>&nbsp;     */
+<i class="no-highlight">55</i>&nbsp;    public void putDocument(StudentAttributes student) throws SearchServiceException {
+<b class="fc"><i class="no-highlight">56</i>&nbsp;        getSearchManager().putDocument(student);</b>
+<i class="no-highlight">57</i>&nbsp;    }
+<i class="no-highlight">58</i>&nbsp;
+<i class="no-highlight">59</i>&nbsp;    /**
+<i class="no-highlight">60</i>&nbsp;     * Searches for students.
+<i class="no-highlight">61</i>&nbsp;     *
+<i class="no-highlight">62</i>&nbsp;     * @param instructors the constraint that restricts the search result
+<i class="no-highlight">63</i>&nbsp;     */
+<i class="no-highlight">64</i>&nbsp;    public List&lt;StudentAttributes&gt; search(String queryString, List&lt;InstructorAttributes&gt; instructors)
+<i class="no-highlight">65</i>&nbsp;            throws SearchServiceException {
+<b class="fc"><i class="no-highlight">66</i>&nbsp;        if (queryString.trim().isEmpty()) {</b>
+<b class="nc"><i class="no-highlight">67</i>&nbsp;            return new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">68</i>&nbsp;        }
+<i class="no-highlight">69</i>&nbsp;
+<b class="fc"><i class="no-highlight">70</i>&nbsp;        return getSearchManager().searchStudents(queryString, instructors);</b>
+<i class="no-highlight">71</i>&nbsp;    }
+<i class="no-highlight">72</i>&nbsp;
+<i class="no-highlight">73</i>&nbsp;    /**
+<i class="no-highlight">74</i>&nbsp;     * Searches all students in the system.
+<i class="no-highlight">75</i>&nbsp;     *
+<i class="no-highlight">76</i>&nbsp;     * &lt;p&gt;This method should be used by admin only since the searching does not restrict the
+<i class="no-highlight">77</i>&nbsp;     * visibility according to the logged-in user&#39;s google ID. This is used by admin to
+<i class="no-highlight">78</i>&nbsp;     * search instructors in the whole system.
+<i class="no-highlight">79</i>&nbsp;     */
+<i class="no-highlight">80</i>&nbsp;    public List&lt;StudentAttributes&gt; searchStudentsInWholeSystem(String queryString)
+<i class="no-highlight">81</i>&nbsp;            throws SearchServiceException {
+<b class="fc"><i class="no-highlight">82</i>&nbsp;        if (queryString.trim().isEmpty()) {</b>
+<b class="nc"><i class="no-highlight">83</i>&nbsp;            return new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">84</i>&nbsp;        }
+<i class="no-highlight">85</i>&nbsp;
+<b class="fc"><i class="no-highlight">86</i>&nbsp;        return getSearchManager().searchStudents(queryString, null);</b>
+<i class="no-highlight">87</i>&nbsp;    }
+<i class="no-highlight">88</i>&nbsp;
+<i class="no-highlight">89</i>&nbsp;    /**
+<i class="no-highlight">90</i>&nbsp;     * Removes search document for the given student by using {@code studentUniqueId}.
+<i class="no-highlight">91</i>&nbsp;     */
+<i class="no-highlight">92</i>&nbsp;    public void deleteDocumentByStudentId(String studentUniqueId) {
+<b class="fc"><i class="no-highlight">93</i>&nbsp;        getSearchManager().deleteDocuments(Collections.singletonList(studentUniqueId));</b>
+<i class="no-highlight">94</i>&nbsp;    }
+<i class="no-highlight">95</i>&nbsp;
+<i class="no-highlight">96</i>&nbsp;    /**
+<i class="no-highlight">97</i>&nbsp;     * Regenerates the registration key of a student in a course.
+<i class="no-highlight">98</i>&nbsp;     *
+<i class="no-highlight">99</i>&nbsp;     * @return the updated student
+<i class="no-highlight">100</i>&nbsp;     * @throws EntityAlreadyExistsException if a new registration key could not be generated
+<i class="no-highlight">101</i>&nbsp;     */
+<i class="no-highlight">102</i>&nbsp;    public StudentAttributes regenerateEntityKey(StudentAttributes originalStudent) throws EntityAlreadyExistsException {
+<b class="fc"><i class="no-highlight">103</i>&nbsp;        int numTries = 0;</b>
+<b class="fc"><i class="no-highlight">104</i>&nbsp;        while (numTries &lt; MAX_KEY_REGENERATION_TRIES) {</b>
+<b class="fc"><i class="no-highlight">105</i>&nbsp;            CourseStudent updatedEntity = convertToEntityForSaving(originalStudent);</b>
+<b class="fc"><i class="no-highlight">106</i>&nbsp;            if (!updatedEntity.getRegistrationKey().equals(originalStudent.getKey())) {</b>
+<b class="fc"><i class="no-highlight">107</i>&nbsp;                saveEntity(updatedEntity);</b>
+<b class="fc"><i class="no-highlight">108</i>&nbsp;                return makeAttributes(updatedEntity);</b>
+<i class="no-highlight">109</i>&nbsp;            }
+<b class="nc"><i class="no-highlight">110</i>&nbsp;            numTries++;</b>
+<b class="nc"><i class="no-highlight">111</i>&nbsp;        }</b>
+<b class="nc"><i class="no-highlight">112</i>&nbsp;        log.severe(&quot;Failed to generate new registration key for student after &quot; + MAX_KEY_REGENERATION_TRIES + &quot; tries&quot;);</b>
+<b class="nc"><i class="no-highlight">113</i>&nbsp;        throw new EntityAlreadyExistsException(&quot;Could not regenerate a new course registration key for the student.&quot;);</b>
+<i class="no-highlight">114</i>&nbsp;    }
+<i class="no-highlight">115</i>&nbsp;
+<i class="no-highlight">116</i>&nbsp;    /**
+<i class="no-highlight">117</i>&nbsp;     * Gets a student by unique ID courseId-email.
+<i class="no-highlight">118</i>&nbsp;     */
+<i class="no-highlight">119</i>&nbsp;    public StudentAttributes getStudentForEmail(String courseId, String email) {
+<b class="fc"><i class="no-highlight">120</i>&nbsp;        assert courseId != null;</b>
+<b class="fc"><i class="no-highlight">121</i>&nbsp;        assert email != null;</b>
+<i class="no-highlight">122</i>&nbsp;
+<b class="fc"><i class="no-highlight">123</i>&nbsp;        return makeAttributesOrNull(getCourseStudentEntityForEmail(courseId, email));</b>
+<i class="no-highlight">124</i>&nbsp;    }
+<i class="no-highlight">125</i>&nbsp;
+<i class="no-highlight">126</i>&nbsp;    /**
+<i class="no-highlight">127</i>&nbsp;     * Gets list of students by email.
+<i class="no-highlight">128</i>&nbsp;     */
+<i class="no-highlight">129</i>&nbsp;    public List&lt;StudentAttributes&gt; getAllStudentsForEmail(String email) {
+<b class="fc"><i class="no-highlight">130</i>&nbsp;        assert email != null;</b>
+<i class="no-highlight">131</i>&nbsp;
+<b class="fc"><i class="no-highlight">132</i>&nbsp;        List&lt;CourseStudent&gt; students = getAllCourseStudentEntitiesForEmail(email);</b>
+<b class="fc"><i class="no-highlight">133</i>&nbsp;        return students.stream().map(this::makeAttributes).collect(Collectors.toList());</b>
+<i class="no-highlight">134</i>&nbsp;    }
+<i class="no-highlight">135</i>&nbsp;
+<i class="no-highlight">136</i>&nbsp;    /**
+<i class="no-highlight">137</i>&nbsp;     * Gets a student by unique constraint courseId-googleId.
+<i class="no-highlight">138</i>&nbsp;     */
+<i class="no-highlight">139</i>&nbsp;    public StudentAttributes getStudentForGoogleId(String courseId, String googleId) {
+<b class="fc"><i class="no-highlight">140</i>&nbsp;        assert googleId != null;</b>
+<b class="fc"><i class="no-highlight">141</i>&nbsp;        assert courseId != null;</b>
+<i class="no-highlight">142</i>&nbsp;
+<b class="fc"><i class="no-highlight">143</i>&nbsp;        CourseStudent student = load()</b>
+<b class="fc"><i class="no-highlight">144</i>&nbsp;                .filter(&quot;courseId =&quot;, courseId)</b>
+<b class="fc"><i class="no-highlight">145</i>&nbsp;                .filter(&quot;googleId =&quot;, googleId)</b>
+<b class="fc"><i class="no-highlight">146</i>&nbsp;                .first().now();</b>
+<i class="no-highlight">147</i>&nbsp;
+<b class="fc"><i class="no-highlight">148</i>&nbsp;        return makeAttributesOrNull(student);</b>
+<i class="no-highlight">149</i>&nbsp;    }
+<i class="no-highlight">150</i>&nbsp;
+<i class="no-highlight">151</i>&nbsp;    /**
+<i class="no-highlight">152</i>&nbsp;     * Gets a student by unique constraint registrationKey.
+<i class="no-highlight">153</i>&nbsp;     */
+<i class="no-highlight">154</i>&nbsp;    public StudentAttributes getStudentForRegistrationKey(String registrationKey) {
+<b class="fc"><i class="no-highlight">155</i>&nbsp;        assert registrationKey != null;</b>
+<i class="no-highlight">156</i>&nbsp;
+<b class="fc"><i class="no-highlight">157</i>&nbsp;        return makeAttributesOrNull(getCourseStudentEntityForRegistrationKey(registrationKey.trim()));</b>
+<i class="no-highlight">158</i>&nbsp;    }
+<i class="no-highlight">159</i>&nbsp;
+<i class="no-highlight">160</i>&nbsp;    /**
+<i class="no-highlight">161</i>&nbsp;     * Gets all students associated with a googleId.
+<i class="no-highlight">162</i>&nbsp;     */
+<i class="no-highlight">163</i>&nbsp;    public List&lt;StudentAttributes&gt; getStudentsForGoogleId(String googleId) {
+<b class="fc"><i class="no-highlight">164</i>&nbsp;        assert googleId != null;</b>
+<i class="no-highlight">165</i>&nbsp;
+<b class="fc"><i class="no-highlight">166</i>&nbsp;        return makeAttributes(getCourseStudentEntitiesForGoogleId(googleId));</b>
+<i class="no-highlight">167</i>&nbsp;    }
+<i class="no-highlight">168</i>&nbsp;
+<i class="no-highlight">169</i>&nbsp;    /**
+<i class="no-highlight">170</i>&nbsp;     * Gets all students of a course.
+<i class="no-highlight">171</i>&nbsp;     */
+<i class="no-highlight">172</i>&nbsp;    public List&lt;StudentAttributes&gt; getStudentsForCourse(String courseId) {
+<b class="fc"><i class="no-highlight">173</i>&nbsp;        assert courseId != null;</b>
+<i class="no-highlight">174</i>&nbsp;
+<b class="fc"><i class="no-highlight">175</i>&nbsp;        return makeAttributes(getCourseStudentEntitiesForCourse(courseId));</b>
+<i class="no-highlight">176</i>&nbsp;    }
+<i class="no-highlight">177</i>&nbsp;
+<i class="no-highlight">178</i>&nbsp;    /**
+<i class="no-highlight">179</i>&nbsp;     * Gets all students of a section of a course.
+<i class="no-highlight">180</i>&nbsp;     */
+<i class="no-highlight">181</i>&nbsp;    public List&lt;StudentAttributes&gt; getStudentsForSection(String sectionName, String courseId) {
+<b class="fc"><i class="no-highlight">182</i>&nbsp;        assert sectionName != null;</b>
+<b class="fc"><i class="no-highlight">183</i>&nbsp;        assert courseId != null;</b>
+<i class="no-highlight">184</i>&nbsp;
+<b class="fc"><i class="no-highlight">185</i>&nbsp;        return makeAttributes(getCourseStudentEntitiesForSection(sectionName, courseId));</b>
+<i class="no-highlight">186</i>&nbsp;    }
+<i class="no-highlight">187</i>&nbsp;
+<i class="no-highlight">188</i>&nbsp;    /**
+<i class="no-highlight">189</i>&nbsp;     * Gets all students of a team of a course.
+<i class="no-highlight">190</i>&nbsp;     */
+<i class="no-highlight">191</i>&nbsp;    public List&lt;StudentAttributes&gt; getStudentsForTeam(String teamName, String courseId) {
+<b class="fc"><i class="no-highlight">192</i>&nbsp;        assert teamName != null;</b>
+<b class="fc"><i class="no-highlight">193</i>&nbsp;        assert courseId != null;</b>
+<i class="no-highlight">194</i>&nbsp;
+<b class="fc"><i class="no-highlight">195</i>&nbsp;        return makeAttributes(getCourseStudentEntitiesForTeam(teamName, courseId));</b>
+<i class="no-highlight">196</i>&nbsp;    }
+<i class="no-highlight">197</i>&nbsp;
+<i class="no-highlight">198</i>&nbsp;    /**
+<i class="no-highlight">199</i>&nbsp;     * Gets all unregistered students of a course.
+<i class="no-highlight">200</i>&nbsp;     */
+<i class="no-highlight">201</i>&nbsp;    public List&lt;StudentAttributes&gt; getUnregisteredStudentsForCourse(String courseId) {
+<b class="fc"><i class="no-highlight">202</i>&nbsp;        assert courseId != null;</b>
+<i class="no-highlight">203</i>&nbsp;
+<b class="fc"><i class="no-highlight">204</i>&nbsp;        List&lt;StudentAttributes&gt; allStudents = getStudentsForCourse(courseId);</b>
+<b class="fc"><i class="no-highlight">205</i>&nbsp;        List&lt;StudentAttributes&gt; unregistered = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">206</i>&nbsp;
+<b class="fc"><i class="no-highlight">207</i>&nbsp;        for (StudentAttributes s : allStudents) {</b>
+<b class="fc"><i class="no-highlight">208</i>&nbsp;            if (s.getGoogleId() == null || s.getGoogleId().trim().isEmpty()) {</b>
+<b class="fc"><i class="no-highlight">209</i>&nbsp;                unregistered.add(s);</b>
+<i class="no-highlight">210</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">211</i>&nbsp;        }</b>
+<b class="fc"><i class="no-highlight">212</i>&nbsp;        return unregistered;</b>
+<i class="no-highlight">213</i>&nbsp;    }
+<i class="no-highlight">214</i>&nbsp;
+<i class="no-highlight">215</i>&nbsp;    /**
+<i class="no-highlight">216</i>&nbsp;     * Updates a student by {@link StudentAttributes.UpdateOptions}.
+<i class="no-highlight">217</i>&nbsp;     *
+<i class="no-highlight">218</i>&nbsp;     * &lt;p&gt;If the student&#39;s email is changed, the student is re-created.
+<i class="no-highlight">219</i>&nbsp;     *
+<i class="no-highlight">220</i>&nbsp;     * @return updated student
+<i class="no-highlight">221</i>&nbsp;     * @throws InvalidParametersException if attributes to update are not valid
+<i class="no-highlight">222</i>&nbsp;     * @throws EntityDoesNotExistException if the student cannot be found
+<i class="no-highlight">223</i>&nbsp;     * @throws EntityAlreadyExistsException if the student cannot be updated
+<i class="no-highlight">224</i>&nbsp;     *         by recreation because of an existent student
+<i class="no-highlight">225</i>&nbsp;     */
+<i class="no-highlight">226</i>&nbsp;    public StudentAttributes updateStudent(StudentAttributes.UpdateOptions updateOptions)
+<i class="no-highlight">227</i>&nbsp;            throws EntityDoesNotExistException, InvalidParametersException, EntityAlreadyExistsException {
+<b class="fc"><i class="no-highlight">228</i>&nbsp;        assert updateOptions != null;</b>
+<i class="no-highlight">229</i>&nbsp;
+<b class="fc"><i class="no-highlight">230</i>&nbsp;        CourseStudent student = getCourseStudentEntityForEmail(updateOptions.getCourseId(), updateOptions.getEmail());</b>
+<b class="fc"><i class="no-highlight">231</i>&nbsp;        if (student == null) {</b>
+<b class="fc"><i class="no-highlight">232</i>&nbsp;            throw new EntityDoesNotExistException(ERROR_UPDATE_NON_EXISTENT + updateOptions);</b>
+<i class="no-highlight">233</i>&nbsp;        }
+<i class="no-highlight">234</i>&nbsp;
+<b class="fc"><i class="no-highlight">235</i>&nbsp;        StudentAttributes newAttributes = makeAttributes(student);</b>
+<b class="fc"><i class="no-highlight">236</i>&nbsp;        newAttributes.update(updateOptions);</b>
+<i class="no-highlight">237</i>&nbsp;
+<b class="fc"><i class="no-highlight">238</i>&nbsp;        newAttributes.sanitizeForSaving();</b>
+<b class="fc"><i class="no-highlight">239</i>&nbsp;        if (!newAttributes.isValid()) {</b>
+<b class="fc"><i class="no-highlight">240</i>&nbsp;            throw new InvalidParametersException(newAttributes.getInvalidityInfo());</b>
+<i class="no-highlight">241</i>&nbsp;        }
+<i class="no-highlight">242</i>&nbsp;
+<b class="fc"><i class="no-highlight">243</i>&nbsp;        boolean isEmailChanged = !student.getEmail().equals(newAttributes.getEmail());</b>
+<i class="no-highlight">244</i>&nbsp;
+<b class="fc"><i class="no-highlight">245</i>&nbsp;        if (isEmailChanged) {</b>
+<b class="fc"><i class="no-highlight">246</i>&nbsp;            newAttributes = createEntity(newAttributes);</b>
+<i class="no-highlight">247</i>&nbsp;            // delete the old student
+<b class="fc"><i class="no-highlight">248</i>&nbsp;            deleteStudent(student.getCourseId(), student.getEmail());</b>
+<i class="no-highlight">249</i>&nbsp;
+<b class="fc"><i class="no-highlight">250</i>&nbsp;            return newAttributes;</b>
+<i class="no-highlight">251</i>&nbsp;        } else {
+<i class="no-highlight">252</i>&nbsp;            // update only if change
+<b class="fc"><i class="no-highlight">253</i>&nbsp;            boolean hasSameAttributes =</b>
+<b class="fc"><i class="no-highlight">254</i>&nbsp;                    this.&lt;String&gt;hasSameValue(student.getName(), newAttributes.getName())</b>
+<b class="fc"><i class="no-highlight">255</i>&nbsp;                    &amp;&amp; this.&lt;String&gt;hasSameValue(student.getComments(), newAttributes.getComments())</b>
+<b class="fc"><i class="no-highlight">256</i>&nbsp;                    &amp;&amp; this.&lt;String&gt;hasSameValue(student.getGoogleId(), newAttributes.getGoogleId())</b>
+<b class="fc"><i class="no-highlight">257</i>&nbsp;                    &amp;&amp; this.&lt;String&gt;hasSameValue(student.getTeamName(), newAttributes.getTeam())</b>
+<b class="fc"><i class="no-highlight">258</i>&nbsp;                    &amp;&amp; this.&lt;String&gt;hasSameValue(student.getSectionName(), newAttributes.getSection());</b>
+<b class="fc"><i class="no-highlight">259</i>&nbsp;            if (hasSameAttributes) {</b>
+<b class="fc"><i class="no-highlight">260</i>&nbsp;                log.info(String.format(OPTIMIZED_SAVING_POLICY_APPLIED, CourseStudent.class.getSimpleName(), updateOptions));</b>
+<b class="fc"><i class="no-highlight">261</i>&nbsp;                return newAttributes;</b>
+<i class="no-highlight">262</i>&nbsp;            }
+<i class="no-highlight">263</i>&nbsp;
+<b class="fc"><i class="no-highlight">264</i>&nbsp;            student.setName(newAttributes.getName());</b>
+<b class="fc"><i class="no-highlight">265</i>&nbsp;            student.setComments(newAttributes.getComments());</b>
+<b class="fc"><i class="no-highlight">266</i>&nbsp;            student.setGoogleId(newAttributes.getGoogleId());</b>
+<b class="fc"><i class="no-highlight">267</i>&nbsp;            student.setTeamName(newAttributes.getTeam());</b>
+<b class="fc"><i class="no-highlight">268</i>&nbsp;            student.setSectionName(newAttributes.getSection());</b>
+<i class="no-highlight">269</i>&nbsp;
+<b class="fc"><i class="no-highlight">270</i>&nbsp;            saveEntity(student);</b>
+<i class="no-highlight">271</i>&nbsp;
+<b class="fc"><i class="no-highlight">272</i>&nbsp;            return makeAttributes(student);</b>
+<i class="no-highlight">273</i>&nbsp;        }
+<i class="no-highlight">274</i>&nbsp;    }
+<i class="no-highlight">275</i>&nbsp;
+<i class="no-highlight">276</i>&nbsp;    /**
+<i class="no-highlight">277</i>&nbsp;     * Deletes a student in a course with email.
+<i class="no-highlight">278</i>&nbsp;     *
+<i class="no-highlight">279</i>&nbsp;     * &lt;p&gt;Fails silently if there is no such student.
+<i class="no-highlight">280</i>&nbsp;     */
+<i class="no-highlight">281</i>&nbsp;    public void deleteStudent(String courseId, String email) {
+<b class="fc"><i class="no-highlight">282</i>&nbsp;        assert courseId != null;</b>
+<b class="fc"><i class="no-highlight">283</i>&nbsp;        assert email != null;</b>
+<i class="no-highlight">284</i>&nbsp;
+<b class="fc"><i class="no-highlight">285</i>&nbsp;        CourseStudent courseStudentToDelete = getCourseStudentEntityForEmail(courseId, email);</b>
+<b class="fc"><i class="no-highlight">286</i>&nbsp;        if (courseStudentToDelete != null) {</b>
+<b class="fc"><i class="no-highlight">287</i>&nbsp;            deleteDocumentByStudentId(courseStudentToDelete.getUniqueId());</b>
+<b class="fc"><i class="no-highlight">288</i>&nbsp;            deleteEntity(Key.create(CourseStudent.class, courseStudentToDelete.getUniqueId()));</b>
+<i class="no-highlight">289</i>&nbsp;        }
+<i class="no-highlight">290</i>&nbsp;    }
+<i class="no-highlight">291</i>&nbsp;
+<i class="no-highlight">292</i>&nbsp;    /**
+<i class="no-highlight">293</i>&nbsp;     * Deletes students using {@link AttributesDeletionQuery}.
+<i class="no-highlight">294</i>&nbsp;     */
+<i class="no-highlight">295</i>&nbsp;    public void deleteStudents(AttributesDeletionQuery query) {
+<b class="fc"><i class="no-highlight">296</i>&nbsp;        if (query.isCourseIdPresent()) {</b>
+<b class="fc"><i class="no-highlight">297</i>&nbsp;            List&lt;CourseStudent&gt; studentsToDelete = getCourseStudentsForCourseQuery(query.getCourseId()).list();</b>
+<b class="fc"><i class="no-highlight">298</i>&nbsp;            getSearchManager().deleteDocuments(</b>
+<b class="fc"><i class="no-highlight">299</i>&nbsp;                    studentsToDelete.stream().map(CourseStudent::getUniqueId).collect(Collectors.toList()));</b>
+<i class="no-highlight">300</i>&nbsp;
+<b class="fc"><i class="no-highlight">301</i>&nbsp;            deleteEntity(studentsToDelete.stream()</b>
+<b class="fc"><i class="no-highlight">302</i>&nbsp;                    .map(s -&gt; Key.create(CourseStudent.class, s.getUniqueId()))</b>
+<b class="fc"><i class="no-highlight">303</i>&nbsp;                    .collect(Collectors.toList()));</b>
+<i class="no-highlight">304</i>&nbsp;        }
+<i class="no-highlight">305</i>&nbsp;    }
+<i class="no-highlight">306</i>&nbsp;
+<i class="no-highlight">307</i>&nbsp;    private CourseStudent getCourseStudentEntityForEmail(String courseId, String email) {
+<b class="fc"><i class="no-highlight">308</i>&nbsp;        return load().id(CourseStudent.generateId(email, courseId)).now();</b>
+<i class="no-highlight">309</i>&nbsp;    }
+<i class="no-highlight">310</i>&nbsp;
+<i class="no-highlight">311</i>&nbsp;    private List&lt;CourseStudent&gt; getAllCourseStudentEntitiesForEmail(String email) {
+<b class="fc"><i class="no-highlight">312</i>&nbsp;        return load().filter(&quot;email =&quot;, email).list();</b>
+<i class="no-highlight">313</i>&nbsp;    }
+<i class="no-highlight">314</i>&nbsp;
+<i class="no-highlight">315</i>&nbsp;    private CourseStudent getCourseStudentEntityForRegistrationKey(String registrationKey) {
+<b class="fc"><i class="no-highlight">316</i>&nbsp;        List&lt;CourseStudent&gt; studentList = load().filter(&quot;registrationKey =&quot;, registrationKey).list();</b>
+<i class="no-highlight">317</i>&nbsp;
+<i class="no-highlight">318</i>&nbsp;        // If registration key detected is not unique, something is wrong
+<b class="fc"><i class="no-highlight">319</i>&nbsp;        if (studentList.size() &gt; 1) {</b>
+<b class="nc"><i class="no-highlight">320</i>&nbsp;            log.severe(&quot;Duplicate registration keys detected for: &quot;</b>
+<b class="nc"><i class="no-highlight">321</i>&nbsp;                    + studentList.stream().map(s -&gt; s.getUniqueId()).collect(Collectors.joining(&quot;, &quot;)));</b>
+<i class="no-highlight">322</i>&nbsp;        }
+<i class="no-highlight">323</i>&nbsp;
+<b class="fc"><i class="no-highlight">324</i>&nbsp;        if (studentList.isEmpty()) {</b>
+<b class="fc"><i class="no-highlight">325</i>&nbsp;            return null;</b>
+<i class="no-highlight">326</i>&nbsp;        }
+<i class="no-highlight">327</i>&nbsp;
+<b class="fc"><i class="no-highlight">328</i>&nbsp;        return studentList.get(0);</b>
+<i class="no-highlight">329</i>&nbsp;    }
+<i class="no-highlight">330</i>&nbsp;
+<i class="no-highlight">331</i>&nbsp;    private Query&lt;CourseStudent&gt; getCourseStudentsForCourseQuery(String courseId) {
+<b class="fc"><i class="no-highlight">332</i>&nbsp;        return load().filter(&quot;courseId =&quot;, courseId);</b>
+<i class="no-highlight">333</i>&nbsp;    }
+<i class="no-highlight">334</i>&nbsp;
+<i class="no-highlight">335</i>&nbsp;    private List&lt;CourseStudent&gt; getCourseStudentEntitiesForCourse(String courseId) {
+<b class="fc"><i class="no-highlight">336</i>&nbsp;        return getCourseStudentsForCourseQuery(courseId).list();</b>
+<i class="no-highlight">337</i>&nbsp;    }
+<i class="no-highlight">338</i>&nbsp;
+<i class="no-highlight">339</i>&nbsp;    private Query&lt;CourseStudent&gt; getCourseStudentsForGoogleIdQuery(String googleId) {
+<b class="fc"><i class="no-highlight">340</i>&nbsp;        return load().filter(&quot;googleId =&quot;, googleId);</b>
+<i class="no-highlight">341</i>&nbsp;    }
+<i class="no-highlight">342</i>&nbsp;
+<i class="no-highlight">343</i>&nbsp;    private List&lt;CourseStudent&gt; getCourseStudentEntitiesForGoogleId(String googleId) {
+<b class="fc"><i class="no-highlight">344</i>&nbsp;        return getCourseStudentsForGoogleIdQuery(googleId).list();</b>
+<i class="no-highlight">345</i>&nbsp;    }
+<i class="no-highlight">346</i>&nbsp;
+<i class="no-highlight">347</i>&nbsp;    private List&lt;CourseStudent&gt; getCourseStudentEntitiesForTeam(String teamName, String courseId) {
+<b class="fc"><i class="no-highlight">348</i>&nbsp;        return load()</b>
+<b class="fc"><i class="no-highlight">349</i>&nbsp;                .filter(&quot;teamName =&quot;, teamName)</b>
+<b class="fc"><i class="no-highlight">350</i>&nbsp;                .filter(&quot;courseId =&quot;, courseId)</b>
+<b class="fc"><i class="no-highlight">351</i>&nbsp;                .list();</b>
+<i class="no-highlight">352</i>&nbsp;    }
+<i class="no-highlight">353</i>&nbsp;
+<i class="no-highlight">354</i>&nbsp;    private List&lt;CourseStudent&gt; getCourseStudentEntitiesForSection(String sectionName, String courseId) {
+<b class="fc"><i class="no-highlight">355</i>&nbsp;        return load()</b>
+<b class="fc"><i class="no-highlight">356</i>&nbsp;                .filter(&quot;sectionName =&quot;, sectionName)</b>
+<b class="fc"><i class="no-highlight">357</i>&nbsp;                .filter(&quot;courseId =&quot;, courseId)</b>
+<b class="fc"><i class="no-highlight">358</i>&nbsp;                .list();</b>
+<i class="no-highlight">359</i>&nbsp;    }
+<i class="no-highlight">360</i>&nbsp;
+<i class="no-highlight">361</i>&nbsp;    @Override
+<i class="no-highlight">362</i>&nbsp;    LoadType&lt;CourseStudent&gt; load() {
+<b class="fc"><i class="no-highlight">363</i>&nbsp;        return ofy().load().type(CourseStudent.class);</b>
+<i class="no-highlight">364</i>&nbsp;    }
+<i class="no-highlight">365</i>&nbsp;
+<i class="no-highlight">366</i>&nbsp;    @Override
+<i class="no-highlight">367</i>&nbsp;    boolean hasExistingEntities(StudentAttributes entityToCreate) {
+<b class="fc"><i class="no-highlight">368</i>&nbsp;        return !load()</b>
+<b class="fc"><i class="no-highlight">369</i>&nbsp;                .filterKey(Key.create(CourseStudent.class,</b>
+<b class="fc"><i class="no-highlight">370</i>&nbsp;                        CourseStudent.generateId(entityToCreate.getEmail(), entityToCreate.getCourse())))</b>
+<b class="fc"><i class="no-highlight">371</i>&nbsp;                .list()</b>
+<b class="fc"><i class="no-highlight">372</i>&nbsp;                .isEmpty();</b>
+<i class="no-highlight">373</i>&nbsp;    }
+<i class="no-highlight">374</i>&nbsp;
+<i class="no-highlight">375</i>&nbsp;    @Override
+<i class="no-highlight">376</i>&nbsp;    StudentAttributes makeAttributes(CourseStudent entity) {
+<b class="fc"><i class="no-highlight">377</i>&nbsp;        assert entity != null;</b>
+<i class="no-highlight">378</i>&nbsp;
+<b class="fc"><i class="no-highlight">379</i>&nbsp;        return StudentAttributes.valueOf(entity);</b>
+<i class="no-highlight">380</i>&nbsp;    }
+<i class="no-highlight">381</i>&nbsp;
+<i class="no-highlight">382</i>&nbsp;    @Override
+<i class="no-highlight">383</i>&nbsp;    CourseStudent convertToEntityForSaving(StudentAttributes attributes) throws EntityAlreadyExistsException {
+<b class="fc"><i class="no-highlight">384</i>&nbsp;        int numTries = 0;</b>
+<b class="fc"><i class="no-highlight">385</i>&nbsp;        while (numTries &lt; MAX_KEY_REGENERATION_TRIES) {</b>
+<b class="fc"><i class="no-highlight">386</i>&nbsp;            CourseStudent student = attributes.toEntity();</b>
+<b class="fc"><i class="no-highlight">387</i>&nbsp;            Key&lt;CourseStudent&gt; existingStudent =</b>
+<b class="fc"><i class="no-highlight">388</i>&nbsp;                    load().filter(&quot;registrationKey =&quot;, student.getRegistrationKey()).keys().first().now();</b>
+<b class="fc"><i class="no-highlight">389</i>&nbsp;            if (existingStudent == null) {</b>
+<b class="fc"><i class="no-highlight">390</i>&nbsp;                return student;</b>
+<i class="no-highlight">391</i>&nbsp;            }
+<b class="nc"><i class="no-highlight">392</i>&nbsp;            numTries++;</b>
+<b class="nc"><i class="no-highlight">393</i>&nbsp;        }</b>
+<b class="nc"><i class="no-highlight">394</i>&nbsp;        log.severe(&quot;Failed to generate new registration key for student after &quot; + MAX_KEY_REGENERATION_TRIES + &quot; tries&quot;);</b>
+<b class="nc"><i class="no-highlight">395</i>&nbsp;        throw new EntityAlreadyExistsException(&quot;Unable to create new student&quot;);</b>
+<i class="no-highlight">396</i>&nbsp;    }
+<i class="no-highlight">397</i>&nbsp;
+<i class="no-highlight">398</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-25 11:18</div>
+</div>
+</body>
+</html>

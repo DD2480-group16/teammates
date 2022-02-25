@@ -1,0 +1,172 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > GoogleRecaptchaService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.logic.core</a>
+</div>
+
+<h1>Coverage Summary for Class: GoogleRecaptchaService (teammates.logic.core)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GoogleRecaptchaService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (3/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (16/20)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.logic.core;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.io.IOException;
+<i class="no-highlight">4</i>&nbsp;import java.net.URISyntaxException;
+<i class="no-highlight">5</i>&nbsp;
+<i class="no-highlight">6</i>&nbsp;import org.apache.http.client.utils.URIBuilder;
+<i class="no-highlight">7</i>&nbsp;
+<i class="no-highlight">8</i>&nbsp;import com.google.gson.JsonArray;
+<i class="no-highlight">9</i>&nbsp;import com.google.gson.JsonObject;
+<i class="no-highlight">10</i>&nbsp;
+<i class="no-highlight">11</i>&nbsp;import teammates.common.util.HttpRequest;
+<i class="no-highlight">12</i>&nbsp;import teammates.common.util.JsonUtils;
+<i class="no-highlight">13</i>&nbsp;import teammates.common.util.Logger;
+<i class="no-highlight">14</i>&nbsp;
+<i class="no-highlight">15</i>&nbsp;/**
+<i class="no-highlight">16</i>&nbsp; * Google-based reCAPTCHA verifier service.
+<i class="no-highlight">17</i>&nbsp; *
+<i class="no-highlight">18</i>&nbsp; * @see &lt;a href=&quot;https://developers.google.com/recaptcha/docs/verify&quot;&gt;reCAPTCHA user response verification API&lt;/a&gt;
+<i class="no-highlight">19</i>&nbsp; */
+<i class="no-highlight">20</i>&nbsp;public class GoogleRecaptchaService implements RecaptchaService {
+<i class="no-highlight">21</i>&nbsp;
+<i class="no-highlight">22</i>&nbsp;    /** The Google reCAPTCHA API URL to verify the response token. */
+<i class="no-highlight">23</i>&nbsp;    private static final String VERIFY_URL = &quot;https://www.google.com/recaptcha/api/siteverify&quot;;
+<i class="no-highlight">24</i>&nbsp;
+<b class="fc"><i class="no-highlight">25</i>&nbsp;    private static final Logger log = Logger.getLogger();</b>
+<i class="no-highlight">26</i>&nbsp;
+<i class="no-highlight">27</i>&nbsp;    private final String secretKey;
+<i class="no-highlight">28</i>&nbsp;
+<b class="fc"><i class="no-highlight">29</i>&nbsp;    public GoogleRecaptchaService(String secretKey) {</b>
+<b class="fc"><i class="no-highlight">30</i>&nbsp;        this.secretKey = secretKey;</b>
+<i class="no-highlight">31</i>&nbsp;    }
+<i class="no-highlight">32</i>&nbsp;
+<i class="no-highlight">33</i>&nbsp;    @Override
+<i class="no-highlight">34</i>&nbsp;    public boolean isVerificationSuccessful(String captchaResponse) {
+<b class="fc"><i class="no-highlight">35</i>&nbsp;        if (secretKey == null || secretKey.isEmpty()) {</b>
+<b class="fc"><i class="no-highlight">36</i>&nbsp;            return false;</b>
+<i class="no-highlight">37</i>&nbsp;        }
+<i class="no-highlight">38</i>&nbsp;
+<b class="fc"><i class="no-highlight">39</i>&nbsp;        if (captchaResponse == null || captchaResponse.isEmpty()) {</b>
+<b class="fc"><i class="no-highlight">40</i>&nbsp;            return false;</b>
+<i class="no-highlight">41</i>&nbsp;        }
+<i class="no-highlight">42</i>&nbsp;
+<i class="no-highlight">43</i>&nbsp;        try {
+<b class="fc"><i class="no-highlight">44</i>&nbsp;            String response = getApiResponse(captchaResponse, secretKey);</b>
+<b class="fc"><i class="no-highlight">45</i>&nbsp;            JsonObject responseInJson = JsonUtils.parse(response).getAsJsonObject();</b>
+<i class="no-highlight">46</i>&nbsp;
+<b class="fc"><i class="no-highlight">47</i>&nbsp;            if (responseInJson.has(&quot;error-codes&quot;)) {</b>
+<b class="fc"><i class="no-highlight">48</i>&nbsp;                JsonArray errorCodes = responseInJson.get(&quot;error-codes&quot;).getAsJsonArray();</b>
+<b class="fc"><i class="no-highlight">49</i>&nbsp;                log.warning(&quot;Error codes during reCAPTCHA verification: &quot; + errorCodes.toString());</b>
+<i class="no-highlight">50</i>&nbsp;            }
+<i class="no-highlight">51</i>&nbsp;
+<b class="fc"><i class="no-highlight">52</i>&nbsp;            return Boolean.parseBoolean(responseInJson.get(&quot;success&quot;).toString());</b>
+<b class="fc"><i class="no-highlight">53</i>&nbsp;        } catch (Exception e) {</b>
+<b class="fc"><i class="no-highlight">54</i>&nbsp;            log.severe(&quot;&quot;, e);</b>
+<b class="fc"><i class="no-highlight">55</i>&nbsp;            return false;</b>
+<i class="no-highlight">56</i>&nbsp;        }
+<i class="no-highlight">57</i>&nbsp;    }
+<i class="no-highlight">58</i>&nbsp;
+<i class="no-highlight">59</i>&nbsp;    String getApiResponse(String captchaResponse, String secretKey) throws URISyntaxException, IOException {
+<b class="nc"><i class="no-highlight">60</i>&nbsp;        URIBuilder urlb = new URIBuilder(VERIFY_URL);</b>
+<b class="nc"><i class="no-highlight">61</i>&nbsp;        urlb.setParameter(&quot;secret&quot;, secretKey);</b>
+<b class="nc"><i class="no-highlight">62</i>&nbsp;        urlb.setParameter(&quot;response&quot;, captchaResponse);</b>
+<i class="no-highlight">63</i>&nbsp;
+<b class="nc"><i class="no-highlight">64</i>&nbsp;        return HttpRequest.executeGetRequest(urlb.build());</b>
+<i class="no-highlight">65</i>&nbsp;    }
+<i class="no-highlight">66</i>&nbsp;
+<i class="no-highlight">67</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-25 11:18</div>
+</div>
+</body>
+</html>

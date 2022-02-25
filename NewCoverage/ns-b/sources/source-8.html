@@ -1,0 +1,537 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > FeedbackResponsesDb</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">teammates.storage.api</a>
+</div>
+
+<h1>Coverage Summary for Class: FeedbackResponsesDb (teammates.storage.api)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FeedbackResponsesDb</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (33/33)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    99.4%
+  </span>
+  <span class="absValue">
+    (177/178)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package teammates.storage.api;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import static com.googlecode.objectify.ObjectifyService.ofy;
+<i class="no-highlight">4</i>&nbsp;
+<i class="no-highlight">5</i>&nbsp;import java.util.ArrayList;
+<i class="no-highlight">6</i>&nbsp;import java.util.Collection;
+<i class="no-highlight">7</i>&nbsp;import java.util.HashMap;
+<i class="no-highlight">8</i>&nbsp;import java.util.HashSet;
+<i class="no-highlight">9</i>&nbsp;import java.util.List;
+<i class="no-highlight">10</i>&nbsp;import java.util.Map;
+<i class="no-highlight">11</i>&nbsp;import java.util.Set;
+<i class="no-highlight">12</i>&nbsp;
+<i class="no-highlight">13</i>&nbsp;import com.googlecode.objectify.Key;
+<i class="no-highlight">14</i>&nbsp;import com.googlecode.objectify.cmd.LoadType;
+<i class="no-highlight">15</i>&nbsp;import com.googlecode.objectify.cmd.Query;
+<i class="no-highlight">16</i>&nbsp;
+<i class="no-highlight">17</i>&nbsp;import teammates.common.datatransfer.AttributesDeletionQuery;
+<i class="no-highlight">18</i>&nbsp;import teammates.common.datatransfer.attributes.FeedbackResponseAttributes;
+<i class="no-highlight">19</i>&nbsp;import teammates.common.exception.EntityAlreadyExistsException;
+<i class="no-highlight">20</i>&nbsp;import teammates.common.exception.EntityDoesNotExistException;
+<i class="no-highlight">21</i>&nbsp;import teammates.common.exception.InvalidParametersException;
+<i class="no-highlight">22</i>&nbsp;import teammates.storage.entity.FeedbackResponse;
+<i class="no-highlight">23</i>&nbsp;
+<i class="no-highlight">24</i>&nbsp;/**
+<i class="no-highlight">25</i>&nbsp; * Handles CRUD operations for feedback responses.
+<i class="no-highlight">26</i>&nbsp; *
+<i class="no-highlight">27</i>&nbsp; * @see FeedbackResponse
+<i class="no-highlight">28</i>&nbsp; * @see FeedbackResponseAttributes
+<i class="no-highlight">29</i>&nbsp; */
+<b class="fc"><i class="no-highlight">30</i>&nbsp;public final class FeedbackResponsesDb extends EntitiesDb&lt;FeedbackResponse, FeedbackResponseAttributes&gt; {</b>
+<i class="no-highlight">31</i>&nbsp;
+<b class="fc"><i class="no-highlight">32</i>&nbsp;    private static final FeedbackResponsesDb instance = new FeedbackResponsesDb();</b>
+<i class="no-highlight">33</i>&nbsp;
+<b class="fc"><i class="no-highlight">34</i>&nbsp;    private FeedbackResponsesDb() {</b>
+<i class="no-highlight">35</i>&nbsp;        // prevent initialization
+<i class="no-highlight">36</i>&nbsp;    }
+<i class="no-highlight">37</i>&nbsp;
+<i class="no-highlight">38</i>&nbsp;    public static FeedbackResponsesDb inst() {
+<b class="fc"><i class="no-highlight">39</i>&nbsp;        return instance;</b>
+<i class="no-highlight">40</i>&nbsp;    }
+<i class="no-highlight">41</i>&nbsp;
+<i class="no-highlight">42</i>&nbsp;    /**
+<i class="no-highlight">43</i>&nbsp;     * Gets a set of giver identifiers that has at least one response under a feedback session.
+<i class="no-highlight">44</i>&nbsp;     */
+<i class="no-highlight">45</i>&nbsp;    public Set&lt;String&gt; getGiverSetThatAnswerFeedbackSession(String courseId, String feedbackSessionName) {
+<b class="fc"><i class="no-highlight">46</i>&nbsp;        assert courseId != null;</b>
+<b class="fc"><i class="no-highlight">47</i>&nbsp;        assert feedbackSessionName != null;</b>
+<i class="no-highlight">48</i>&nbsp;
+<b class="fc"><i class="no-highlight">49</i>&nbsp;        List&lt;Key&lt;FeedbackResponse&gt;&gt; keysOfResponses =</b>
+<b class="fc"><i class="no-highlight">50</i>&nbsp;                load().filter(&quot;courseId =&quot;, courseId)</b>
+<b class="fc"><i class="no-highlight">51</i>&nbsp;                        .filter(&quot;feedbackSessionName =&quot;, feedbackSessionName)</b>
+<b class="fc"><i class="no-highlight">52</i>&nbsp;                        .keys()</b>
+<b class="fc"><i class="no-highlight">53</i>&nbsp;                        .list();</b>
+<i class="no-highlight">54</i>&nbsp;
+<i class="no-highlight">55</i>&nbsp;        // the following process makes use of the key pattern of feedback response entity
+<i class="no-highlight">56</i>&nbsp;        // see generateId() in FeedbackResponse.java
+<b class="fc"><i class="no-highlight">57</i>&nbsp;        Set&lt;String&gt; giverSet = new HashSet&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">58</i>&nbsp;        for (Key&lt;FeedbackResponse&gt; key : keysOfResponses) {</b>
+<b class="fc"><i class="no-highlight">59</i>&nbsp;            String[] tokens = key.getName().split(&quot;%&quot;);</b>
+<b class="fc"><i class="no-highlight">60</i>&nbsp;            if (tokens.length &gt;= 3) {</b>
+<b class="fc"><i class="no-highlight">61</i>&nbsp;                giverSet.add(tokens[1]);</b>
+<i class="no-highlight">62</i>&nbsp;            }
+<b class="fc"><i class="no-highlight">63</i>&nbsp;        }</b>
+<i class="no-highlight">64</i>&nbsp;
+<b class="fc"><i class="no-highlight">65</i>&nbsp;        return giverSet;</b>
+<i class="no-highlight">66</i>&nbsp;    }
+<i class="no-highlight">67</i>&nbsp;
+<i class="no-highlight">68</i>&nbsp;    /**
+<i class="no-highlight">69</i>&nbsp;     * Gets a feedback response.
+<i class="no-highlight">70</i>&nbsp;     */
+<i class="no-highlight">71</i>&nbsp;    public FeedbackResponseAttributes getFeedbackResponse(String feedbackResponseId) {
+<b class="fc"><i class="no-highlight">72</i>&nbsp;        assert feedbackResponseId != null;</b>
+<i class="no-highlight">73</i>&nbsp;
+<b class="fc"><i class="no-highlight">74</i>&nbsp;        FeedbackResponse fr = getFeedbackResponseEntity(feedbackResponseId);</b>
+<i class="no-highlight">75</i>&nbsp;
+<b class="fc"><i class="no-highlight">76</i>&nbsp;        return makeAttributesOrNull(fr);</b>
+<i class="no-highlight">77</i>&nbsp;    }
+<i class="no-highlight">78</i>&nbsp;
+<i class="no-highlight">79</i>&nbsp;    /**
+<i class="no-highlight">80</i>&nbsp;     * Gets a feedback response by unique constraint question-giver-receiver.
+<i class="no-highlight">81</i>&nbsp;     */
+<i class="no-highlight">82</i>&nbsp;    public FeedbackResponseAttributes getFeedbackResponse(
+<i class="no-highlight">83</i>&nbsp;            String feedbackQuestionId, String giverEmail, String receiverEmail) {
+<b class="fc"><i class="no-highlight">84</i>&nbsp;        assert feedbackQuestionId != null;</b>
+<b class="fc"><i class="no-highlight">85</i>&nbsp;        assert giverEmail != null;</b>
+<b class="fc"><i class="no-highlight">86</i>&nbsp;        assert receiverEmail != null;</b>
+<i class="no-highlight">87</i>&nbsp;
+<b class="fc"><i class="no-highlight">88</i>&nbsp;        FeedbackResponse fr =</b>
+<b class="fc"><i class="no-highlight">89</i>&nbsp;                getFeedbackResponseEntity(FeedbackResponse.generateId(feedbackQuestionId, giverEmail, receiverEmail));</b>
+<i class="no-highlight">90</i>&nbsp;
+<b class="fc"><i class="no-highlight">91</i>&nbsp;        return makeAttributesOrNull(fr);</b>
+<i class="no-highlight">92</i>&nbsp;    }
+<i class="no-highlight">93</i>&nbsp;
+<i class="no-highlight">94</i>&nbsp;    /**
+<i class="no-highlight">95</i>&nbsp;     * Gets all feedback responses of a question in a specific section.
+<i class="no-highlight">96</i>&nbsp;     */
+<i class="no-highlight">97</i>&nbsp;    public List&lt;FeedbackResponseAttributes&gt; getFeedbackResponsesForQuestionInSection(
+<i class="no-highlight">98</i>&nbsp;            String feedbackQuestionId, String section) {
+<b class="fc"><i class="no-highlight">99</i>&nbsp;        assert feedbackQuestionId != null;</b>
+<b class="fc"><i class="no-highlight">100</i>&nbsp;        assert section != null;</b>
+<i class="no-highlight">101</i>&nbsp;
+<b class="fc"><i class="no-highlight">102</i>&nbsp;        return makeAttributes(getFeedbackResponseEntitiesForQuestionInSection(feedbackQuestionId, section));</b>
+<i class="no-highlight">103</i>&nbsp;    }
+<i class="no-highlight">104</i>&nbsp;
+<i class="no-highlight">105</i>&nbsp;    /**
+<i class="no-highlight">106</i>&nbsp;     * Gets all feedback responses for a question.
+<i class="no-highlight">107</i>&nbsp;     */
+<i class="no-highlight">108</i>&nbsp;    public List&lt;FeedbackResponseAttributes&gt; getFeedbackResponsesForQuestion(String feedbackQuestionId) {
+<b class="fc"><i class="no-highlight">109</i>&nbsp;        assert feedbackQuestionId != null;</b>
+<i class="no-highlight">110</i>&nbsp;
+<b class="fc"><i class="no-highlight">111</i>&nbsp;        return makeAttributes(getFeedbackResponseEntitiesForQuestion(feedbackQuestionId));</b>
+<i class="no-highlight">112</i>&nbsp;    }
+<i class="no-highlight">113</i>&nbsp;
+<i class="no-highlight">114</i>&nbsp;    /**
+<i class="no-highlight">115</i>&nbsp;     * Checks whether there are responses for a question.
+<i class="no-highlight">116</i>&nbsp;     */
+<i class="no-highlight">117</i>&nbsp;    public boolean areThereResponsesForQuestion(String feedbackQuestionId) {
+<b class="fc"><i class="no-highlight">118</i>&nbsp;        assert feedbackQuestionId != null;</b>
+<i class="no-highlight">119</i>&nbsp;
+<b class="fc"><i class="no-highlight">120</i>&nbsp;        return !load()</b>
+<b class="fc"><i class="no-highlight">121</i>&nbsp;                .filter(&quot;feedbackQuestionId =&quot;, feedbackQuestionId)</b>
+<b class="fc"><i class="no-highlight">122</i>&nbsp;                .limit(1)</b>
+<b class="fc"><i class="no-highlight">123</i>&nbsp;                .list()</b>
+<b class="fc"><i class="no-highlight">124</i>&nbsp;                .isEmpty();</b>
+<i class="no-highlight">125</i>&nbsp;    }
+<i class="no-highlight">126</i>&nbsp;
+<i class="no-highlight">127</i>&nbsp;    /**
+<i class="no-highlight">128</i>&nbsp;     * Gets all responses of a feedback session in a course.
+<i class="no-highlight">129</i>&nbsp;     */
+<i class="no-highlight">130</i>&nbsp;    public List&lt;FeedbackResponseAttributes&gt; getFeedbackResponsesForSession(
+<i class="no-highlight">131</i>&nbsp;            String feedbackSessionName, String courseId) {
+<b class="fc"><i class="no-highlight">132</i>&nbsp;        assert feedbackSessionName != null;</b>
+<b class="fc"><i class="no-highlight">133</i>&nbsp;        assert courseId != null;</b>
+<i class="no-highlight">134</i>&nbsp;
+<b class="fc"><i class="no-highlight">135</i>&nbsp;        return makeAttributes(getFeedbackResponseEntitiesForSession(feedbackSessionName, courseId));</b>
+<i class="no-highlight">136</i>&nbsp;    }
+<i class="no-highlight">137</i>&nbsp;
+<i class="no-highlight">138</i>&nbsp;    /**
+<i class="no-highlight">139</i>&nbsp;     * Gets all responses given to/from a section in a feedback session in a course.
+<i class="no-highlight">140</i>&nbsp;     */
+<i class="no-highlight">141</i>&nbsp;    public List&lt;FeedbackResponseAttributes&gt; getFeedbackResponsesForSessionInSection(
+<i class="no-highlight">142</i>&nbsp;            String feedbackSessionName, String courseId, String section) {
+<b class="fc"><i class="no-highlight">143</i>&nbsp;        assert feedbackSessionName != null;</b>
+<b class="fc"><i class="no-highlight">144</i>&nbsp;        assert courseId != null;</b>
+<b class="fc"><i class="no-highlight">145</i>&nbsp;        assert section != null;</b>
+<i class="no-highlight">146</i>&nbsp;
+<b class="fc"><i class="no-highlight">147</i>&nbsp;        return makeAttributes(getFeedbackResponseEntitiesForSessionInSection(feedbackSessionName, courseId, section));</b>
+<i class="no-highlight">148</i>&nbsp;    }
+<i class="no-highlight">149</i>&nbsp;
+<i class="no-highlight">150</i>&nbsp;    /**
+<i class="no-highlight">151</i>&nbsp;     * Gets all responses given by a user for a question.
+<i class="no-highlight">152</i>&nbsp;     */
+<i class="no-highlight">153</i>&nbsp;    public List&lt;FeedbackResponseAttributes&gt; getFeedbackResponsesFromGiverForQuestion(
+<i class="no-highlight">154</i>&nbsp;            String feedbackQuestionId, String giverEmail) {
+<b class="fc"><i class="no-highlight">155</i>&nbsp;        assert feedbackQuestionId != null;</b>
+<b class="fc"><i class="no-highlight">156</i>&nbsp;        assert giverEmail != null;</b>
+<i class="no-highlight">157</i>&nbsp;
+<b class="fc"><i class="no-highlight">158</i>&nbsp;        return makeAttributes(getFeedbackResponseEntitiesFromGiverForQuestion(feedbackQuestionId, giverEmail));</b>
+<i class="no-highlight">159</i>&nbsp;    }
+<i class="no-highlight">160</i>&nbsp;
+<i class="no-highlight">161</i>&nbsp;    /**
+<i class="no-highlight">162</i>&nbsp;     * Gets all responses received by a user for a question.
+<i class="no-highlight">163</i>&nbsp;     */
+<i class="no-highlight">164</i>&nbsp;    public List&lt;FeedbackResponseAttributes&gt; getFeedbackResponsesForReceiverForQuestion(
+<i class="no-highlight">165</i>&nbsp;            String feedbackQuestionId, String receiver) {
+<b class="fc"><i class="no-highlight">166</i>&nbsp;        assert feedbackQuestionId != null;</b>
+<b class="fc"><i class="no-highlight">167</i>&nbsp;        assert receiver != null;</b>
+<i class="no-highlight">168</i>&nbsp;
+<b class="fc"><i class="no-highlight">169</i>&nbsp;        return makeAttributes(getFeedbackResponseEntitiesForReceiverForQuestion(feedbackQuestionId, receiver));</b>
+<i class="no-highlight">170</i>&nbsp;    }
+<i class="no-highlight">171</i>&nbsp;
+<i class="no-highlight">172</i>&nbsp;    /**
+<i class="no-highlight">173</i>&nbsp;     * Checks whether a user has responses in a session.
+<i class="no-highlight">174</i>&nbsp;     */
+<i class="no-highlight">175</i>&nbsp;    public boolean hasResponsesFromGiverInSession(
+<i class="no-highlight">176</i>&nbsp;            String giverIdentifier, String feedbackSessionName, String courseId) {
+<b class="fc"><i class="no-highlight">177</i>&nbsp;        assert giverIdentifier != null;</b>
+<b class="fc"><i class="no-highlight">178</i>&nbsp;        assert feedbackSessionName != null;</b>
+<b class="fc"><i class="no-highlight">179</i>&nbsp;        assert courseId != null;</b>
+<i class="no-highlight">180</i>&nbsp;
+<b class="fc"><i class="no-highlight">181</i>&nbsp;        return !load()</b>
+<b class="fc"><i class="no-highlight">182</i>&nbsp;                .filter(&quot;giverEmail =&quot;, giverIdentifier)</b>
+<b class="fc"><i class="no-highlight">183</i>&nbsp;                .filter(&quot;feedbackSessionName =&quot;, feedbackSessionName)</b>
+<b class="fc"><i class="no-highlight">184</i>&nbsp;                .filter(&quot;courseId =&quot;, courseId)</b>
+<b class="fc"><i class="no-highlight">185</i>&nbsp;                .limit(1)</b>
+<b class="fc"><i class="no-highlight">186</i>&nbsp;                .keys() // key query is free query</b>
+<b class="fc"><i class="no-highlight">187</i>&nbsp;                .list()</b>
+<b class="fc"><i class="no-highlight">188</i>&nbsp;                .isEmpty();</b>
+<i class="no-highlight">189</i>&nbsp;    }
+<i class="no-highlight">190</i>&nbsp;
+<i class="no-highlight">191</i>&nbsp;    /**
+<i class="no-highlight">192</i>&nbsp;     * Gets all responses given to a user in a course.
+<i class="no-highlight">193</i>&nbsp;     */
+<i class="no-highlight">194</i>&nbsp;    public List&lt;FeedbackResponseAttributes&gt; getFeedbackResponsesForReceiverForCourse(
+<i class="no-highlight">195</i>&nbsp;            String courseId, String receiver) {
+<b class="fc"><i class="no-highlight">196</i>&nbsp;        assert courseId != null;</b>
+<b class="fc"><i class="no-highlight">197</i>&nbsp;        assert receiver != null;</b>
+<i class="no-highlight">198</i>&nbsp;
+<b class="fc"><i class="no-highlight">199</i>&nbsp;        return makeAttributes(getFeedbackResponseEntitiesForReceiverForCourse(courseId, receiver));</b>
+<i class="no-highlight">200</i>&nbsp;    }
+<i class="no-highlight">201</i>&nbsp;
+<i class="no-highlight">202</i>&nbsp;    /**
+<i class="no-highlight">203</i>&nbsp;     * Gets all responses given by a user in a course.
+<i class="no-highlight">204</i>&nbsp;     */
+<i class="no-highlight">205</i>&nbsp;    public List&lt;FeedbackResponseAttributes&gt; getFeedbackResponsesFromGiverForCourse(
+<i class="no-highlight">206</i>&nbsp;            String courseId, String giverEmail) {
+<b class="fc"><i class="no-highlight">207</i>&nbsp;        assert courseId != null;</b>
+<b class="fc"><i class="no-highlight">208</i>&nbsp;        assert giverEmail != null;</b>
+<i class="no-highlight">209</i>&nbsp;
+<b class="fc"><i class="no-highlight">210</i>&nbsp;        return makeAttributes(getFeedbackResponseEntitiesFromGiverForCourse(courseId, giverEmail));</b>
+<i class="no-highlight">211</i>&nbsp;    }
+<i class="no-highlight">212</i>&nbsp;
+<i class="no-highlight">213</i>&nbsp;    /**
+<i class="no-highlight">214</i>&nbsp;     * Updates a feedback response with {@link FeedbackResponseAttributes.UpdateOptions}.
+<i class="no-highlight">215</i>&nbsp;     *
+<i class="no-highlight">216</i>&nbsp;     * &lt;p&gt;If the giver/recipient field is changed, the response is updated by recreating the response
+<i class="no-highlight">217</i>&nbsp;     * as question-giver-recipient is the primary key.
+<i class="no-highlight">218</i>&nbsp;     *
+<i class="no-highlight">219</i>&nbsp;     * @return updated feedback response
+<i class="no-highlight">220</i>&nbsp;     * @throws InvalidParametersException if attributes to update are not valid
+<i class="no-highlight">221</i>&nbsp;     * @throws EntityDoesNotExistException if the comment cannot be found
+<i class="no-highlight">222</i>&nbsp;     * @throws EntityAlreadyExistsException if the response cannot be updated
+<i class="no-highlight">223</i>&nbsp;     *         by recreation because of an existent response
+<i class="no-highlight">224</i>&nbsp;     */
+<i class="no-highlight">225</i>&nbsp;    public FeedbackResponseAttributes updateFeedbackResponse(FeedbackResponseAttributes.UpdateOptions updateOptions)
+<i class="no-highlight">226</i>&nbsp;            throws EntityDoesNotExistException, InvalidParametersException, EntityAlreadyExistsException {
+<b class="fc"><i class="no-highlight">227</i>&nbsp;        assert updateOptions != null;</b>
+<i class="no-highlight">228</i>&nbsp;
+<b class="fc"><i class="no-highlight">229</i>&nbsp;        FeedbackResponse oldResponse = getFeedbackResponseEntity(updateOptions.getFeedbackResponseId());</b>
+<b class="fc"><i class="no-highlight">230</i>&nbsp;        if (oldResponse == null) {</b>
+<b class="fc"><i class="no-highlight">231</i>&nbsp;            throw new EntityDoesNotExistException(ERROR_UPDATE_NON_EXISTENT);</b>
+<i class="no-highlight">232</i>&nbsp;        }
+<i class="no-highlight">233</i>&nbsp;
+<b class="fc"><i class="no-highlight">234</i>&nbsp;        FeedbackResponseAttributes newAttributes = makeAttributes(oldResponse);</b>
+<b class="fc"><i class="no-highlight">235</i>&nbsp;        newAttributes.update(updateOptions);</b>
+<i class="no-highlight">236</i>&nbsp;
+<b class="fc"><i class="no-highlight">237</i>&nbsp;        newAttributes.sanitizeForSaving();</b>
+<b class="fc"><i class="no-highlight">238</i>&nbsp;        if (!newAttributes.isValid()) {</b>
+<b class="nc"><i class="no-highlight">239</i>&nbsp;            throw new InvalidParametersException(newAttributes.getInvalidityInfo());</b>
+<i class="no-highlight">240</i>&nbsp;        }
+<i class="no-highlight">241</i>&nbsp;
+<b class="fc"><i class="no-highlight">242</i>&nbsp;        if (newAttributes.getRecipient().equals(oldResponse.getRecipientEmail())</b>
+<b class="fc"><i class="no-highlight">243</i>&nbsp;                &amp;&amp; newAttributes.getGiver().equals(oldResponse.getGiverEmail())) {</b>
+<i class="no-highlight">244</i>&nbsp;
+<i class="no-highlight">245</i>&nbsp;            // update only if change
+<b class="fc"><i class="no-highlight">246</i>&nbsp;            boolean hasSameAttributes =</b>
+<b class="fc"><i class="no-highlight">247</i>&nbsp;                    this.&lt;String&gt;hasSameValue(oldResponse.getGiverSection(), newAttributes.getGiverSection())</b>
+<b class="fc"><i class="no-highlight">248</i>&nbsp;                    &amp;&amp; this.&lt;String&gt;hasSameValue(oldResponse.getRecipientSection(), newAttributes.getRecipientSection())</b>
+<b class="fc"><i class="no-highlight">249</i>&nbsp;                    &amp;&amp; this.&lt;String&gt;hasSameValue(</b>
+<b class="fc"><i class="no-highlight">250</i>&nbsp;                            oldResponse.getAnswer(), newAttributes.getSerializedFeedbackResponseDetail());</b>
+<b class="fc"><i class="no-highlight">251</i>&nbsp;            if (hasSameAttributes) {</b>
+<b class="fc"><i class="no-highlight">252</i>&nbsp;                log.info(String.format(</b>
+<b class="fc"><i class="no-highlight">253</i>&nbsp;                        OPTIMIZED_SAVING_POLICY_APPLIED, FeedbackResponse.class.getSimpleName(), updateOptions));</b>
+<b class="fc"><i class="no-highlight">254</i>&nbsp;                return newAttributes;</b>
+<i class="no-highlight">255</i>&nbsp;            }
+<i class="no-highlight">256</i>&nbsp;
+<b class="fc"><i class="no-highlight">257</i>&nbsp;            oldResponse.setGiverSection(newAttributes.getGiverSection());</b>
+<b class="fc"><i class="no-highlight">258</i>&nbsp;            oldResponse.setRecipientSection(newAttributes.getRecipientSection());</b>
+<b class="fc"><i class="no-highlight">259</i>&nbsp;            oldResponse.setAnswer(newAttributes.getSerializedFeedbackResponseDetail());</b>
+<i class="no-highlight">260</i>&nbsp;
+<b class="fc"><i class="no-highlight">261</i>&nbsp;            saveEntity(oldResponse);</b>
+<i class="no-highlight">262</i>&nbsp;
+<b class="fc"><i class="no-highlight">263</i>&nbsp;            return makeAttributes(oldResponse);</b>
+<i class="no-highlight">264</i>&nbsp;        } else {
+<i class="no-highlight">265</i>&nbsp;            // need to recreate the entity
+<b class="fc"><i class="no-highlight">266</i>&nbsp;            newAttributes = FeedbackResponseAttributes</b>
+<b class="fc"><i class="no-highlight">267</i>&nbsp;                    .builder(newAttributes.getFeedbackQuestionId(), newAttributes.getGiver(),</b>
+<b class="fc"><i class="no-highlight">268</i>&nbsp;                             newAttributes.getRecipient())</b>
+<b class="fc"><i class="no-highlight">269</i>&nbsp;                    .withCourseId(newAttributes.getCourseId())</b>
+<b class="fc"><i class="no-highlight">270</i>&nbsp;                    .withFeedbackSessionName(newAttributes.getFeedbackSessionName())</b>
+<b class="fc"><i class="no-highlight">271</i>&nbsp;                    .withResponseDetails(newAttributes.getResponseDetailsCopy())</b>
+<b class="fc"><i class="no-highlight">272</i>&nbsp;                    .withGiverSection(newAttributes.getGiverSection())</b>
+<b class="fc"><i class="no-highlight">273</i>&nbsp;                    .withRecipientSection(newAttributes.getRecipientSection())</b>
+<b class="fc"><i class="no-highlight">274</i>&nbsp;                    .build();</b>
+<b class="fc"><i class="no-highlight">275</i>&nbsp;            newAttributes = createEntity(newAttributes);</b>
+<b class="fc"><i class="no-highlight">276</i>&nbsp;            deleteEntity(Key.create(FeedbackResponse.class, oldResponse.getId()));</b>
+<i class="no-highlight">277</i>&nbsp;
+<b class="fc"><i class="no-highlight">278</i>&nbsp;            return newAttributes;</b>
+<i class="no-highlight">279</i>&nbsp;        }
+<i class="no-highlight">280</i>&nbsp;    }
+<i class="no-highlight">281</i>&nbsp;
+<i class="no-highlight">282</i>&nbsp;    /**
+<i class="no-highlight">283</i>&nbsp;     * Deletes a feedback response.
+<i class="no-highlight">284</i>&nbsp;     */
+<i class="no-highlight">285</i>&nbsp;    public void deleteFeedbackResponse(String responseId) {
+<b class="fc"><i class="no-highlight">286</i>&nbsp;        assert responseId != null;</b>
+<i class="no-highlight">287</i>&nbsp;
+<b class="fc"><i class="no-highlight">288</i>&nbsp;        deleteEntity(Key.create(FeedbackResponse.class, responseId));</b>
+<i class="no-highlight">289</i>&nbsp;    }
+<i class="no-highlight">290</i>&nbsp;
+<i class="no-highlight">291</i>&nbsp;    /**
+<i class="no-highlight">292</i>&nbsp;     * Deletes responses using {@link AttributesDeletionQuery}.
+<i class="no-highlight">293</i>&nbsp;     */
+<i class="no-highlight">294</i>&nbsp;    public void deleteFeedbackResponses(AttributesDeletionQuery query) {
+<b class="fc"><i class="no-highlight">295</i>&nbsp;        assert query != null;</b>
+<i class="no-highlight">296</i>&nbsp;
+<b class="fc"><i class="no-highlight">297</i>&nbsp;        Query&lt;FeedbackResponse&gt; entitiesToDelete = load().project();</b>
+<b class="fc"><i class="no-highlight">298</i>&nbsp;        if (query.isCourseIdPresent()) {</b>
+<b class="fc"><i class="no-highlight">299</i>&nbsp;            entitiesToDelete = entitiesToDelete.filter(&quot;courseId =&quot;, query.getCourseId());</b>
+<i class="no-highlight">300</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">301</i>&nbsp;        if (query.isFeedbackSessionNamePresent()) {</b>
+<b class="fc"><i class="no-highlight">302</i>&nbsp;            entitiesToDelete = entitiesToDelete.filter(&quot;feedbackSessionName =&quot;, query.getFeedbackSessionName());</b>
+<i class="no-highlight">303</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">304</i>&nbsp;        if (query.isQuestionIdPresent()) {</b>
+<b class="fc"><i class="no-highlight">305</i>&nbsp;            entitiesToDelete = entitiesToDelete.filter(&quot;feedbackQuestionId =&quot;, query.getQuestionId());</b>
+<i class="no-highlight">306</i>&nbsp;        }
+<i class="no-highlight">307</i>&nbsp;
+<b class="fc"><i class="no-highlight">308</i>&nbsp;        deleteEntity(entitiesToDelete.keys().list());</b>
+<i class="no-highlight">309</i>&nbsp;    }
+<i class="no-highlight">310</i>&nbsp;
+<i class="no-highlight">311</i>&nbsp;    /**
+<i class="no-highlight">312</i>&nbsp;     * Returns true if there are existing responses in any feedback session in the course.
+<i class="no-highlight">313</i>&nbsp;     */
+<i class="no-highlight">314</i>&nbsp;    public boolean hasFeedbackResponseEntitiesForCourse(String courseId) {
+<b class="fc"><i class="no-highlight">315</i>&nbsp;        assert courseId != null;</b>
+<b class="fc"><i class="no-highlight">316</i>&nbsp;        return !load().filter(&quot;courseId =&quot;, courseId).limit(1).list().isEmpty();</b>
+<i class="no-highlight">317</i>&nbsp;    }
+<i class="no-highlight">318</i>&nbsp;
+<i class="no-highlight">319</i>&nbsp;    private FeedbackResponse getFeedbackResponseEntity(String feedbackResponseId) {
+<b class="fc"><i class="no-highlight">320</i>&nbsp;        return load().id(feedbackResponseId).now();</b>
+<i class="no-highlight">321</i>&nbsp;    }
+<i class="no-highlight">322</i>&nbsp;
+<i class="no-highlight">323</i>&nbsp;    private Collection&lt;FeedbackResponse&gt; getFeedbackResponseEntitiesForQuestionInSection(
+<i class="no-highlight">324</i>&nbsp;                String feedbackQuestionId, String section) {
+<b class="fc"><i class="no-highlight">325</i>&nbsp;        List&lt;FeedbackResponse&gt; allResponses = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">326</i>&nbsp;
+<b class="fc"><i class="no-highlight">327</i>&nbsp;        allResponses.addAll(load()</b>
+<b class="fc"><i class="no-highlight">328</i>&nbsp;                .filter(&quot;feedbackQuestionId =&quot;, feedbackQuestionId)</b>
+<b class="fc"><i class="no-highlight">329</i>&nbsp;                .filter(&quot;giverSection =&quot;, section)</b>
+<b class="fc"><i class="no-highlight">330</i>&nbsp;                .list());</b>
+<b class="fc"><i class="no-highlight">331</i>&nbsp;        allResponses.addAll(load()</b>
+<b class="fc"><i class="no-highlight">332</i>&nbsp;                .filter(&quot;feedbackQuestionId =&quot;, feedbackQuestionId)</b>
+<b class="fc"><i class="no-highlight">333</i>&nbsp;                .filter(&quot;receiverSection =&quot;, section)</b>
+<b class="fc"><i class="no-highlight">334</i>&nbsp;                .list());</b>
+<i class="no-highlight">335</i>&nbsp;
+<b class="fc"><i class="no-highlight">336</i>&nbsp;        return removeDuplicates(allResponses);</b>
+<i class="no-highlight">337</i>&nbsp;    }
+<i class="no-highlight">338</i>&nbsp;
+<i class="no-highlight">339</i>&nbsp;    private List&lt;FeedbackResponse&gt; getFeedbackResponseEntitiesForQuestion(String feedbackQuestionId) {
+<b class="fc"><i class="no-highlight">340</i>&nbsp;        return load()</b>
+<b class="fc"><i class="no-highlight">341</i>&nbsp;                .filter(&quot;feedbackQuestionId =&quot;, feedbackQuestionId)</b>
+<b class="fc"><i class="no-highlight">342</i>&nbsp;                .list();</b>
+<i class="no-highlight">343</i>&nbsp;    }
+<i class="no-highlight">344</i>&nbsp;
+<i class="no-highlight">345</i>&nbsp;    private List&lt;FeedbackResponse&gt; getFeedbackResponseEntitiesForSession(String feedbackSessionName, String courseId) {
+<b class="fc"><i class="no-highlight">346</i>&nbsp;        return load()</b>
+<b class="fc"><i class="no-highlight">347</i>&nbsp;                .filter(&quot;feedbackSessionName =&quot;, feedbackSessionName)</b>
+<b class="fc"><i class="no-highlight">348</i>&nbsp;                .filter(&quot;courseId =&quot;, courseId)</b>
+<b class="fc"><i class="no-highlight">349</i>&nbsp;                .list();</b>
+<i class="no-highlight">350</i>&nbsp;    }
+<i class="no-highlight">351</i>&nbsp;
+<i class="no-highlight">352</i>&nbsp;    private Collection&lt;FeedbackResponse&gt; getFeedbackResponseEntitiesForSessionInSection(
+<i class="no-highlight">353</i>&nbsp;            String feedbackSessionName, String courseId, String section) {
+<b class="fc"><i class="no-highlight">354</i>&nbsp;        List&lt;FeedbackResponse&gt; allResponse = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">355</i>&nbsp;
+<b class="fc"><i class="no-highlight">356</i>&nbsp;        allResponse.addAll(load()</b>
+<b class="fc"><i class="no-highlight">357</i>&nbsp;                .filter(&quot;feedbackSessionName =&quot;, feedbackSessionName)</b>
+<b class="fc"><i class="no-highlight">358</i>&nbsp;                .filter(&quot;courseId =&quot;, courseId)</b>
+<b class="fc"><i class="no-highlight">359</i>&nbsp;                .filter(&quot;giverSection =&quot;, section)</b>
+<b class="fc"><i class="no-highlight">360</i>&nbsp;                .list());</b>
+<i class="no-highlight">361</i>&nbsp;
+<b class="fc"><i class="no-highlight">362</i>&nbsp;        allResponse.addAll(load()</b>
+<b class="fc"><i class="no-highlight">363</i>&nbsp;                .filter(&quot;feedbackSessionName =&quot;, feedbackSessionName)</b>
+<b class="fc"><i class="no-highlight">364</i>&nbsp;                .filter(&quot;courseId =&quot;, courseId)</b>
+<b class="fc"><i class="no-highlight">365</i>&nbsp;                .filter(&quot;receiverSection =&quot;, section)</b>
+<b class="fc"><i class="no-highlight">366</i>&nbsp;                .list());</b>
+<i class="no-highlight">367</i>&nbsp;
+<b class="fc"><i class="no-highlight">368</i>&nbsp;        return removeDuplicates(allResponse);</b>
+<i class="no-highlight">369</i>&nbsp;    }
+<i class="no-highlight">370</i>&nbsp;
+<i class="no-highlight">371</i>&nbsp;    private Collection&lt;FeedbackResponse&gt; removeDuplicates(Collection&lt;FeedbackResponse&gt; responses) {
+<b class="fc"><i class="no-highlight">372</i>&nbsp;        Map&lt;String, FeedbackResponse&gt; uniqueResponses = new HashMap&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">373</i>&nbsp;        for (FeedbackResponse response : responses) {</b>
+<b class="fc"><i class="no-highlight">374</i>&nbsp;            uniqueResponses.put(response.getId(), response);</b>
+<b class="fc"><i class="no-highlight">375</i>&nbsp;        }</b>
+<b class="fc"><i class="no-highlight">376</i>&nbsp;        return uniqueResponses.values();</b>
+<i class="no-highlight">377</i>&nbsp;    }
+<i class="no-highlight">378</i>&nbsp;
+<i class="no-highlight">379</i>&nbsp;    private List&lt;FeedbackResponse&gt; getFeedbackResponseEntitiesFromGiverForQuestion(
+<i class="no-highlight">380</i>&nbsp;            String feedbackQuestionId, String giverEmail) {
+<b class="fc"><i class="no-highlight">381</i>&nbsp;        return load()</b>
+<b class="fc"><i class="no-highlight">382</i>&nbsp;                .filter(&quot;feedbackQuestionId =&quot;, feedbackQuestionId)</b>
+<b class="fc"><i class="no-highlight">383</i>&nbsp;                .filter(&quot;giverEmail =&quot;, giverEmail)</b>
+<b class="fc"><i class="no-highlight">384</i>&nbsp;                .list();</b>
+<i class="no-highlight">385</i>&nbsp;    }
+<i class="no-highlight">386</i>&nbsp;
+<i class="no-highlight">387</i>&nbsp;    private List&lt;FeedbackResponse&gt; getFeedbackResponseEntitiesForReceiverForQuestion(
+<i class="no-highlight">388</i>&nbsp;            String feedbackQuestionId, String receiver) {
+<b class="fc"><i class="no-highlight">389</i>&nbsp;        return load()</b>
+<b class="fc"><i class="no-highlight">390</i>&nbsp;                .filter(&quot;feedbackQuestionId =&quot;, feedbackQuestionId)</b>
+<b class="fc"><i class="no-highlight">391</i>&nbsp;                .filter(&quot;receiver =&quot;, receiver)</b>
+<b class="fc"><i class="no-highlight">392</i>&nbsp;                .list();</b>
+<i class="no-highlight">393</i>&nbsp;    }
+<i class="no-highlight">394</i>&nbsp;
+<i class="no-highlight">395</i>&nbsp;    private List&lt;FeedbackResponse&gt; getFeedbackResponseEntitiesForReceiverForCourse(
+<i class="no-highlight">396</i>&nbsp;            String courseId, String receiver) {
+<b class="fc"><i class="no-highlight">397</i>&nbsp;        return load()</b>
+<b class="fc"><i class="no-highlight">398</i>&nbsp;                .filter(&quot;courseId =&quot;, courseId)</b>
+<b class="fc"><i class="no-highlight">399</i>&nbsp;                .filter(&quot;receiver =&quot;, receiver)</b>
+<b class="fc"><i class="no-highlight">400</i>&nbsp;                .list();</b>
+<i class="no-highlight">401</i>&nbsp;    }
+<i class="no-highlight">402</i>&nbsp;
+<i class="no-highlight">403</i>&nbsp;    private List&lt;FeedbackResponse&gt; getFeedbackResponseEntitiesFromGiverForCourse(
+<i class="no-highlight">404</i>&nbsp;            String courseId, String giverEmail) {
+<b class="fc"><i class="no-highlight">405</i>&nbsp;        return load()</b>
+<b class="fc"><i class="no-highlight">406</i>&nbsp;                .filter(&quot;courseId =&quot;, courseId)</b>
+<b class="fc"><i class="no-highlight">407</i>&nbsp;                .filter(&quot;giverEmail =&quot;, giverEmail)</b>
+<b class="fc"><i class="no-highlight">408</i>&nbsp;                .list();</b>
+<i class="no-highlight">409</i>&nbsp;    }
+<i class="no-highlight">410</i>&nbsp;
+<i class="no-highlight">411</i>&nbsp;    @Override
+<i class="no-highlight">412</i>&nbsp;    LoadType&lt;FeedbackResponse&gt; load() {
+<b class="fc"><i class="no-highlight">413</i>&nbsp;        return ofy().load().type(FeedbackResponse.class);</b>
+<i class="no-highlight">414</i>&nbsp;    }
+<i class="no-highlight">415</i>&nbsp;
+<i class="no-highlight">416</i>&nbsp;    @Override
+<i class="no-highlight">417</i>&nbsp;    boolean hasExistingEntities(FeedbackResponseAttributes entityToCreate) {
+<b class="fc"><i class="no-highlight">418</i>&nbsp;        return !load()</b>
+<b class="fc"><i class="no-highlight">419</i>&nbsp;                .filterKey(Key.create(FeedbackResponse.class,</b>
+<b class="fc"><i class="no-highlight">420</i>&nbsp;                        FeedbackResponse.generateId(entityToCreate.getFeedbackQuestionId(),</b>
+<b class="fc"><i class="no-highlight">421</i>&nbsp;                                entityToCreate.getGiver(), entityToCreate.getRecipient())))</b>
+<b class="fc"><i class="no-highlight">422</i>&nbsp;                .list()</b>
+<b class="fc"><i class="no-highlight">423</i>&nbsp;                .isEmpty();</b>
+<i class="no-highlight">424</i>&nbsp;    }
+<i class="no-highlight">425</i>&nbsp;
+<i class="no-highlight">426</i>&nbsp;    @Override
+<i class="no-highlight">427</i>&nbsp;    FeedbackResponseAttributes makeAttributes(FeedbackResponse entity) {
+<b class="fc"><i class="no-highlight">428</i>&nbsp;        assert entity != null;</b>
+<i class="no-highlight">429</i>&nbsp;
+<b class="fc"><i class="no-highlight">430</i>&nbsp;        return FeedbackResponseAttributes.valueOf(entity);</b>
+<i class="no-highlight">431</i>&nbsp;    }
+<i class="no-highlight">432</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-02-25 11:18</div>
+</div>
+</body>
+</html>
