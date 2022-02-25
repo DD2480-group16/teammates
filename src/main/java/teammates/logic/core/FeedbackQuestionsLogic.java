@@ -49,6 +49,9 @@ public final class FeedbackQuestionsLogic {
     private InstructorsLogic instructorsLogic;
     private StudentsLogic studentsLogic;
 
+    // For lab
+    private boolean[] branchChecker = new boolean[51];
+
     private FeedbackQuestionsLogic() {
         // prevent initialization
     }
@@ -344,9 +347,9 @@ public final class FeedbackQuestionsLogic {
      * @return a map which keys are the identifiers of the recipients and values are the names of the recipients
      */
     public Map<String, String> getRecipientsOfQuestion(
-            FeedbackQuestionAttributes question,
-            @Nullable InstructorAttributes instructorGiver, @Nullable StudentAttributes studentGiver,
-            @Nullable CourseRoster courseRoster) {
+        FeedbackQuestionAttributes question,
+        @Nullable InstructorAttributes instructorGiver, @Nullable StudentAttributes studentGiver,
+        @Nullable CourseRoster courseRoster) {
         assert instructorGiver != null || studentGiver != null;
 
         Map<String, String> recipients = new HashMap<>();
@@ -358,13 +361,17 @@ public final class FeedbackQuestionsLogic {
         String giverTeam = "";
         String giverSection = "";
         if (isStudentGiver) {
+            branchChecker[0] = true; // Branch 0
             giverEmail = studentGiver.getEmail();
             giverTeam = studentGiver.getTeam();
             giverSection = studentGiver.getSection();
         } else if (isInstructorGiver) {
+            branchChecker[1] = true; // Branch 1
             giverEmail = instructorGiver.getEmail();
             giverTeam = Const.USER_TEAM_FOR_INSTRUCTOR;
             giverSection = Const.DEFAULT_SECTION;
+        } else {
+            branchChecker[2] = true; // Branch 2 NOT REACHED
         }
 
         FeedbackParticipantType recipientType = question.getRecipientType();
@@ -372,128 +379,188 @@ public final class FeedbackQuestionsLogic {
 
         switch (recipientType) {
         case SELF:
+            branchChecker[3] = true; // Branch 3
             if (question.getGiverType() == FeedbackParticipantType.TEAMS) {
+                branchChecker[4] = true; // Branch 4
                 recipients.put(giverTeam, giverTeam);
             } else {
+                branchChecker[5] = true; // Branch 5
                 recipients.put(giverEmail, USER_NAME_FOR_SELF);
             }
             break;
         case STUDENTS:
+            branchChecker[6] = true; // Branch 6
         case STUDENTS_IN_SAME_SECTION:
+            branchChecker[7] = true; // Branch 7
             List<StudentAttributes> studentList;
             if (courseRoster == null) {
+                branchChecker[8] = true; // Branch 8
                 if (generateOptionsFor == FeedbackParticipantType.STUDENTS_IN_SAME_SECTION) {
+                    branchChecker[9] = true; // Branch 9 REACHED WITH NEW TEST
                     studentList = studentsLogic.getStudentsForSection(giverSection, question.getCourseId());
                 } else {
+                    branchChecker[10] = true; // Branch 10
                     studentList = studentsLogic.getStudentsForCourse(question.getCourseId());
                 }
             } else {
+                branchChecker[11] = true; // Branch 11
                 if (generateOptionsFor == FeedbackParticipantType.STUDENTS_IN_SAME_SECTION) {
+                    branchChecker[12] = true; // Branch 12 REACHED WITH NEW TEST
                     final String finalGiverSection = giverSection;
                     studentList = courseRoster.getStudents().stream()
                             .filter(studentAttributes -> studentAttributes.getSection()
                                     .equals(finalGiverSection)).collect(Collectors.toList());
                 } else {
+                    branchChecker[13] = true; // Branch 13
                     studentList = courseRoster.getStudents();
                 }
             }
             for (StudentAttributes student : studentList) {
+                branchChecker[14] = true; // Branch 14
                 if (isInstructorGiver && !instructorGiver.isAllowedForPrivilege(
                         student.getSection(), question.getFeedbackSessionName(),
                         Const.InstructorPermissions.CAN_SUBMIT_SESSION_IN_SECTIONS)) {
                     // instructor can only see students in allowed sections for him/her
+                    branchChecker[15] = true; // Branch 15 NOT REACHED
                     continue;
+                } else {
+                    branchChecker[16] = true; // Branch 16
                 }
                 // Ensure student does not evaluate himself
                 if (!giverEmail.equals(student.getEmail())) {
+                    branchChecker[17] = true; // Branch 17
                     recipients.put(student.getEmail(), student.getName());
+                } else {
+                    branchChecker[18] = true; // Branch 18
                 }
             }
             break;
         case INSTRUCTORS:
+            branchChecker[19] = true; // Branch 19
             List<InstructorAttributes> instructorsInCourse;
             if (courseRoster == null) {
+                branchChecker[20] = true; // Branch 20
                 instructorsInCourse = instructorsLogic.getInstructorsForCourse(question.getCourseId());
             } else {
+                branchChecker[21] = true; // Branch 21
                 instructorsInCourse = courseRoster.getInstructors();
             }
             for (InstructorAttributes instr : instructorsInCourse) {
+                branchChecker[22] = true; // Branch 22
                 // remove hidden instructors for students
                 if (isStudentGiver && !instr.isDisplayedToStudents()) {
+                    branchChecker[23] = true; // Branch 23 NOT REACHED
                     continue;
+                }else {
+                    branchChecker[24] = true; // Branch 24
                 }
                 // Ensure instructor does not evaluate himself
                 if (!giverEmail.equals(instr.getEmail())) {
+                    branchChecker[25] = true; // Branch 25
                     recipients.put(instr.getEmail(), instr.getName());
+                }else {
+                    branchChecker[26] = true; // Branch 26
                 }
             }
             break;
         case TEAMS:
+            branchChecker[27] = true; // Branch 27
         case TEAMS_IN_SAME_SECTION:
+            branchChecker[28] = true; // Branch 28
             Map<String, List<StudentAttributes>> teamToTeamMembersTable;
             List<StudentAttributes> teamStudents;
             if (generateOptionsFor == FeedbackParticipantType.TEAMS_IN_SAME_SECTION) {
+                branchChecker[29] = true; // Branch 29 NOT REACHED
                 teamStudents = studentsLogic.getStudentsForSection(giverSection, question.getCourseId());
                 teamToTeamMembersTable = CourseRoster.buildTeamToMembersTable(teamStudents);
             } else {
+                branchChecker[30] = true; // Branch 30
                 if (courseRoster == null) {
+                    branchChecker[31] = true; // Branch 31
                     teamStudents = studentsLogic.getStudentsForCourse(question.getCourseId());
                     teamToTeamMembersTable = CourseRoster.buildTeamToMembersTable(teamStudents);
                 } else {
+                    branchChecker[32] = true; // Branch 32
                     teamToTeamMembersTable = courseRoster.getTeamToMembersTable();
                 }
             }
             for (Map.Entry<String, List<StudentAttributes>> team : teamToTeamMembersTable.entrySet()) {
+                branchChecker[33] = true; // Branch 33
                 if (isInstructorGiver && !instructorGiver.isAllowedForPrivilege(
                         team.getValue().iterator().next().getSection(),
                         question.getFeedbackSessionName(),
                         Const.InstructorPermissions.CAN_SUBMIT_SESSION_IN_SECTIONS)) {
                     // instructor can only see teams in allowed sections for him/her
+                    branchChecker[34] = true; // Branch 34 NOT REACHED
                     continue;
+                } else{
+                    branchChecker[35] = true; // Branch 35
                 }
                 // Ensure student('s team) does not evaluate own team.
                 if (!giverTeam.equals(team.getKey())) {
+                    branchChecker[36] = true; // Branch 36
                     // recipientEmail doubles as team name in this case.
                     recipients.put(team.getKey(), team.getKey());
+                } else{
+                    branchChecker[37] = true; // Branch 37
                 }
             }
             break;
         case OWN_TEAM:
+            branchChecker[38] = true; // Branch 38 NOT REACHED
             recipients.put(giverTeam, giverTeam);
             break;
         case OWN_TEAM_MEMBERS:
+            branchChecker[39] = true; // Branch 39
             List<StudentAttributes> students;
             if (courseRoster == null) {
+                branchChecker[40] = true; // Branch 40
                 students = studentsLogic.getStudentsForTeam(giverTeam, question.getCourseId());
             } else {
+                branchChecker[41] = true; // Branch 41
                 students = courseRoster.getTeamToMembersTable().getOrDefault(giverTeam, Collections.emptyList());
             }
             for (StudentAttributes student : students) {
+                branchChecker[42] = true; // Branch 42
                 if (!student.getEmail().equals(giverEmail)) {
+                    branchChecker[43] = true; // Branch 43 NOT REACHED
                     recipients.put(student.getEmail(), student.getName());
+                }else {
+                    branchChecker[44] = true; // Branch 44
                 }
             }
             break;
         case OWN_TEAM_MEMBERS_INCLUDING_SELF:
+            branchChecker[45] = true; // Branch 45  REACHED WITH NEW TEST
             List<StudentAttributes> teamMembers;
             if (courseRoster == null) {
+                branchChecker[46] = true; // Branch 46  REACHED WITH NEW TEST
                 teamMembers = studentsLogic.getStudentsForTeam(giverTeam, question.getCourseId());
             } else {
+                branchChecker[47] = true; // Branch 47  REACHED WITH NEW TEST
                 teamMembers = courseRoster.getTeamToMembersTable().getOrDefault(giverTeam, Collections.emptyList());
             }
             for (StudentAttributes student : teamMembers) {
+                branchChecker[48] = true; // Branch 48  REACHED WITH NEW TEST
                 // accepts self feedback too
                 recipients.put(student.getEmail(), student.getName());
             }
             break;
         case NONE:
+            branchChecker[49] = true; // Branch 49
             recipients.put(Const.GENERAL_QUESTION, Const.GENERAL_QUESTION);
             break;
         default:
+            branchChecker[50] = true; // Branch 50 NOT REACHED
             break;
         }
         return recipients;
     }
+
+    public boolean[] getBranchChecker(){
+        return branchChecker;
+    }
+
 
     /**
      * Builds a complete giver to recipient map for a {@code relatedQuestion}.

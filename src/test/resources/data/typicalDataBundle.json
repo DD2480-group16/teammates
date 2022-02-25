@@ -1413,6 +1413,36 @@
         "RECEIVER"
       ]
     },
+    "qnStudentsInSameSection": {
+      "feedbackSessionName": "Not answerable feedback session",
+      "courseId": "idOfTypicalCourse1",
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "This is a session for students in same section"
+      },
+      "questionNumber": 1,
+      "giverType": "STUDENTS",
+      "recipientType": "STUDENTS_IN_SAME_SECTION",
+      "numberOfEntitiesToGiveFeedbackTo": 10,
+      "showResponsesTo": [],
+      "showGiverNameTo": [],
+      "showRecipientNameTo": []
+    },
+    "qnOwnTeam": {
+      "feedbackSessionName": "Not answerable feedback session",
+      "courseId": "idOfTypicalCourse1",
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Own team"
+      },
+      "questionNumber": 1,
+      "giverType": "INSTRUCTORS",
+      "recipientType": "OWN_TEAM",
+      "numberOfEntitiesToGiveFeedbackTo": 10,
+      "showResponsesTo": [],
+      "showGiverNameTo": [],
+      "showRecipientNameTo": []
+    },
     "qn1InSessionInArchivedCourse": {
       "feedbackSessionName": "session without student questions",
       "courseId": "idOfArchivedCourse",
