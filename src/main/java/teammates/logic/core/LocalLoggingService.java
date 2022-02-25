@@ -42,7 +42,6 @@ public class LocalLoggingService implements LogService {
     private static final List<GeneralLogEntry> LOCAL_LOG_ENTRIES = loadLocalLogEntries();
     private static final String ASCENDING_ORDER = "asc";
 
-
     private static List<GeneralLogEntry> loadLocalLogEntries() {
         // Timestamp of logs are randomly created to be within the last one hour
         long currentTimestamp = Instant.now().toEpochMilli();
@@ -143,7 +142,7 @@ public class LocalLoggingService implements LogService {
                 regkeyFilter, emailFilter, googleIdFilter);
     }
 
-    public boolean isExceptionFilterSatisfied(LogDetails details, String exceptionClassFilter) {
+    private boolean isExceptionFilterSatisfied(LogDetails details, String exceptionClassFilter) {
         if (exceptionClassFilter == null) {
             return true;
         }

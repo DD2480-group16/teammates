@@ -472,6 +472,13 @@ public class FeedbackResponseCommentsLogicTest extends BaseLogicTest {
         assertTrue(frcLogic.isNameVisibleToUser(comment, relatedResponse, student3InCourse1Email, roster));
         assertTrue(frcLogic.isNameVisibleToUser(comment, relatedResponse, student1InCourse2Email, roster));
 
+        ______TS("Tests Thomas: use a instructor mail as a giver");
+        comment.setCommentGiver(instructor1InCourse1Email);
+        comment.setCommentGiverType(INSTRUCTORS);
+        comment.setShowGiverNameTo(Arrays.asList(OWN_TEAM_MEMBERS));
+        assertTrue(frcLogic.isNameVisibleToUser(comment, relatedResponse, instructor1InCourse1Email, roster));
+        assertFalse(frcLogic.isNameVisibleToUser(comment, relatedResponse, instructor2InCourse1Email, roster));
+        assertFalse(frcLogic.isNameVisibleToUser(comment, relatedResponse, student1InCourse2Email, roster));
     }
 
     @AfterClass
